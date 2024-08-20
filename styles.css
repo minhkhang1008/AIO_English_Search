@@ -82,6 +82,14 @@ p {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-button img.icon {
+    width: 20px;
+    height: 20px;
 }
 
 .action-button:hover {
@@ -106,6 +114,16 @@ p {
     #searchBox {
         font-size: 16px;
         padding: 12px;
+    }
+
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
     }
 }
 
