@@ -14,7 +14,6 @@
     animation: fadeIn 0.5s ease-in-out;
 }
 
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
@@ -175,4 +174,17 @@ p {
     .container {
         padding: 30px;
     }
+
+    .update-time, .credit {
+        position: static; /* Remove absolute positioning */
+        text-align: center; /* Center align the text */
+        display: block; /* Ensure they take up their own lines */
+        margin-bottom: 10px; /* Add some space between them */
+    }
+}
+
+/* Adjust margin when buttons are visible */
+.buttons-visible .update-time,
+.buttons-visible .credit {
+    margin-top: 40px; /* Adjust this value as needed */
 }
