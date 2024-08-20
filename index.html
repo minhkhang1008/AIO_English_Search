@@ -30,19 +30,12 @@
                 let input = event.target.value.trim().toLowerCase();
                 let wordCount = input.split(/\s+/).length;
                 let buttonContainer = document.getElementById('buttonContainer');
+                let container = document.querySelector('.container');
 
                 buttonContainer.innerHTML = ''; // Clear previous buttons
+                container.classList.remove('buttons-visible'); // Remove class by default
 
-                if (wordCount === 1) {
-                    let urlSafeWord = input.replace(/\s+/g, '-');
-                    clearInput(); // Clear input before opening the URL
-                    openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
-                } else if (wordCount >= 3) {
-                    let urlSafeText = input.replace(/\s+/g, '%20');
-                    clearInput(); // Clear input before opening the URL
-                    openUrl(`https://translate.google.com/?sl=auto&tl=vi&text=${urlSafeText}&op=translate`);
-                } else if (wordCount === 2) {
-                    // Two words, show buttons with icons and animation
+                if (wordCount >= 2) {
                     let phrasalVerbBtn = document.createElement('button');
                     phrasalVerbBtn.classList.add('action-button', 'fade-in');
                     phrasalVerbBtn.onclick = function () {
@@ -67,7 +60,6 @@
                         openUrl(`https://www.google.com/search?q=${urlSafeText}`);
                     };
 
-                    // Update button text based on screen width
                     function updateButtonLabels() {
                         if (window.innerWidth <= 650) {
                             phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
@@ -86,6 +78,9 @@
                     buttonContainer.appendChild(phrasalVerbBtn);
                     buttonContainer.appendChild(googleTranslateBtn);
                     buttonContainer.appendChild(googleSearchBtn);
+
+                    // Add the class when buttons are created
+                    container.classList.add('buttons-visible');
                 }
             }
         });
@@ -96,14 +91,14 @@
         }
 
         function clearInput() {
-            document.getElementById('searchBox').value = ''; // Clear the input field
+            document.getElementById('searchBox').value = '';
         }
 
         function openUrl(url) {
-            if (window.innerWidth > 768) {
-                window.open(url, '_blank'); // Open in a new tab on desktop
+            if (window.innerWidth <= 800) {
+                window.location.href = url;
             } else {
-                window.location.href = url; // Open in the same tab on mobile
+                window.open(url, '_blank');
             }
         }
     </script>
