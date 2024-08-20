@@ -31,10 +31,10 @@
                 let wordCount = input.split(/\s+/).length;
                 let buttonContainer = document.getElementById('buttonContainer');
                 let container = document.querySelector('.container');
-
+            
                 buttonContainer.innerHTML = ''; // Clear previous buttons
                 container.classList.remove('buttons-visible'); // Remove class by default
-
+            
                 if (wordCount >= 2) {
                     let phrasalVerbBtn = document.createElement('button');
                     phrasalVerbBtn.classList.add('action-button', 'fade-in');
@@ -43,7 +43,7 @@
                         clearButtons();
                         openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
                     };
-
+                
                     let googleTranslateBtn = document.createElement('button');
                     googleTranslateBtn.classList.add('action-button', 'fade-in');
                     googleTranslateBtn.onclick = function () {
@@ -51,7 +51,7 @@
                         clearButtons();
                         openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
                     };
-
+                
                     let googleSearchBtn = document.createElement('button');
                     googleSearchBtn.classList.add('action-button', 'fade-in');
                     googleSearchBtn.onclick = function () {
@@ -59,7 +59,7 @@
                         clearButtons();
                         openUrl(`https://www.google.com/search?q=${urlSafeText}`);
                     };
-
+                
                     function updateButtonLabels() {
                         if (window.innerWidth <= 650) {
                             phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
@@ -71,16 +71,20 @@
                             googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> GG Search';
                         }
                     }
-                    
+
                     updateButtonLabels();
                     window.addEventListener('resize', updateButtonLabels); // Update button labels on resize
-
+                
                     buttonContainer.appendChild(phrasalVerbBtn);
                     buttonContainer.appendChild(googleTranslateBtn);
                     buttonContainer.appendChild(googleSearchBtn);
-
+                
                     // Add the class when buttons are created
                     container.classList.add('buttons-visible');
+                } else if (wordCount === 1) {
+                    // Direct the user to the dictionary if only one word is entered
+                    let urlSafeWord = input.replace(/\s+/g, '-');
+                    openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
                 }
             }
         });
@@ -101,6 +105,7 @@
                 window.open(url, '_blank');
             }
         }
+
     </script>
 </body>
 
