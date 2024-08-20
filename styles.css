@@ -111,6 +111,26 @@ p {
     font-family: Arial, sans-serif;
 }
 
+.source-link {
+    text-decoration: underline;
+    color: #ffeb3b; /* Or any color that fits your design */
+    margin-left: 10px;
+}
+
+.source-link:hover {
+    color: #ffd740; /* Change color on hover if desired */
+}
+
+.credit {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.8;
+    font-family: Arial, sans-serif;
+}
+
 /* Responsive Design for Smaller Screens */
 @media (max-width: 768px) {
     h1 {
