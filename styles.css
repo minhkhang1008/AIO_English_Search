@@ -101,6 +101,16 @@ p {
     transform: scale(0.95);
 }
 
+.update-time {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.8;
+    font-family: Arial, sans-serif;
+}
+
 /* Responsive Design for Smaller Screens */
 @media (max-width: 768px) {
     h1 {
