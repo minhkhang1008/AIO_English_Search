@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All in One</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Search or Translate</h1>
+        <p>Type a word or phrase and press Enter</p>
+        <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
+        
+        <!-- Display the two words here -->
+        <div id="displayWords" class="display-words"></div>
+
+        <!-- Buttons will be dynamically added here -->
+        <div id="buttonContainer" class="button-container"></div>
+    </div>
+
+    <script>
+        document.getElementById('searchBox').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                let input = event.target.value.trim().toLowerCase();
+                let wordCount = input.split(/\s+/).length;
+                let buttonContainer = document.getElementById('buttonContainer');
+                let displayWords = document.getElementById('displayWords');
+
+                buttonContainer.innerHTML = ''; // Clear previous buttons
+                displayWords.innerHTML = ''; // Clear previous words
+
+                if (wordCount === 1) {
+                    let urlSafeWord = input.replace(/\s+/g, '-');
+                    clearInput();  // Clear input before opening the URL
+                    openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
+                } else if (wordCount >= 3) {
+                    let urlSafeText = input.replace(/\s+/g, '%20');
+                    clearInput();  // Clear input before opening the URL
+                    openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+                } else if (wordCount === 2) {
+                    // Display the two words
+
+                    // Two words, show buttons with animation
+                    let phrasalVerbBtn = document.createElement('button');
+                    phrasalVerbBtn.textContent = 'Phrasal Verb';
+                    phrasalVerbBtn.classList.add('action-button', 'fade-in');
+
+                    phrasalVerbBtn.onclick = function() {
+                        let urlSafeWord = input.replace(/\s+/g, '-');
+                        clearButtons();
+                        openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
+                    };
+
+                    let googleTranslateBtn = document.createElement('button');
+                    googleTranslateBtn.textContent = 'Google Translate';
+                    googleTranslateBtn.classList.add('action-button', 'fade-in');
+
+                    googleTranslateBtn.onclick = function() {
+                        let urlSafeText = input.replace(/\s+/g, '%20');
+                        clearButtons();
+                        openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+                    };
+
+                    buttonContainer.appendChild(phrasalVerbBtn);
+                    buttonContainer.appendChild(googleTranslateBtn);
+                }
+            }
+        });
+
+        function clearButtons() {
+            document.getElementById('buttonContainer').innerHTML = '';
+            document.getElementById('searchBox').value = '';  // Clear the input field after button click
+            document.getElementById('displayWords').innerHTML = '';  // Clear the displayed words
+        }
+
+        function clearInput() {
+            document.getElementById('searchBox').value = '';  // Clear the input field
+        }
+
+        function openUrl(url) {
+            if (window.innerWidth > 768) {
+                window.open(url, '_blank');  // Open in a new tab on desktop
+            } else {
+                window.location.href = url;  // Open in the same tab on mobile
+            }
+        }
+    </script>
+</body>
+</html>
