@@ -6,4 +6,4 @@
 
 _Update takes longer than calculated_
 
-_Update is expected to arrive in a few weeks_
+_Update is expected to arrive in a 1 week_
