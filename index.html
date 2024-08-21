@@ -49,7 +49,7 @@
                     googleTranslateBtn.onclick = function () {
                         let urlSafeText = input.replace(/\s+/g, '%20');
                         clearButtons();
-                        openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+                        openUrl(`https://translate.google.com/?sl=auto&tl=vi&text=${urlSafeText}&op=translate`);
                     };
                 
                     let googleSearchBtn = document.createElement('button');
