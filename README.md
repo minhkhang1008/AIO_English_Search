@@ -5,6 +5,7 @@
 
 **Already updated**
 - Suggestions while typing
+
       Please note that the suggestions run based on my database which may not contain enough words, but I will try to update it on a daily basis
 
 _Update takes longer than calculated_
