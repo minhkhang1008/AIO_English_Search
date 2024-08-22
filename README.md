@@ -1,6 +1,6 @@
 **Next update coming soon**
 - Idioms mode
-- Telex recognition
+- Telex recognition (50%)
 - ChatGPT link
 
 **Already updated**
