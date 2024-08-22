@@ -19,9 +19,47 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensures the body takes up the full viewport height */
+    min-height: 100vh;
     margin: 0;
     background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+    position: relative;
+}
+
+.highlight {
+    background-color: #ffeb3b;
+    color: black;
+    font-weight: bold;
+}
+
+/* Suggestion list */
+.suggestion-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px auto 0;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: rgba(106, 17, 203, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+    color: #fff;
+    position: absolute;
+    z-index: 1000;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.suggestion-item:hover {
+    background-color: rgba(37, 117, 252, 0.9);
     color: #fff;
 }
 
@@ -33,29 +71,29 @@ body {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     max-width: 90%;
     width: 100%;
-    max-width: 500px; /* Adjust width as needed */
-    margin: 0 20px; /* Add margin to keep some spacing on smaller screens */
+    max-width: 500px;
+    margin: 0 20px;
 }
 
 h1 {
     font-size: 2.5em;
-    margin-bottom: 20px;
 }
 
 p {
     font-size: 1.2em;
-    margin-bottom: 30px;
 }
 
 #searchBox {
     width: 100%;
     max-width: 400px;
-    padding: 15px;
+    padding: 14px;
     border: 2px solid #fff;
     border-radius: 30px;
     font-size: 18px;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    z-index: 1;
 }
 
 #searchBox:focus {
@@ -71,7 +109,7 @@ p {
     gap: 20px;
 }
 
-/* Action Buttons */
+/* Action Buttons */    
 .action-button {
     padding: 15px 30px;
     font-size: 16px;
@@ -94,44 +132,32 @@ p {
 
 .action-button:hover {
     background-color: #2575fc;
-    transform: scale(1.05);
 }
 
 .action-button:active {
-    transform: scale(0.95);
+    transform: translateY(2px);
+}
+
+.container.buttons-visible {
+    padding-bottom: 100px;
 }
 
 .update-time {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    font-size: 12px;
-    color: #fff;
-    opacity: 0.8;
-    font-family: Arial, sans-serif;
+    margin-top: 40px;
+    font-size: 14px;
 }
 
-.source-link {
-    text-decoration: underline;
-    color: #ffeb3b; /* Or any color that fits your design */
-    margin-left: 10px;
-}
-
-.source-link:hover {
-    color: #ffd740; /* Change color on hover if desired */
+.update-time a {
+    color: #ffeb3b;
+    text-decoration: none;
 }
 
 .credit {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    margin-top: 20px;
     font-size: 12px;
-    color: #fff;
-    opacity: 0.8;
-    font-family: Arial, sans-serif;
 }
 
-/* Responsive Design for Smaller Screens */
+/* Styles for screens with a maximum width of 768px */
 @media (max-width: 768px) {
     h1 {
         font-size: 2em;
@@ -157,6 +183,7 @@ p {
     }
 }
 
+/* Styles for screens with a maximum width of 480px */
 @media (max-width: 480px) {
     h1 {
         font-size: 1.8em;
@@ -176,15 +203,28 @@ p {
     }
 
     .update-time, .credit {
-        position: static; /* Remove absolute positioning */
-        text-align: center; /* Center align the text */
-        display: block; /* Ensure they take up their own lines */
-        margin-bottom: 10px; /* Add some space between them */
+        position: static;
+        text-align: center;
+        display: block;
+        margin-bottom: 10px;
     }
+    .suggestion-list {
+        max-width: 60%; /* Set width to 80% */
+        left: 50%; /* Center the suggestion box */
+        transform: translateX(-50%); /* Ensure centering */
+    }
+    #searchBox {
+        font-size: 14px;
+        padding: 10px;
+        max-width: 90%; /* Set to 90% of the screen width */
+        margin: 0 auto; /* Center horizontally */
+        display: block; /* Ensure it's a block element for margin auto to work */
+    }
+
 }
 
 /* Adjust margin when buttons are visible */
 .buttons-visible .update-time,
 .buttons-visible .credit {
-    margin-top: 40px; /* Adjust this value as needed */
+    margin-top: 40px;
 }
