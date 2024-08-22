@@ -147,10 +147,36 @@ p {
     font-size: 14px;
 }
 
-.update-time a {
-    color: #ffeb3b;
+.update-time {
+    margin-top: 40px;
+    font-size: 14px;
+}
+
+.update-info {
+    margin-bottom: 10px; /* Space between update info and links */
+}
+
+.links a {
+    color: #ffeb3b; /* Existing color for the source code link */
+    text-decoration: none;
+    margin-right: 10px; /* Space between the links */
+}
+
+.contribute-link {
+    color: #90ee90; /* Light green color for the contribute link */
     text-decoration: none;
 }
+
+.contribute-link:hover {
+    text-decoration: underline; /* Underline on hover for better visibility */
+}
+
+/* Optional: Center align the links container if needed */
+.links {
+    text-align: center;
+}
+
+
 
 .credit {
     margin-top: 20px;
