@@ -14,6 +14,8 @@
         <h1>All in One English</h1>
         <p>Type a word or phrase and press Enter</p>
         <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
+        
+        <ul id="suggestionList" class="suggestion-list"></ul>
 
         <!-- Buttons will be dynamically added here -->
         <div id="buttonContainer" class="button-container"></div>
@@ -25,69 +27,112 @@
     </div>
 
     <script>
+        let words = [];
+        let lastInput = '';
+
+        // Load words from the words.txt file
+        fetch('words.txt')
+            .then(response => response.text())
+            .then(text => {
+                words = text.split('\n').map(word => word.trim());
+            });
+
+        document.getElementById('searchBox').addEventListener('input', function(event) {
+            let input = event.target.value.trim().toLowerCase();
+            let suggestionList = document.getElementById('suggestionList');
+            suggestionList.innerHTML = ''; // Clear previous suggestions
+            
+            if (input) {
+                let suggestions = words.filter(word => word.includes(input)).slice(0, 10);
+                suggestions.forEach(suggestion => {
+                    let listItem = document.createElement('li');
+                    listItem.classList.add('suggestion-item');
+                    listItem.innerHTML = highlightMatch(suggestion, input);
+                    listItem.addEventListener('click', () => handleSuggestionClick(suggestion));
+                    suggestionList.appendChild(listItem);
+                });
+            }
+            
+            lastInput = input; // Update last input
+        });
+
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                let input = event.target.value.trim().toLowerCase();
-                let wordCount = input.split(/\s+/).length;
-                let buttonContainer = document.getElementById('buttonContainer');
-                let container = document.querySelector('.container');
-            
-                buttonContainer.innerHTML = ''; // Clear previous buttons
-                container.classList.remove('buttons-visible'); // Remove class by default
-            
-                if (wordCount >= 2) {
-                    let phrasalVerbBtn = document.createElement('button');
-                    phrasalVerbBtn.classList.add('action-button', 'fade-in');
-                    phrasalVerbBtn.onclick = function () {
-                        let urlSafeWord = input.replace(/\s+/g, '-');
-                        clearButtons();
-                        openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
-                    };
-                
-                    let googleTranslateBtn = document.createElement('button');
-                    googleTranslateBtn.classList.add('action-button', 'fade-in');
-                    googleTranslateBtn.onclick = function () {
-                        let urlSafeText = input.replace(/\s+/g, '%20');
-                        clearButtons();
-                        openUrl(`https://translate.google.com/?sl=auto&tl=vi&text=${urlSafeText}&op=translate`);
-                    };
-                
-                    let googleSearchBtn = document.createElement('button');
-                    googleSearchBtn.classList.add('action-button', 'fade-in');
-                    googleSearchBtn.onclick = function () {
-                        let urlSafeText = input.replace(/\s+/g, '+');
-                        clearButtons();
-                        openUrl(`https://www.google.com/search?q=${urlSafeText}`);
-                    };
-                
-                    function updateButtonLabels() {
-                        if (window.innerWidth <= 650) {
-                            phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
-                            googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> Google Translate';
-                            googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> Google Search';
-                        } else {
-                            phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phr. Verbs';
-                            googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> GG Trans';
-                            googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> GG Search';
-                        }
-                    }
-
-                    updateButtonLabels();
-                    window.addEventListener('resize', updateButtonLabels); // Update button labels on resize
-                
-                    buttonContainer.appendChild(phrasalVerbBtn);
-                    buttonContainer.appendChild(googleTranslateBtn);
-                    buttonContainer.appendChild(googleSearchBtn);
-                
-                    // Add the class when buttons are created
-                    container.classList.add('buttons-visible');
-                } else if (wordCount === 1) {
-                    // Direct the user to the dictionary if only one word is entered
-                    let urlSafeWord = input.replace(/\s+/g, '-');
-                    openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
-                }
+                performAction(event.target.value.trim().toLowerCase());
+                // Clear suggestions on Enter
+                document.getElementById('suggestionList').innerHTML = '';
             }
         });
+
+        function handleSuggestionClick(suggestion) {
+            document.getElementById('searchBox').value = suggestion;
+            performAction(suggestion);
+            // Prevent the suggestion box from closing immediately
+            setTimeout(() => {
+                document.getElementById('suggestionList').innerHTML = '';
+            }, 100);
+        }
+
+        function performAction(input) {
+            let wordCount = input.split(/\s+/).length;
+            let buttonContainer = document.getElementById('buttonContainer');
+            let container = document.querySelector('.container');
+
+            buttonContainer.innerHTML = ''; // Clear previous buttons
+            container.classList.remove('buttons-visible'); // Remove class by default
+
+            if (wordCount >= 2) {
+                let phrasalVerbBtn = document.createElement('button');
+                phrasalVerbBtn.classList.add('action-button', 'fade-in');
+                phrasalVerbBtn.onclick = function () {
+                    let urlSafeWord = input.replace(/\s+/g, '-');
+                    clearButtons();
+                    openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
+                };
+
+                let googleTranslateBtn = document.createElement('button');
+                googleTranslateBtn.classList.add('action-button', 'fade-in');
+                googleTranslateBtn.onclick = function () {
+                    let urlSafeText = input.replace(/\s+/g, '%20');
+                    clearButtons();
+                    openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+                };
+
+                let googleSearchBtn = document.createElement('button');
+                googleSearchBtn.classList.add('action-button', 'fade-in');
+                googleSearchBtn.onclick = function () {
+                    let urlSafeText = input.replace(/\s+/g, '+');
+                    clearButtons();
+                    openUrl(`https://www.google.com/search?q=${urlSafeText}`);
+                };
+
+                function updateButtonLabels() {
+                    if (window.innerWidth <= 650) {
+                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
+                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> Google Translate';
+                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> Google Search';
+                    } else {
+                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phr. Verbs';
+                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> GG Trans';
+                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> GG Search';
+                    }
+                }
+
+                updateButtonLabels();
+                window.addEventListener('resize', updateButtonLabels); // Update button labels on resize
+
+                buttonContainer.appendChild(phrasalVerbBtn);
+                buttonContainer.appendChild(googleTranslateBtn);
+                buttonContainer.appendChild(googleSearchBtn);
+
+                // Add the class when buttons are created
+                container.classList.add('buttons-visible');
+            } else if (wordCount === 1) {
+                // Direct the user to the dictionary if only one word is entered
+                let urlSafeWord = input.replace(/\s+/g, '-');
+                openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
+            }
+        }
 
         function clearButtons() {
             document.getElementById('buttonContainer').innerHTML = '';
@@ -106,6 +151,10 @@
             }
         }
 
+        function highlightMatch(word, query) {
+            let regex = new RegExp(`(${query})`, 'gi');
+            return word.replace(regex, '<span class="highlight">$1</span>');
+        }
     </script>
 </body>
 
