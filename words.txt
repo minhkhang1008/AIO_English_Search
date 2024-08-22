@@ -74,8 +74,8 @@ achieved
 achievement
 achievements
 achieving
-acid
-acids
+acid 
+acids 
 acknowledge
 acknowledged
 acm
@@ -11770,3 +11770,98 @@ zoom in on
 zoom off
 zoom out
 supercalifragilisticexpialidocious
+ammonia
+absolute zero 
+acid anhydride 
+actual yield 
+addition reaction 
+aldehyde 
+alkali metal 
+alkali earth metal 
+alkane 
+alkene 
+alkyne 
+allotrope 
+alpha particle 
+amine 
+beta particle
+binary compound
+binding energy
+bond energy
+bond length
+buffer
+calorimetry
+carboxylic acid
+catalyst
+cathode
+chemical reaction
+chemical property
+covalent bond
+critical mass
+critical point
+delocalization
+denature
+diffusion
+dilution
+dissociation
+double displacement reaction
+effusion
+electrolysis
+electrolyte
+enantiomers
+endothermic
+endpoint
+energy level
+enthalpy
+entropy
+enzyme
+equilibrium
+equivalence point
+ester
+excess reagent
+excited state
+exothermic
+Kelvin (degree)
+ketone
+kinetic energy
+lanthanide contraction
+lattice energy
+law of conservation of energy
+ligand
+mole
+node
+nucleon
+oxidation number
+period
+precision
+pressure
+product
+quantum theory
+radioactivity
+Raoult's Law
+rate determining step
+rate law
+redox reaction
+resonance structure
+reversible reaction
+RMS velocity
+solute
+solvent
+STP
+strong acid
+strong nuclear force
+sublimation
+synthesis
+theoretical yield
+thermodynamics
+titration
+triple point
+unit cell
+unsaturated
+unshared electron pair
+valence electron
+volatile
+VSEPR
+Interpol
+CIA
+FBI
