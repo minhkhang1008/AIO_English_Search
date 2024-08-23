@@ -18,6 +18,4 @@ _Update is expected to arrive in a 1 week_
 
 **IMPORTANT**
 
-- ~~10:40 A.M (UTC +7): Cambridge Dictionary is currently down for maintenance, this website will now temporarily use Oxford Dictionary~~
-- ~~We will turn back to Cambridge Dictionary right when it is available~~
-- Cambridge Dictionary finished its maintenance, we will now use it
+- Instead of Cambridge Dictionary like the previous time, it seems like Oxford Dictionary is better so it will be used in this website
