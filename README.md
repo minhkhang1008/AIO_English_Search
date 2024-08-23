@@ -9,7 +9,7 @@
 
 - Telex recognition
  
-      Telex recognition overlaps each other so I decided not to replace all telex letters
+      Telex recognition overlaps each other so I decided to only replace on suggestion box
 
 
 _Update takes longer than calculated_
