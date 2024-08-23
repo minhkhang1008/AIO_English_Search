@@ -1,14 +1,12 @@
 **Next update coming soon**
 - Idioms mode
 - ChatGPT link
+- Telex recognition (90%)
 
 **Already updated**
 - Suggestions while typing
 
       Please note that the suggestions run based on my database which may not contain enough words, but I will try to update it on a daily basis
-- Telex recognition
-  
-      Attention: the 'ư' letter and all of its related won't be changed in this website since they can be typed by the combination of 'uw' or just 'w'
 
 _Update takes longer than calculated_
 
