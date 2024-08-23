@@ -18,6 +18,7 @@
             }
         }
 
+        /* Apply the animation to the buttons */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -27,7 +28,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensures the body takes up the full viewport height */
             margin: 0;
             background: linear-gradient(to right, #6a11cb, #2575fc);
             color: #fff;
@@ -40,21 +41,22 @@
             font-weight: bold;
         }
 
+        /* Suggestion list */
         .suggestion-list {
             list-style-type: none;
             padding: 0;
-            margin: 5px auto 0;
+            margin: 5px auto 0; /* Center the suggestion box */
             max-height: 150px;
             overflow-y: auto;
-            background-color: rgba(106, 17, 203, 0.9);
+            background-color: rgba(106, 17, 203, 0.9); /* Use gradient start color with transparency */
             border: 1px solid #ddd;
             border-radius: 5px;
             width: 80%;
             max-width: 400px;
-            color: #fff;
+            color: #fff; /* Change text color to white */
             position: absolute;
             z-index: 1000;
-            left: 50%;
+            left: 50%; /* Align the suggestion box to the center */
             transform: translateX(-50%);
         }
 
@@ -66,10 +68,11 @@
         }
 
         .suggestion-item:hover {
-           background-color: rgba(37, 117, 252, 0.9);
+           background-color: rgba(37, 117, 252, 0.9); /* Use gradient end color with transparency */
            color: #fff;
-           transform: scale(1.05);
+           transform: scale(1.05); /* Slightly scale up the item */
         }
+
 
         .container {
             text-align: center;
@@ -104,7 +107,7 @@
             transition: border-color 0.3s, box-shadow 0.3s;
             position: relative;
             z-index: 1;
-            margin: 0 auto;
+            margin: 0 auto; /* Center the search box */
         }
 
         #searchBox:focus {
@@ -112,6 +115,7 @@
             box-shadow: 0 0 10px #ffeb3b;
         }
 
+        /* Suggestions Container */
         .suggestions-container {
             margin-top: 10px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -121,6 +125,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        /* Suggestion Items */
         .suggestion-item {
             padding: 10px;
             cursor: pointer;
@@ -132,6 +137,7 @@
             color: #fff;
         }
 
+        /* Button Container */
         .button-container {
             margin-top: 20px;
             display: flex;
@@ -139,6 +145,7 @@
             gap: 20px;
         }
 
+        /* Action Buttons */
         .action-button {
             padding: 15px 30px;
             font-size: 16px;
@@ -182,13 +189,13 @@
         }
 
         .credit {
-            margin-top: 5px;
+            margin-top: 5px; /* Adjusted margin to fit on separate line */
             font-size: 12px;
         }
 
         .contribute {
             display: block;
-            color: #b2ff59;
+            color: #b2ff59; /* Light green color */
             text-decoration: none;
         }
 
@@ -196,6 +203,7 @@
             text-decoration: underline;
         }
 
+        /* Styles for screens with a maximum width of 768px */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -221,6 +229,7 @@
             }
         }
 
+        /* Styles for screens with a maximum width of 480px */
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.8em;
@@ -240,23 +249,23 @@
             }
 
             .suggestion-list {
-                width: 80%;
+                width: 80%; /* Adjusted size for phone screens */
                 max-width: none;
             }
 
             #searchBox {
-                margin: 0 auto;
+                margin: 0 auto; /* Center the search box */
             }
 
             .update-time, .credit {
-                position: static;
-                text-align: center;
-                display: block;
-                margin-bottom: 10px;
+                position: static; /* Remove absolute positioning */
+                text-align: center; /* Center align the text */
+                display: block; /* Ensure they take up their own lines */
+                margin-bottom: 10px; /* Add some space between them */
             }
 
             .credit {
-                margin-top: 10px;
+                margin-top: 10px; /* Adjusted margin */
             }
         }
     </style>
@@ -270,9 +279,10 @@
         
         <ul id="suggestionList" class="suggestion-list"></ul>
 
+        <!-- Buttons will be dynamically added here -->
         <div id="buttonContainer" class="button-container"></div>
         <div class="update-time">
-            Update 13:15 (UTC+7) 20/8<br>
+            Update 17:32 (UTC) 24/8<br>
             <a href="https://github.com/minhkhang1008/minhkhang1008.github.io" class="source-link" target="_blank">Source code</a><br>
             <a href="https://forms.gle/K195XSHSTdk8Jdh49" class="contribute" target="_blank">Contribute Words</a>
         </div>
@@ -283,6 +293,7 @@
         let words = [];
         let lastInput = '';
 
+        // Load words from the words.txt file
         fetch('words.txt')
             .then(response => response.text())
             .then(text => {
@@ -290,29 +301,22 @@
             });
 
         function convertTelexToEnglish(text) {
+            // Define the mapping from Telex to English
             const mapping = {
                 'ả': 'ar', 'ẻ': 'er', 'ủ': 'ur', 'ỉ': 'ir', 'ỏ': 'or',
                 'é': 'es', 'ý': 'ys', 'ú': 'us', 'í': 'is', 'ó': 'os', 'á': 'as',
                 'ẹ': 'ej', 'y': 'yj', 'ụ': 'uj', 'ị': 'ij', 'ọ': 'oj', 'ạ': 'aj',
-                'è': 'ef', 'ý': 'yf', 'ù': 'uf', 'ò': 'of', 'à': 'af', 'ô': 'oo', 'ố': 'oos', 'ồ': 'oof', 'ộ': 'ooj', 'ổ': 'oor', 'ỗ': 'oox', 'ỡ': 'owx',
-                'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax',
-                'ê': 'ee', 'ơ': 'ow', 'â': 'aa', 'ă': 'aw', 'ợ': 'owj', 'ễ': 'eex',
-                'ớ': 'ows', 'ờ': 'owf', 'ế': 'ees', 'ề': 'eef', 'ệ': 'eej', 'ể': 'eer',
-                'ấ': 'aas', 'ầ': 'aaf', 'ậ': 'aaj', 'ẫ': 'aax', 'ắ': 'aws', 'ằ': 'awf', 'ặ': 'awj', 'ẵ': 'awx'
-            }; <!-- Need modification -->
+                'è': 'ef', 'ý': 'yf', 'ù': 'uf', 'ò': 'of', 'à': 'af',
+                'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax'
+            };
 
+            // Replace each character based on the mapping
             return text.split('').map(char => mapping[char] || char).join('');
         }
 
         document.getElementById('searchBox').addEventListener('input', function(event) {
             let input = event.target.value.trim().toLowerCase();
             let convertedInput = convertTelexToEnglish(input);
-            
-            // Update the search box with the converted input
-            if (input !== convertedInput) {
-                event.target.value = convertedInput;
-            }
-
             let suggestionList = document.getElementById('suggestionList');
             suggestionList.innerHTML = ''; // Clear previous suggestions
             
@@ -332,43 +336,102 @@
 
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                let input = convertTelexToEnglish(event.target.value.trim().toLowerCase());
-
-                // Update the search box with the converted input before performing action
-                event.target.value = input;
-
-                performAction(input);
+                performAction(event.target.value.trim().toLowerCase());
                 // Clear suggestions on Enter
                 document.getElementById('suggestionList').innerHTML = '';
             }
         });
 
         function handleSuggestionClick(suggestion) {
-            let convertedSuggestion = convertTelexToEnglish(suggestion);
-            document.getElementById('searchBox').value = convertedSuggestion;
-            performAction(convertedSuggestion);
+            document.getElementById('searchBox').value = suggestion;
+            performAction(suggestion);
             // Prevent the suggestion box from closing immediately
             setTimeout(() => {
                 document.getElementById('suggestionList').innerHTML = '';
             }, 100);
         }
 
-        function highlightMatch(suggestion, input) {
-            const regex = new RegExp(`(${input})`, 'gi');
-            return suggestion.replace(regex, "<span class='highlight'>$1</span>");
+        function performAction(input) {
+            let wordCount = input.split(/\s+/).length;
+            let buttonContainer = document.getElementById('buttonContainer');
+            let container = document.querySelector('.container');
+
+            buttonContainer.innerHTML = ''; // Clear previous buttons
+            container.classList.remove('buttons-visible'); // Remove class by default
+
+            if (wordCount >= 2) {
+                let phrasalVerbBtn = document.createElement('button');
+                phrasalVerbBtn.classList.add('action-button', 'fade-in');
+                phrasalVerbBtn.onclick = function () {
+                    let urlSafeWord = input.replace(/\s+/g, '-');
+                    clearButtons();
+                    openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
+                };
+
+                let googleTranslateBtn = document.createElement('button');
+                googleTranslateBtn.classList.add('action-button', 'fade-in');
+                googleTranslateBtn.onclick = function () {
+                    let urlSafeText = input.replace(/\s+/g, '%20');
+                    clearButtons();
+                    openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+                };
+
+                let googleSearchBtn = document.createElement('button');
+                googleSearchBtn.classList.add('action-button', 'fade-in');
+                googleSearchBtn.onclick = function () {
+                    let urlSafeText = input.replace(/\s+/g, '+');
+                    clearButtons();
+                    openUrl(`https://www.google.com/search?q=${urlSafeText}`);
+                };
+
+                function updateButtonLabels() {
+                    if (window.innerWidth <= 650) {
+                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
+                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> Google Translate';
+                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> Google Search';
+                    } else {
+                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phr. Verbs';
+                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> GG Trans';
+                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> GG Search';
+                    }
+                }
+
+                updateButtonLabels();
+                window.addEventListener('resize', updateButtonLabels); // Update button labels on resize
+
+                buttonContainer.appendChild(phrasalVerbBtn);
+                buttonContainer.appendChild(googleTranslateBtn);
+                buttonContainer.appendChild(googleSearchBtn);
+
+                // Add the class when buttons are created
+                container.classList.add('buttons-visible');
+            } else if (wordCount === 1) {
+                // Direct the user to the dictionary if only one word is entered
+                let urlSafeWord = input.replace(/\s+/g, '-');
+                openUrl(`https://www.oxfordlearnersdictionaries.com/definition/english/${urlSafeWord}`);
+            }
         }
 
-        function performAction(input) {
-            let targetUrl;
-            const switchOn = false; // Replace with actual switch state check
+        function clearButtons() {
+            document.getElementById('buttonContainer').innerHTML = '';
+            document.getElementById('searchBox').value = ''; // Clear the input field after button click
+        }
 
-            if (switchOn) {
-                targetUrl = `https://www.vietjack.com/cum-dong-tu/${input.replace(/\s+/g, '-')}.jsp`;
+        function clearInput() {
+            document.getElementById('searchBox').value = '';
+        }
+
+        function openUrl(url) {
+            if (window.innerWidth <= 800) {
+                window.location.href = url;
             } else {
-                targetUrl = `https://www.google.com/search?q=${input}`;
+                window.open(url, '_blank');
             }
+        }
 
-            window.location.href = targetUrl;
+        function highlightMatch(word, query) {
+            let regex = new RegExp(`(${query})`, 'gi');
+            return word.replace(regex, '<span class="highlight">$1</span>');
         }
     </script>
 </body>
