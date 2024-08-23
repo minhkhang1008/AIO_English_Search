@@ -1,7 +1,3 @@
-**IMPORTANT**
-- 10:40 A.M (UTC +7): Cambridge Dictionary is currently down for maintenance, this website will now temporarily use Oxford Dictionary
-- We will turn back to Cambridge Dictionary right when it is available
-
 **Next update coming soon**
 - Idioms mode
 - Telex recognition (50%)
@@ -15,3 +11,9 @@
 _Update takes longer than calculated_
 
 _Update is expected to arrive in a 1 week_
+
+**IMPORTANT**
+
+- ~~10:40 A.M (UTC +7): Cambridge Dictionary is currently down for maintenance, this website will now temporarily use Oxford Dictionary~~
+- ~~We will turn back to Cambridge Dictionary right when it is available~~
+- Cambridge Dictionary finished its maintenance, we will now use it
