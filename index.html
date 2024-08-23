@@ -76,13 +76,15 @@
         .container {
             text-align: center;
             background-color: rgba(255, 255, 255, 0.1);
-            padding: 50px 20px;
+            padding: 40px 20px;
+            padding-bottom: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             max-width: 90%;
             width: 100%;
             max-width: 500px;
             margin: 0 20px;
+            margin-bottom: 0;
         }
 
         h1 {
@@ -172,11 +174,11 @@
         }
 
         .container.buttons-visible {
-            padding-bottom: 100px;
+            padding-bottom: 40px;
         }
 
         .update-time {
-            margin-top: 40px;
+            margin-top: 10px;
             font-size: 14px;
         }
 
@@ -186,7 +188,7 @@
         }
 
         .credit {
-            margin-top: 10px; /* Adjusted margin to fit on separate line */
+            margin-top: 5px; /* Adjusted margin to fit on separate line */
             font-size: 12px;
         }
 
@@ -304,7 +306,8 @@
                 'é': 'es', 'ý': 'ys', 'ú': 'us', 'í': 'is', 'ó': 'os', 'á': 'as',
                 'ẹ': 'ej', 'y': 'yj', 'ụ': 'uj', 'ị': 'ij', 'ọ': 'oj', 'ạ': 'aj',
                 'è': 'ef', 'ý': 'yf', 'ù': 'uf', 'ò': 'of', 'à': 'af',
-                'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax'
+                'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax',
+                'ê': 'ee', 'ơ': 'ow', 'â': 'aa', 'ă': 'aw'
             };
 
             // Replace each character based on the mapping
@@ -405,8 +408,8 @@
             } else if (wordCount === 1) {
                 // Direct the user to the dictionary if only one word is entered
                 let urlSafeWord = input.replace(/\s+/g, '-');
-                openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
-            }d
+                openUrl(`dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
+            }
         }
 
         function clearButtons() {
