@@ -14,7 +14,7 @@
 
 _Update takes longer than calculated_
 
-_Update is expected to arrive in a 1 week_
+_I have started my school year, this project will be delayed (I hope I don't drop it)_
 
 **IMPORTANT**
 
