@@ -1,7 +1,8 @@
-**Yes I drop It**
+# **Yes I drop It**
 - This website is just my side quest to satisfy my hobby, I understand I have more important things to do.
 - The Github pages still works
 
+## Old updates 
 **Next update coming soon**
 - Idioms mode
 - ChatGPT link
