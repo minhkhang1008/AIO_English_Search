@@ -30,6 +30,7 @@
         let words = [];
         let lastInput = '';
 
+        // Load words from the words.txt file
         fetch('words.txt')
             .then(response => response.text())
             .then(text => {
@@ -65,23 +66,32 @@
                 });
             }
             
-            lastInput = convertedInput; 
+            lastInput = convertedInput;
         });
 
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter' && event.shiftKey) {
+            if (event.key === 'Enter') {
                 event.preventDefault();
-
                 let input = event.target.value.trim().toLowerCase();
-                if (input) {
-                    fetchDefinition(input);
+
+                if (event.shiftKey) {
+                    // Shift + Enter: Call the Gemini API for a definition
+                    if (input) {
+                        fetchDefinition(input);
+                    }
+                } else {
+                    // Enter: Perform the redirection or show options
+                    if (input) {
+                        performAction(input);
+                    }
                 }
             }
         });
 
         async function fetchDefinition(input) {
             const responseContainer = document.getElementById('suggestionList');
-            responseContainer.innerHTML = '';
+            responseContainer.innerHTML = ''; // Clear previous responses
+
             try {
                 const response = await fetch('/api/get-definition', {
                     method: 'POST',
@@ -90,6 +100,7 @@
                 });
                 const answer = await response.json();
 
+                // Display Gemini's response
                 const listItem = document.createElement('li');
                 listItem.classList.add('suggestion-item');
                 listItem.innerText = answer;
@@ -98,7 +109,7 @@
                 console.error('Error:', error);
                 alert('Failed to get response from Gemini API.');
             }
-    }
+        }
 
         function handleSuggestionClick(suggestion) {
             document.getElementById('searchBox').value = suggestion;
@@ -113,8 +124,8 @@
             let buttonContainer = document.getElementById('buttonContainer');
             let container = document.querySelector('.container');
 
-            buttonContainer.innerHTML = ''; 
-            container.classList.remove('buttons-visible'); 
+            buttonContainer.innerHTML = ''; // Clear previous buttons
+            container.classList.remove('buttons-visible');
 
             if (wordCount >= 2) {
                 let phrasalVerbBtn = document.createElement('button');
@@ -141,25 +152,9 @@
                     openUrl(`https://www.google.com/search?q=${urlSafeText}`);
                 };
 
-                function updateButtonLabels() {
-                    if (window.innerWidth <= 650) {
-                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phrasal Verbs';
-                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> Google Translate';
-                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> Google Search';
-                    } else {
-                        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="VJ" class="icon"> Phr. Verbs';
-                        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Google Translate" class="icon"> GG Trans';
-                        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google" class="icon"> GG Search';
-                    }
-                }
-
-                updateButtonLabels();
-                window.addEventListener('resize', updateButtonLabels);
-
                 buttonContainer.appendChild(phrasalVerbBtn);
                 buttonContainer.appendChild(googleTranslateBtn);
                 buttonContainer.appendChild(googleSearchBtn);
-
                 container.classList.add('buttons-visible');
             } else if (wordCount === 1) {
                 let urlSafeWord = input.replace(/\s+/g, '-');
@@ -169,10 +164,6 @@
 
         function clearButtons() {
             document.getElementById('buttonContainer').innerHTML = '';
-            document.getElementById('searchBox').value = ''; 
-        }
-
-        function clearInput() {
             document.getElementById('searchBox').value = '';
         }
 
