@@ -1,0 +1,261 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply the animation to the buttons */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures the body takes up the full viewport height */
+    margin: 0;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+    position: relative;
+}
+
+.highlight {
+    background-color: #ffeb3b;
+    color: black;
+    font-weight: bold;
+}
+
+/* Suggestion list */
+.suggestion-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px auto 0; /* Center the suggestion box */
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: rgba(106, 17, 203, 0.9); /* Use gradient start color with transparency */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    color: #fff; /* Change text color to white */
+    position: absolute;
+    z-index: 1000;
+    left: 50%; /* Align the suggestion box to the center */
+    transform: translateX(-50%);
+}
+
+.suggestion-item {
+   padding: 10px;
+   cursor: pointer;
+   font-size: 18px;
+   transition: background-color 0.3s, transform 0.3s ease-in-out;
+}
+
+.suggestion-item:hover {
+   background-color: rgba(37, 117, 252, 0.9); /* Use gradient end color with transparency */
+   color: #fff;
+   transform: scale(1.05); /* Slightly scale up the item */
+}
+
+
+.container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 40px 20px;
+    padding-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 20px;
+    margin-bottom: 0;
+}
+
+h1 {
+    font-size: 2.5em;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+#searchBox {
+    width: 100%;
+    max-width: 400px;
+    padding: 14px;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    font-size: 18px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto; /* Center the search box */
+}
+
+#searchBox:focus {
+    border-color: #ffeb3b;
+    box-shadow: 0 0 10px #ffeb3b;
+}
+
+/* Suggestions Container */
+.suggestions-container {
+    margin-top: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Suggestion Items */
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.suggestion-item:hover {
+    background-color: #6a11cb;
+    color: #fff;
+}
+
+/* Button Container */
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Action Buttons */
+.action-button {
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #6a11cb;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-button img.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.action-button:hover {
+    background-color: #2575fc;
+}
+
+.action-button:active {
+    transform: translateY(2px);
+}
+
+.container.buttons-visible {
+    padding-bottom: 40px;
+}
+
+.update-time {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.update-time a {
+    color: #ffeb3b;
+    text-decoration: none;
+}
+
+.credit {
+    margin-top: 5px; /* Adjusted margin to fit on separate line */
+    font-size: 12px;
+}
+
+.contribute {
+    display: block;
+    color: #b2ff59; /* Light green color */
+    text-decoration: none;
+}
+
+.contribute:hover {
+    text-decoration: underline;
+}
+
+/* Styles for screens with a maximum width of 768px */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    #searchBox {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Styles for screens with a maximum width of 480px */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    p {
+        font-size: 0.9em;
+    }
+
+    #searchBox {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .container {
+        padding: 30px;
+    }
+
+    .suggestion-list {
+        width: 80%; /* Adjusted size for phone screens */
+        max-width: none;
+    }
+
+    #searchBox {
+        margin: 0 auto; /* Center the search box */
+    }
+
+    .update-time, .credit {
+        position: static; /* Remove absolute positioning */
+        text-align: center; /* Center align the text */
+        display: block; /* Ensure they take up their own lines */
+        margin-bottom: 10px; /* Add some space between them */
+    }
+
+    .credit {
+        margin-top: 10px; /* Adjusted margin */
+    }
+}
