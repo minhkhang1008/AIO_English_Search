@@ -1,4 +1,7 @@
+
 const fetch = require('node-fetch');
+
+const GEMINI_API_KEY = 'AIzaSyBztxMjaIIWxlYDqfMPhj2rU_JmRUdaSu8';
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
@@ -12,7 +15,7 @@ module.exports = async (req, res) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`
+                "Authorization": `Bearer ${GEMINI_API_KEY}`
             },
             body: JSON.stringify({
                 prompt: { text: `Define the term: ${input}` },
