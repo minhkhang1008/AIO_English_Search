@@ -1,7 +1,7 @@
 
 const fetch = require('node-fetch');
 
-const GEMINI_API_KEY = 'AIzaSyBztxMjaIIWxlYDqfMPhj2rU_JmRUdaSu8';
+const GEMINI_API_KEY = '';
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
