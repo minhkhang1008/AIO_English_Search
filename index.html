@@ -71,7 +71,7 @@
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && event.shiftKey) {
                 event.preventDefault();
-            
+
                 let input = event.target.value.trim().toLowerCase();
                 if (input) {
                     fetchDefinition(input);
@@ -79,29 +79,26 @@
             }
         });
 
-
         async function fetchDefinition(input) {
             const responseContainer = document.getElementById('suggestionList');
-            responseContainer.innerHTML = ''; // Clear previous responses
-            
+            responseContainer.innerHTML = '';
             try {
-                const response = await fetch('/api', {
+                const response = await fetch('/api/get-definition', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ input: input })
                 });
                 const answer = await response.json();
-            
-                // Display ChatGPT's response
+
                 const listItem = document.createElement('li');
                 listItem.classList.add('suggestion-item');
                 listItem.innerText = answer;
                 responseContainer.appendChild(listItem);
             } catch (error) {
-                console.error("Error:", error);
-                alert("Failed to get response from ChatGPT.");
+                console.error('Error:', error);
+                alert('Failed to get response from Gemini API.');
             }
-        }
+    }
 
         function handleSuggestionClick(suggestion) {
             document.getElementById('searchBox').value = suggestion;
