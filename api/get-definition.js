@@ -1,4 +1,3 @@
-
 const fetch = require('node-fetch');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -24,7 +23,15 @@ module.exports = async (req, res) => {
             })
         });
         const data = await response.json();
-        res.status(200).json(data.candidates[0].output);
+
+        // Log the full response for debugging
+        console.log('Gemini API Response:', data);
+
+        if (data && data.candidates && data.candidates.length > 0) {
+            res.status(200).json({ output: data.candidates[0].output });
+        } else {
+            res.status(200).json({ error: 'No valid response from Gemini API.' });
+        }
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Error fetching response from Gemini API." });
