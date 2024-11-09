@@ -22,12 +22,9 @@ module.exports = async (req, res) => {
                 maxOutputTokens: 100
             })
         });
+
         const data = await response.json();
-
-        // Log the full response for debugging
-        console.log('Gemini API Response:', data);
-
-        if (data && data.candidates && data.candidates.length > 0) {
+        if (data.candidates && data.candidates.length > 0) {
             res.status(200).json({ output: data.candidates[0].output });
         } else {
             res.status(200).json({ error: 'No valid response from Gemini API.' });
