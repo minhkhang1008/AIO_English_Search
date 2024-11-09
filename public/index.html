@@ -79,14 +79,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ input: input })
                 });
-                const answer = await response.json();
+                const data = await response.json();
             
-                // Check if the response has the `output` property and display it
-                if (answer && typeof answer === 'string') {
+                // Check if the response contains the 'output' field
+                if (data.output) {
                     const listItem = document.createElement('li');
                     listItem.classList.add('suggestion-item');
-                    listItem.innerText = answer; // Display the text response
+                    listItem.innerText = data.output; // Display the actual text response
                     responseContainer.appendChild(listItem);
+                } else if (data.error) {
+                    alert(data.error);
                 } else {
                     alert('Unexpected response format from Gemini API.');
                 }
@@ -94,7 +96,8 @@
                 console.error('Error:', error);
                 alert('Failed to get response from Gemini API.');
             }
-        }
+    }
+
 
 
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
