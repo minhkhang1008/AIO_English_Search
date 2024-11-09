@@ -1,12 +1,13 @@
 {
-    "name": "aio-english",
-    "version": "1.0.0",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "dependencies": {
-      "express": "^4.x",
-      "node-fetch": "^2.x"
-    }
+  "name": "aio-english",
+  "version": "1.0.0",
+  "type": "module", 
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.x",
+    "node-fetch": "^2.x",
+    "dotenv": "^10.x"
   }
-  
+}

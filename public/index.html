@@ -29,14 +29,14 @@
     <script>
         let words = [];
         let lastInput = '';
-
+    
         // Load words from the words.txt file
         fetch('words.txt')
             .then(response => response.text())
             .then(text => {
                 words = text.split('\n').map(word => word.trim());
             });
-
+    
         function convertTelexToEnglish(text) {
             const mapping = {
                 'ả': 'ar', 'ẻ': 'er', 'ủ': 'ur', 'ỉ': 'ir', 'ỏ': 'or',
@@ -45,10 +45,10 @@
                 'è': 'ef', 'ý': 'yf', 'ù': 'uf', 'ò': 'of', 'à': 'af',
                 'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax'
             };
-
+    
             return text.split('').map(char => mapping[char] || char).join('');
         }
-
+    
         document.getElementById('searchBox').addEventListener('input', function(event) {
             let input = event.target.value.trim().toLowerCase();
             let convertedInput = convertTelexToEnglish(input);
@@ -68,11 +68,11 @@
             
             lastInput = convertedInput;
         });
-
+    
         async function fetchDefinition(input) {
             const responseContainer = document.getElementById('suggestionList');
             responseContainer.innerHTML = ''; // Clear previous responses
-
+    
             try {
                 const response = await fetch('/api/get-definition', {
                     method: 'POST',
@@ -96,19 +96,17 @@
                 console.error('Error:', error);
                 alert('Failed to get response from Gemini API.');
             }
-    }
-
-
-
+        }
+    
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 let input = event.target.value.trim().toLowerCase();
-
+    
                 if (event.shiftKey) {
                     // Shift + Enter: Call the Gemini API for a definition
                     if (input) {
-                        fetchDefinition(input);
+                        fetchDefinition(input); // Call the Gemini API function
                     }
                 } else {
                     // Enter: Perform the redirection or show options
@@ -118,8 +116,7 @@
                 }
             }
         });
-
-
+    
         function handleSuggestionClick(suggestion) {
             document.getElementById('searchBox').value = suggestion;
             performAction(suggestion);
@@ -127,15 +124,15 @@
                 document.getElementById('suggestionList').innerHTML = '';
             }, 100);
         }
-
+    
         function performAction(input) {
             let wordCount = input.split(/\s+/).length;
             let buttonContainer = document.getElementById('buttonContainer');
             let container = document.querySelector('.container');
-
+    
             buttonContainer.innerHTML = ''; // Clear previous buttons
             container.classList.remove('buttons-visible');
-
+    
             if (wordCount >= 2) {
                 let phrasalVerbBtn = document.createElement('button');
                 phrasalVerbBtn.classList.add('action-button', 'fade-in');
@@ -144,7 +141,7 @@
                     clearButtons();
                     openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
                 };
-
+    
                 let googleTranslateBtn = document.createElement('button');
                 googleTranslateBtn.classList.add('action-button', 'fade-in');
                 googleTranslateBtn.onclick = function () {
@@ -152,7 +149,7 @@
                     clearButtons();
                     openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
                 };
-
+    
                 let googleSearchBtn = document.createElement('button');
                 googleSearchBtn.classList.add('action-button', 'fade-in');
                 googleSearchBtn.onclick = function () {
@@ -160,7 +157,7 @@
                     clearButtons();
                     openUrl(`https://www.google.com/search?q=${urlSafeText}`);
                 };
-
+    
                 buttonContainer.appendChild(phrasalVerbBtn);
                 buttonContainer.appendChild(googleTranslateBtn);
                 buttonContainer.appendChild(googleSearchBtn);
@@ -170,12 +167,12 @@
                 openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
             }
         }
-
+    
         function clearButtons() {
             document.getElementById('buttonContainer').innerHTML = '';
             document.getElementById('searchBox').value = '';
         }
-
+    
         function openUrl(url) {
             if (window.innerWidth <= 800) {
                 window.location.href = url;
@@ -183,12 +180,13 @@
                 window.open(url, '_blank');
             }
         }
-
+    
         function highlightMatch(word, query) {
             let regex = new RegExp(`(${query})`, 'gi');
             return word.replace(regex, '<span class="highlight">$1</span>');
         }
     </script>
+    
 </body>
 
 </html>
