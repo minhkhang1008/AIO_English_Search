@@ -80,17 +80,22 @@
                     body: JSON.stringify({ input: input })
                 });
                 const answer = await response.json();
-
-                // Display Gemini's response
-                const listItem = document.createElement('li');
-                listItem.classList.add('suggestion-item');
-                listItem.innerText = answer;
-                responseContainer.appendChild(listItem);
+            
+                // Check if the response has the `output` property and display it
+                if (answer && typeof answer === 'string') {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('suggestion-item');
+                    listItem.innerText = answer; // Display the text response
+                    responseContainer.appendChild(listItem);
+                } else {
+                    alert('Unexpected response format from Gemini API.');
+                }
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to get response from Gemini API.');
             }
         }
+
 
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
