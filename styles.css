@@ -9,9 +9,139 @@
     }
 }
 
-/* Apply the animation to the buttons */
+.close-icon {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.close-icon:hover {
+    color: #ff0000; /* Change color on hover */
+}
+
+/* Styling specifically for the Quick Search button */
+#quickSearchButton {
+    position: relative;
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    font-size: 2em;
+    font-family: "Arial";
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+    --text-stroke-color: rgba(255, 255, 255, 0.6);
+    --animation-color: #37FF8B;
+  }
+  
+  /* Actual text styling */
+  #quickSearchButton .actual-text {
+    position: relative;
+  }
+  
+  /* Hover text styling */
+  #quickSearchButton .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: 6px solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+  }
+  
+  /* Hover effect */
+  #quickSearchButton:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 23px var(--animation-color));
+  }
+  
+
+
+#definitionResult {
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #333;
+    font-size: 16px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.definition-container {
+    position: relative;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #333;
+    font-size: 16px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 0; /* Initially collapsed */
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.3s ease;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.button {
+    margin: 0;
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #2575fc;
+    color: #fff;
+}
+
+
 .fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.expand {
+    opacity: 1;
+    max-height: 800px; /* Adjust based on your content */
+    visibility: visible;
+    transform: scale(1);
+    transition: max-height 0.7s ease, opacity 0.7s ease, transform 0.5s ease;
 }
 
 body {
@@ -30,6 +160,10 @@ body {
     background-color: #ffeb3b;
     color: black;
     font-weight: bold;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Suggestion list */
@@ -182,6 +316,11 @@ p {
 .credit {
     margin-top: 5px; /* Adjusted margin to fit on separate line */
     font-size: 12px;
+}
+
+.credits-container {
+    opacity: 1;
+    transition: opacity 0.5s, visibility 0.5s;
 }
 
 .contribute {
