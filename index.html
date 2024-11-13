@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All in One</title>
+    <title>All in One English</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
         <h1>All in One English</h1>
         <p>Type a word or phrase and press Enter</p>
         
-        <!-- Combined input and button into one container -->
+        <!-- Input and Quick Search Button -->
         <div class="input-container">
             <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
             <button class="button" data-text="Quick Search" id="quickSearchButton">
@@ -35,11 +32,13 @@
             <div class="credit">Made by: Nguyen Hoang Minh Khang</div>
         </div>
         <div id="definitionContainer" class="definition-container hidden">
-            <span id="closeIcon" class="close-icon">&times;</span>
+            <!-- Close icon and content will be added dynamically -->
         </div>
+    </div>
+
     <script>
         let words = [];
-        let lastInput = '';
+        let currentSuggestionIndex = -1;
 
         // Load words from the words.txt file
         fetch('words.txt')
@@ -48,84 +47,102 @@
                 words = text.split('\n').map(word => word.trim());
             });
 
-        function convertTelexToEnglish(text) {
-            const mapping = {
-                'ả': 'ar', 'ẻ': 'er', 'ủ': 'ur', 'ỉ': 'ir', 'ỏ': 'or',
-                'é': 'es', 'ý': 'ys', 'ú': 'us', 'í': 'is', 'ó': 'os', 'á': 'as',
-                'ẹ': 'ej', 'y': 'yj', 'ụ': 'uj', 'ị': 'ij', 'ọ': 'oj', 'ạ': 'aj',
-                'è': 'ef', 'ý': 'yf', 'ù': 'uf', 'ò': 'of', 'à': 'af',
-                'ẽ': 'ex', 'ỹ': 'yx', 'ũ': 'ux', 'ĩ': 'ix', 'õ': 'ox', 'ã': 'ax'
-            };
-            return text.split('').map(char => mapping[char] || char).join('');
-        }
-
+        // Input event listener
         document.getElementById('searchBox').addEventListener('input', function(event) {
             let input = event.target.value.trim().toLowerCase();
-            let creditsContainer = document.getElementById('creditsContainer');
-            let definitionContainer = document.getElementById('definitionContainer');
+            let suggestionList = document.getElementById('suggestionList');
+
+            suggestionList.innerHTML = '';
+            currentSuggestionIndex = -1; // Reset index when typing
+
             if (input) {
-                creditsContainer.classList.add('fade-out');
-                setTimeout(() => {
-                    creditsContainer.classList.add('hidden');
-                    creditsContainer.classList.remove('fade-out');
-                    definitionContainer.classList.remove('hidden');
-                    definitionContainer.classList.add('fade-in');
-                }, 500);
-            } else {
-                definitionContainer.classList.remove('fade-in');
-                definitionContainer.classList.add('fade-out');
-                setTimeout(() => {
-                    definitionContainer.classList.add('hidden');
-                    creditsContainer.classList.remove('hidden');
-                    creditsContainer.classList.add('fade-in');
-                }, 500);
+                // Filter words that start with the input
+                let filteredWords = words.filter(word => word.toLowerCase().startsWith(input));
+                filteredWords.forEach(word => {
+                    let li = document.createElement('li');
+                    li.innerHTML = highlightMatch(word, input);
+                    li.addEventListener('click', function() {
+                        handleSuggestionClick(word);
+                    });
+                    suggestionList.appendChild(li);
+                });
             }
         });
+
+        // Keydown event listener for navigation
+        document.getElementById('searchBox').addEventListener('keydown', function(event) {
+            let suggestionList = document.getElementById('suggestionList');
+            let suggestions = suggestionList.getElementsByTagName('li');
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                currentSuggestionIndex++;
+                if (currentSuggestionIndex >= suggestions.length) {
+                    currentSuggestionIndex = 0;
+                }
+                updateSuggestionHighlight(suggestions);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                currentSuggestionIndex--;
+                if (currentSuggestionIndex < 0) {
+                    currentSuggestionIndex = suggestions.length - 1;
+                }
+                updateSuggestionHighlight(suggestions);
+            } else if (event.key === 'Enter') {
+                if (currentSuggestionIndex > -1 && suggestions[currentSuggestionIndex]) {
+                    event.preventDefault();
+                    suggestions[currentSuggestionIndex].click();
+                    currentSuggestionIndex = -1;
+                }
+            } else {
+                // Reset index on other keys
+                currentSuggestionIndex = -1;
+            }
+        });
+
+        function updateSuggestionHighlight(suggestions) {
+            for (let i = 0; i < suggestions.length; i++) {
+                suggestions[i].classList.remove('active');
+            }
+            if (currentSuggestionIndex > -1 && suggestions[currentSuggestionIndex]) {
+                suggestions[currentSuggestionIndex].classList.add('active');
+                // Update the input value to reflect the current selection
+                document.getElementById('searchBox').value = suggestions[currentSuggestionIndex].textContent;
+            }
+        }
 
         document.getElementById('quickSearchButton').addEventListener('click', function () {
             const input = document.getElementById('searchBox').value.trim().toLowerCase();
             if (input) {
                 fetchDefinition(input);
+                // Clear the suggestion list
+                document.getElementById('suggestionList').innerHTML = '';
+                currentSuggestionIndex = -1;
             }
         });
 
         document.getElementById('searchBox').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault();
                 let input = event.target.value.trim().toLowerCase();
-
-                if (event.shiftKey) {
-                    if (input) {
-                        fetchDefinition(input);
-                    }
-                } else {
-                    if (input) {
-                        performAction(input);
+                if (currentSuggestionIndex === -1) {
+                    event.preventDefault();
+                    if (event.shiftKey) {
+                        if (input) {
+                            fetchDefinition(input);
+                        }
+                    } else {
+                        if (input) {
+                            performAction(input);
+                        }
                     }
                 }
             }
         });
 
-        document.getElementById('searchBox').addEventListener('input', function () {
-            const definitionContainer = document.getElementById('definitionContainer');
-            const creditsContainer = document.getElementById('creditsContainer');
-            if (!this.value.trim()) {
-                definitionContainer.classList.remove('expand');
-                definitionContainer.classList.add('fade-out');
-                setTimeout(() => {
-                    definitionContainer.classList.add('hidden');
-                    creditsContainer.classList.remove('hidden');
-                    creditsContainer.classList.add('fade-in');
-                }, 500);
-            }
-        });
-
         function handleSuggestionClick(suggestion) {
             document.getElementById('searchBox').value = suggestion;
-            performAction(suggestion);
-            setTimeout(() => {
-                document.getElementById('suggestionList').innerHTML = '';
-            }, 100);
+            document.getElementById('suggestionList').innerHTML = '';
+            currentSuggestionIndex = -1;
         }
 
         function performAction(input) {
@@ -136,9 +153,18 @@
             buttonContainer.innerHTML = '';
             container.classList.remove('buttons-visible');
 
+            // Hide credits when an action is performed
+            const creditsContainer = document.getElementById('creditsContainer');
+            creditsContainer.classList.add('fade-out');
+            setTimeout(() => {
+                creditsContainer.classList.add('hidden');
+                creditsContainer.classList.remove('fade-out');
+            }, 500);
+
             if (wordCount >= 2) {
                 let phrasalVerbBtn = document.createElement('button');
                 phrasalVerbBtn.classList.add('action-button', 'fade-in');
+                phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="Phrasal Verb Icon" class="icon"> Phrasal Verb';
                 phrasalVerbBtn.onclick = function () {
                     let urlSafeWord = input.replace(/\s+/g, '-');
                     clearButtons();
@@ -147,16 +173,18 @@
 
                 let googleTranslateBtn = document.createElement('button');
                 googleTranslateBtn.classList.add('action-button', 'fade-in');
+                googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Translate Icon" class="icon"> Translate';
                 googleTranslateBtn.onclick = function () {
-                    let urlSafeText = input.replace(/\s+/g, '%20');
+                    let urlSafeText = encodeURIComponent(input);
                     clearButtons();
                     openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
                 };
 
                 let googleSearchBtn = document.createElement('button');
                 googleSearchBtn.classList.add('action-button', 'fade-in');
+                googleSearchBtn.innerHTML = '<img src="google.png" alt="Google Search Icon" class="icon"> Google Search';
                 googleSearchBtn.onclick = function () {
-                    let urlSafeText = input.replace(/\s+/g, '+');
+                    let urlSafeText = encodeURIComponent(input);
                     clearButtons();
                     openUrl(`https://www.google.com/search?q=${urlSafeText}`);
                 };
@@ -192,22 +220,20 @@
         async function fetchDefinition(input) {
             const definitionContainer = document.getElementById('definitionContainer');
             const creditsContainer = document.getElementById('creditsContainer');
-            definitionContainer.innerHTML = '<span id="closeIcon" class="close-icon">&times;</span>';
             definitionContainer.innerHTML = ''; // Clear previous responses
-    
             try {
                 const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
                 const data = await response.json();
-            
                 if (Array.isArray(data) && data.length > 0) {
+                    // Hide credits when definition is fetched
                     creditsContainer.classList.add('fade-out');
                     setTimeout(() => {
                         creditsContainer.classList.add('hidden');
-                        definitionContainer.classList.remove('hidden');
-                        definitionContainer.classList.add('expand');
+                        creditsContainer.classList.remove('fade-out');
                     }, 500);
-                
-                    let content = `<h2>Definition of "${input}"</h2>`;
+
+                    let content = '<span id="closeIcon" class="close-icon">&times;</span>';
+                    content += `<h2>Definition of "${input}"</h2>`;
                     data[0].meanings.forEach(meaning => {
                         content += `<h3>${meaning.partOfSpeech}</h3>`;
                         meaning.definitions.forEach((def, index) => {
@@ -218,6 +244,27 @@
                         });
                     });
                     definitionContainer.innerHTML = content;
+
+                    // Remove 'hidden' class
+                    definitionContainer.classList.remove('hidden');
+                    // Force reflow
+                    void definitionContainer.offsetWidth;
+                    // Add 'expand' class
+                    definitionContainer.classList.add('expand');
+
+                    document.getElementById('closeIcon').addEventListener('click', function() {
+                        // Remove 'expand' class
+                        definitionContainer.classList.remove('expand');
+                        // Force reflow
+                        void definitionContainer.offsetWidth;
+                        // Add 'hidden' class
+                        definitionContainer.classList.add('hidden');
+
+                        setTimeout(() => {
+                            creditsContainer.classList.remove('hidden');
+                            creditsContainer.classList.add('fade-in');
+                        }, 500);
+                    });
                 } else {
                     alert('No definition found for this word.');
                 }
@@ -227,7 +274,5 @@
             }
         }
     </script>
-    </div>
 </body>
-
 </html>
