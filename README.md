@@ -6,4 +6,4 @@
       + It uses Free Dictionary api to quickly gives you the definition, example,etc of the word or phrase you typed in
 
 # Bug
-- Alongside with Quick Search function added, the suggestion is being overlapped, I am trying to fix it
+- It is extremely lagging since there are many works running after each other, sometimes it will even take roughly 3s to load, which is significantly slow, I will try to optimize it
