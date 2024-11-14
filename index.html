@@ -41,7 +41,7 @@
         let currentSuggestionIndex = -1;
 
         // Load words from the words.txt file
-        fetch('words.txt')
+        fetch('words_alpha.txt')
             .then(response => response.text())
             .then(text => {
                 words = text.split('\n').map(word => word.trim());
