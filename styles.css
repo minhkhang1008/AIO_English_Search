@@ -1,4 +1,4 @@
-/* General Styles */
+/* Global Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
@@ -10,20 +10,25 @@ body {
     color: #fff;
 }
 
+/* Container Styles */
 .container {
+    position: relative;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.1);
-    padding: 40px 20px;
-    padding-bottom: 20px;
+    padding: 20px 20px;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     max-width: 90%;
     width: 100%;
     max-width: 500px;
     margin: 0 20px;
-    margin-bottom: 0;
 }
 
+.container.buttons-visible {
+    padding-bottom: 40px;
+}
+
+/* Header and Paragraph Styles */
 h1 {
     font-size: 2.5em;
 }
@@ -32,12 +37,13 @@ p {
     font-size: 1.2em;
 }
 
-/* Input and Button Styles */
+/* Input Container Styles */
 .input-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
 #searchBox {
@@ -49,8 +55,6 @@ p {
     font-size: 18px;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
-    position: relative;
-    z-index: 1;
     margin: 0 auto;
 }
 
@@ -59,7 +63,7 @@ p {
     box-shadow: 0 0 10px #ffeb3b;
 }
 
-/* Quick Search Button Animation */
+/* Quick Search Button Styles */
 #quickSearchButton {
     position: relative;
     margin: 0;
@@ -100,23 +104,23 @@ p {
     filter: drop-shadow(0 0 23px var(--animation-color));
 }
 
-/* Suggestion List Styles */
 .suggestion-list {
     list-style-type: none;
     padding: 0;
-    margin: 5px auto 0;
-    max-height: 200px;
+    margin: 10px auto 0;
+    max-height: 250px;
     overflow-y: auto;
-    background-color: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(to bottom, #ffffff, #e0e0e0);
     border-radius: 10px;
-    width: 80%;
+    width: 90%;
     max-width: 400px;
     color: #333;
     position: absolute;
     z-index: 1000;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
 }
 
 .suggestion-list li {
@@ -124,24 +128,61 @@ p {
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.suggestion-list li:not(:last-child) {
+    border-bottom: 1px solid #ddd;
 }
 
 .suggestion-list li:hover,
 .suggestion-list li.active {
-    background-color: #6a11cb;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
     color: #fff;
 }
 
+.suggestion-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background-color: #6a11cb;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.suggestion-list li:hover::before,
+.suggestion-list li.active::before {
+    transform: scaleY(1);
+}
+
+.suggestion-list li .icon {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.suggestion-list li .suggestion-text {
+    flex-grow: 1;
+}
+
+/* Highlighted Text Styles */
 .highlight {
     background-color: #ffeb3b;
     color: black;
     font-weight: bold;
 }
 
-/* Definition Container */
+/* Definition Container Styles */
 .definition-container {
-    position: relative;
-    margin-top: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 20px;
@@ -167,12 +208,11 @@ p {
     transition: opacity 0.7s ease, max-height 0.7s ease, transform 0.5s ease;
 }
 
-.hidden {
-    opacity: 0;
-    visibility: hidden;
+.definition-container.hidden {
+    display: none; /* Ensure it doesn't take up space when hidden */
 }
 
-/* Close Icon */
+/* Close Icon Styles */
 .close-icon {
     position: absolute;
     top: 10px;
@@ -187,14 +227,28 @@ p {
     color: #ff0000;
 }
 
-/* Button Container */
+/* Button Container Styles */
 .button-container {
     margin-top: 20px;
     display: flex;
     justify-content: center;
     gap: 20px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease, max-height 0.5s ease;
 }
 
+.button-container.visible {
+    opacity: 1;
+    max-height: 200px; /* Adjust as needed */
+}
+
+.button-container.hidden {
+    display: none; /* Ensure it doesn't take up space when hidden */
+}
+
+/* Action Button Styles */
 .action-button {
     padding: 15px 30px;
     font-size: 16px;
@@ -204,10 +258,15 @@ p {
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
     display: flex;
     align-items: center;
     gap: 10px;
+    transform: translateY(20px);
+    transition: transform 0.5s ease;
+}
+
+.action-button.show {
+    transform: translateY(0);
 }
 
 .action-button .icon {
@@ -225,24 +284,25 @@ p {
     transform: translateY(2px);
 }
 
-.container.buttons-visible {
-    padding-bottom: 40px;
-}
-
-/* Credits Container */
+/* Credits Container Styles */
 .credits-container {
-    opacity: 1;
-    transition: opacity 0.5s, visibility 0.5s;
+    position: relative;
+    z-index: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .update-time {
-    margin-top: 10px;
+    margin-bottom: 5px;
     font-size: 14px;
 }
 
 .update-time a {
     color: #ffeb3b;
     text-decoration: none;
+    margin-bottom: 5px;
 }
 
 .credit {
@@ -250,6 +310,7 @@ p {
     font-size: 12px;
 }
 
+/* Link Styling */
 .contribute {
     display: block;
     color: #b2ff59;
