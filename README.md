@@ -4,6 +4,8 @@
 # Updates
 - Quick Search function
       + It uses Free Dictionary api to quickly gives you the definition, example,etc of the word or phrase you typed in
+- Fix bug:
+      + Slowness of suggestion function is fixed, you will no more experience lagging in the website
 
-# Bug
-- It is extremely lagging since there are many works running after each other, sometimes it will even take roughly 3s to load, which is significantly slow, I will try to optimize it
+# Currently working on
+- Improve design of the website, starting from showing suggestion
