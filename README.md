@@ -1,6 +1,3 @@
-# **No I didn't drop It**
-- I thought I would have dropped it but since I made such great progress in my study, this project is alive again 🥳
-
 # Updates
 - Quick Search function
       + It uses Free Dictionary api to quickly gives you the definition, example,etc of the word or phrase you typed in
@@ -9,3 +6,6 @@
 
 # Currently working on
 - Improve design of the website, starting from showing suggestion
+
+## Notes
+- This is just a small project I do as a hobby to satisfy myself, I put my effort in it but I do not certainly focus on it since I have school work to do
