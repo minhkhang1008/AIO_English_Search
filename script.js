@@ -47,7 +47,45 @@ document.getElementById('searchBox').addEventListener('input', debounce(function
     } else {
         document.getElementById('suggestionList').innerHTML = '';
     }
-}, 200)); 
+}, 200));
+
+document.getElementById('searchBox').addEventListener('keydown', function (event) {
+    let suggestionList = document.getElementById('suggestionList');
+    let suggestions = suggestionList.getElementsByTagName('li');
+
+    if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        currentSuggestionIndex++;
+        if (currentSuggestionIndex >= suggestions.length) {
+            currentSuggestionIndex = 0;
+        }
+        updateSuggestionHighlight(suggestions);
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        currentSuggestionIndex--;
+        if (currentSuggestionIndex < 0) {
+            currentSuggestionIndex = suggestions.length - 1;
+        }
+        updateSuggestionHighlight(suggestions);
+    } else if (event.key === 'Enter') {
+        if (currentSuggestionIndex > -1 && suggestions[currentSuggestionIndex]) {
+            event.preventDefault();
+            suggestions[currentSuggestionIndex].click();
+            currentSuggestionIndex = -1;
+        } else {
+            let input = event.target.value.trim().toLowerCase();
+            if (input) {
+                if (event.shiftKey) {
+                    fetchDefinition(input);
+                } else {
+                    performAction(input);
+                }
+            }
+        }
+    } else {
+        currentSuggestionIndex = -1;
+    }
+});
 
 document.getElementById('quickSearchButton').addEventListener('click', function () {
     const input = document.getElementById('searchBox').value.trim().toLowerCase();
@@ -60,7 +98,7 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
-    definitionContainer.innerHTML = ''; // Clear previous responses
+    definitionContainer.innerHTML = '';
     try {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
         const data = await response.json();
@@ -77,17 +115,16 @@ async function fetchDefinition(input) {
                 });
             });
             definitionContainer.innerHTML = content;
-        
-            // Display with animation
+
             definitionContainer.classList.remove('hidden');
             void definitionContainer.offsetWidth;
             definitionContainer.classList.add('expand');
-        
-            document.getElementById('closeIcon').addEventListener('click', function() {
+
+            document.getElementById('closeIcon').addEventListener('click', function () {
                 definitionContainer.classList.remove('expand');
                 setTimeout(() => {
                     definitionContainer.classList.add('hidden');
-                }, 500); // Delay to allow animation to complete
+                }, 500);
             });
         } else {
             alert('No definition found for this word.');
@@ -108,3 +145,96 @@ function handleSuggestionClick(suggestion) {
     document.getElementById('suggestionList').innerHTML = '';
     currentSuggestionIndex = -1;
 }
+
+function performAction(input) {
+    let wordCount = input.split(/\s+/).length;
+    let buttonContainer = document.getElementById('buttonContainer');
+    let container = document.querySelector('.container');
+
+    buttonContainer.innerHTML = '';
+    buttonContainer.classList.remove('visible');
+    buttonContainer.classList.add('hidden');
+    container.classList.remove('buttons-visible');
+
+    if (wordCount >= 2) {
+        buttonContainer.classList.remove('hidden');
+
+        let phrasalVerbBtn = document.createElement('button');
+        phrasalVerbBtn.classList.add('action-button');
+        phrasalVerbBtn.innerHTML = '<img src="VJ.png" alt="Phrasal Verb Icon" class="icon"> Phrasal Verb';
+        phrasalVerbBtn.onclick = function () {
+            let urlSafeWord = input.replace(/\s+/g, '-');
+            clearButtons();
+            openUrl(`https://vietjack.com/cum-dong-tu/${urlSafeWord}.jsp`);
+        };
+
+        let googleTranslateBtn = document.createElement('button');
+        googleTranslateBtn.classList.add('action-button');
+        googleTranslateBtn.innerHTML = '<img src="ggtrans.png" alt="Translate Icon" class="icon"> Translate';
+        googleTranslateBtn.onclick = function () {
+            let urlSafeText = encodeURIComponent(input);
+            clearButtons();
+            openUrl(`https://translate.google.com/?sl=en&tl=vi&text=${urlSafeText}&op=translate`);
+        };
+
+        let googleSearchBtn = document.createElement('button');
+        googleSearchBtn.classList.add('action-button');
+        googleSearchBtn.innerHTML = '<img src="google.png" alt="Google Search Icon" class="icon"> Google Search';
+        googleSearchBtn.onclick = function () {
+            let urlSafeText = encodeURIComponent(input);
+            clearButtons();
+            openUrl(`https://www.google.com/search?q=${urlSafeText}`);
+        };
+
+        buttonContainer.appendChild(phrasalVerbBtn);
+        buttonContainer.appendChild(googleTranslateBtn);
+        buttonContainer.appendChild(googleSearchBtn);
+        container.classList.add('buttons-visible');
+
+        setTimeout(() => {
+            buttonContainer.classList.add('visible');
+            phrasalVerbBtn.classList.add('show');
+            googleTranslateBtn.classList.add('show');
+            googleSearchBtn.classList.add('show');
+        }, 50);
+    } else if (wordCount === 1) {
+        let urlSafeWord = input.replace(/\s+/g, '-');
+        openUrl(`https://dictionary.cambridge.org/dictionary/english/${urlSafeWord}`);
+    }
+}
+
+function updateSuggestionHighlight(suggestions) {
+    for (let i = 0; i < suggestions.length; i++) {
+        suggestions[i].classList.remove('active');
+    }
+    if (currentSuggestionIndex > -1 && suggestions[currentSuggestionIndex]) {
+        suggestions[currentSuggestionIndex].classList.add('active');
+        document.getElementById('searchBox').value = suggestions[currentSuggestionIndex].textContent;
+    }
+}
+
+function clearButtons() {
+    let buttonContainer = document.getElementById('buttonContainer');
+    let buttons = buttonContainer.querySelectorAll('.action-button');
+    buttons.forEach(button => {
+        button.classList.remove('show');
+    });
+    buttonContainer.classList.remove('visible');
+    buttonContainer.classList.add('hidden');
+    setTimeout(() => {
+        buttonContainer.innerHTML = '';
+        document.getElementById('searchBox').value = '';
+    }, 500);
+}
+
+function openUrl(url) {
+    if (window.innerWidth <= 800) {
+        window.location.href = url;
+    } else {
+        window.open(url, '_blank');
+    }
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000); 
+}
+

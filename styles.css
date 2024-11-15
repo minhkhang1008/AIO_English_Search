@@ -249,40 +249,40 @@ p {
 
 
 .action-button {
-    padding: 15px 30px;
-    font-size: 16px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: bold;
     color: #fff;
     background-color: #6a11cb;
     border: none;
-    border-radius: 30px;
+    border-radius: 25px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     transform: translateY(20px);
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .action-button.show {
     transform: translateY(0);
+    animation: fadeIn 0.5s ease-out;
 }
 
 .action-button .icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
+    width: 18px;
+    height: 18px;
 }
 
 .action-button:hover {
     background-color: #2575fc;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .action-button:active {
     transform: translateY(2px);
 }
-
 
 .credits-container {
     position: relative;
@@ -318,6 +318,17 @@ p {
 
 .contribute:hover {
     text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
