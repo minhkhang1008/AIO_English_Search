@@ -111,47 +111,37 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
-        const data = await response.json();
-
-        if (Array.isArray(data) && data.length > 0) {
-            displayDefinitionContent(data, input);
-        } else if (input.split(/\s+/).length >= 2) {
-            const phraseInput = input.replace(/\s+/g, '+');
-            const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${phraseInput}`);
-            const phraseData = await phraseResponse.json();
-            
-            // Debugging: Log the full response
-            console.log('Full API response:', phraseData);
-
-            if (phraseData.results && phraseData.results.result) {
-                console.log('Valid result found:', phraseData.results.result);
-                const result = phraseData.results.result;
-                let content = '<span id="closeIcon" class="close-icon">&times;</span>';
-                content += `<h2>Definition of "${result.term}"</h2>`;
-                content += `<p>${result.explanation}</p>`;
-
-                if (result.example) {
-                    content += `<p><em>Example: ${result.example}</em></p>`;
-                }
-
-                definitionContainer.innerHTML = content;
-                definitionContainer.classList.remove('hidden');
-                definitionContainer.classList.add('expand');
-
-                document.getElementById('closeIcon').addEventListener('click', function () {
-                    definitionContainer.classList.remove('expand');
-                    definitionContainer.classList.add('contract');
-                    setTimeout(() => {
-                        definitionContainer.classList.add('hidden');
-                        definitionContainer.classList.remove('contract');
-                    }, 1000);
-                });
-            } else {
-                console.warn('No valid data in the response:', phraseData);
-                alert('No definition found for this word.');
+        const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${phraseInput}`);
+        const phraseData = await phraseResponse.json();
+        
+        // Debugging: Log the full response
+        console.log('Full API response:', phraseData);
+    
+        if (phraseData.result) { // Updated condition
+            console.log('Valid result found:', phraseData.result);
+            const result = phraseData.result;
+            let content = '<span id="closeIcon" class="close-icon">&times;</span>';
+            content += `<h2>Definition of "${result.term}"</h2>`;
+            content += `<p>${result.explanation}</p>`;
+    
+            if (result.example) {
+                content += `<p><em>Example: ${result.example}</em></p>`;
             }
+    
+            definitionContainer.innerHTML = content;
+            definitionContainer.classList.remove('hidden');
+            definitionContainer.classList.add('expand');
+    
+            document.getElementById('closeIcon').addEventListener('click', function () {
+                definitionContainer.classList.remove('expand');
+                definitionContainer.classList.add('contract');
+                setTimeout(() => {
+                    definitionContainer.classList.add('hidden');
+                    definitionContainer.classList.remove('contract');
+                }, 1000);
+            });
         } else {
+            console.warn('No valid data in the response:', phraseData);
             alert('No definition found for this word.');
         }
     } catch (error) {
