@@ -104,86 +104,50 @@ async function fetchDefinition(input) {
     if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
         definitionContainer.classList.remove('expand');
         definitionContainer.classList.add('contract');
-
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     definitionContainer.classList.remove('contract');
-    definitionContainer.innerHTML = ''; 
+    definitionContainer.innerHTML = '';
 
     try {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
-            let content = '<span id="closeIcon" class="close-icon">&times;</span>';
-            content += `<h2>Definition of "${input}"</h2>`;
+            // Existing logic to display definitions
+            displayDefinitionContent(data, input);
+        } else if (input.split(/\s+/).length >= 2) {
+            // If multiple words, call the serverless function
+            const phraseInput = input.replace(/\s+/g, '+');
+            const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${phraseInput}`);
+            const phraseData = await phraseResponse.json();
 
-            data.forEach((entry, entryIndex) => {
-                if (entry.word && entry.word.toLowerCase() !== input.toLowerCase()) {
-                    content += `<h3>Variant: ${entry.word}</h3>`;
+            if (phraseData.results && phraseData.results.result) {
+                const result = phraseData.results.result;
+                let content = '<span id="closeIcon" class="close-icon">&times;</span>';
+                content += `<h2>Definition of "${result.term}"</h2>`;
+                content += `<p>${result.explanation}</p>`;
+
+                if (result.example) {
+                    content += `<p><em>Example: ${result.example}</em></p>`;
                 }
 
-                entry.phonetics.forEach((phonetic) => {
-                    if (phonetic.text) {
-                        content += `<p><strong>Phonetic:</strong> ${phonetic.text}</p>`;
-                    }
-                    if (phonetic.audio) {
-                        let label = getPronunciationLabel(phonetic);
-                        content += `
-                            <button onclick="playAudio('${phonetic.audio}')" class="audio-button">
-                                🔊 ${label}
-                            </button>
-                        `;
-                    }
+                definitionContainer.innerHTML = content;
+                definitionContainer.classList.remove('hidden');
+                definitionContainer.classList.add('expand');
+
+                document.getElementById('closeIcon').addEventListener('click', function () {
+                    definitionContainer.classList.remove('expand');
+                    definitionContainer.classList.add('contract');
+                    setTimeout(() => {
+                        definitionContainer.classList.add('hidden');
+                        definitionContainer.classList.remove('contract');
+                    }, 1000);
                 });
-
-                if (entry.origin) {
-                    content += `<p><strong>Origin:</strong> ${entry.origin}</p>`;
-                }
-
-                entry.meanings.forEach(meaning => {
-                    content += `<h3>${meaning.partOfSpeech}</h3>`;
-
-                    if (meaning.synonyms && meaning.synonyms.length > 0) {
-                        content += `<p><strong>Synonyms:</strong> ${meaning.synonyms.join(', ')}</p>`;
-                    }
-                    if (meaning.antonyms && meaning.antonyms.length > 0) {
-                        content += `<p><strong>Antonyms:</strong> ${meaning.antonyms.join(', ')}</p>`;
-                    }
-
-                    meaning.definitions.forEach((def, defIndex) => {
-                        content += `<p>${defIndex + 1}. ${def.definition}</p>`;
-                        if (def.example) {
-                            content += `<p><em>Example: ${def.example}</em></p>`;
-                        }
-                        if (def.synonyms && def.synonyms.length > 0) {
-                            content += `<p><strong>Synonyms:</strong> ${def.synonyms.join(', ')}</p>`;
-                        }
-                        if (def.antonyms && def.antonyms.length > 0) {
-                            content += `<p><strong>Antonyms:</strong> ${def.antonyms.join(', ')}</p>`;
-                        }
-                    });
-                });
-
-                if (data.length > 1 && entryIndex < data.length - 1) {
-                    content += '<hr>';
-                }
-            });
-
-            definitionContainer.innerHTML = content;
-            definitionContainer.classList.remove('hidden');
-            definitionContainer.classList.add('expand');
-
-            document.getElementById('closeIcon').addEventListener('click', function () {
-                definitionContainer.classList.remove('expand');
-                definitionContainer.classList.add('contract');
-                setTimeout(() => {
-                    definitionContainer.classList.add('hidden');
-                    definitionContainer.classList.remove('contract');
-                }, 1000); 
-            });
-            
+            } else {
+                alert('No definition found for this word.');
+            }
         } else {
             alert('No definition found for this word.');
         }
@@ -191,6 +155,77 @@ async function fetchDefinition(input) {
         console.error('Error:', error);
         alert('Failed to fetch definition.');
     }
+}
+
+function displayDefinitionContent(data, input) {
+    let content = '<span id="closeIcon" class="close-icon">&times;</span>';
+    content += `<h2>Definition of "${input}"</h2>`;
+
+    data.forEach((entry, entryIndex) => {
+        if (entry.word && entry.word.toLowerCase() !== input.toLowerCase()) {
+            content += `<h3>Variant: ${entry.word}</h3>`;
+        }
+
+        entry.phonetics.forEach((phonetic) => {
+            if (phonetic.text) {
+                content += `<p><strong>Phonetic:</strong> ${phonetic.text}</p>`;
+            }
+            if (phonetic.audio) {
+                let label = getPronunciationLabel(phonetic);
+                content += `
+                    <button onclick="playAudio('${phonetic.audio}')" class="audio-button">
+                        🔊 ${label}
+                    </button>
+                `;
+            }
+        });
+
+        if (entry.origin) {
+            content += `<p><strong>Origin:</strong> ${entry.origin}</p>`;
+        }
+
+        entry.meanings.forEach(meaning => {
+            content += `<h3>${meaning.partOfSpeech}</h3>`;
+
+            if (meaning.synonyms && meaning.synonyms.length > 0) {
+                content += `<p><strong>Synonyms:</strong> ${meaning.synonyms.join(', ')}</p>`;
+            }
+            if (meaning.antonyms && meaning.antonyms.length > 0) {
+                content += `<p><strong>Antonyms:</strong> ${meaning.antonyms.join(', ')}</p>`;
+            }
+
+            meaning.definitions.forEach((def, defIndex) => {
+                content += `<p>${defIndex + 1}. ${def.definition}</p>`;
+                if (def.example) {
+                    content += `<p><em>Example: ${def.example}</em></p>`;
+                }
+                if (def.synonyms && def.synonyms.length > 0) {
+                    content += `<p><strong>Synonyms:</strong> ${def.synonyms.join(', ')}</p>`;
+                }
+                if (def.antonyms && def.antonyms.length > 0) {
+                    content += `<p><strong>Antonyms:</strong> ${def.antonyms.join(', ')}</p>`;
+                }
+            });
+        });
+
+        if (data.length > 1 && entryIndex < data.length - 1) {
+            content += '<hr>';
+        }
+    });
+
+    const definitionContainer = document.getElementById('definitionContainer');
+    definitionContainer.innerHTML = content;
+    definitionContainer.classList.remove('hidden');
+    definitionContainer.classList.add('expand');
+
+    document.getElementById('closeIcon').addEventListener('click', function () {
+        definitionContainer.classList.remove('expand');
+        definitionContainer.classList.add('contract');
+        setTimeout(() => {
+            definitionContainer.classList.add('hidden');
+            definitionContainer.classList.remove('contract');
+        }, 1000);
+    });
 }
 
 
