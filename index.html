@@ -11,7 +11,6 @@
         <h1>All in One English</h1>
         <p>Type a word or phrase and press Enter</p>
         
-        <!-- Input and Quick Search Button -->
         <div class="input-container">
             <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
             <button class="button" data-text="Quick Search" id="quickSearchButton">
@@ -20,19 +19,44 @@
             </button>
         </div>
 
+        <button id="settingsButton" class="settings-button">Settings</button>
+
+        <div id="settingsContainer" class="settings-container hidden">
+
+            <div class="api-selector">
+                <label for="api-select">Select preset API Key:</label>
+                <select id="api-select">
+                    <option value="1">API Key 1</option>
+                    <option value="2">API Key 2</option>
+                    <option value="3">API Key 3</option>
+                    <option value="4">API Key 4</option>
+                </select>
+            </div>
+
+            <div class="api-instruction-link">
+                <a href="GetAPI.md" target="_blank">How to Get Your Own API Key</a>
+            </div>
+
+            <div class="custom-api-inputs">
+                <label for="customUid">Enter Your Own UID:</label>
+                <input type="text" id="customUid" placeholder="UID" />
+                <label for="customTokenId">Enter Your Own TokenID:</label>
+                <input type="text" id="customTokenId" placeholder="TokenID" />
+            </div>
+
+            <div id="creditsContainer" class="credits-container">
+                <div class="update-time">
+                    Update 16/11/2024<br>
+                    <a href="https://github.com/minhkhang1008/AIO_English_Search" class="source-link" target="_blank">Source code</a><br>
+                    <a href="https://forms.gle/K195XSHSTdk8Jdh49" class="contribute" target="_blank">Contribute Words</a>
+                </div>
+                <div class="credit">Made by: Nguyen Hoang Minh Khang</div>
+            </div>
+        </div>
+
         <ul id="suggestionList" class="suggestion-list"></ul>
         <div id="buttonContainer" class="button-container"></div>
 
-        <div id="creditsContainer" class="credits-container">
-            <div class="update-time">
-                Update 16/11/2024<br>
-                <a href="https://github.com/minhkhang1008/AIO_English_Search" class="source-link" target="_blank">Source code</a><br>
-                <a href="https://forms.gle/K195XSHSTdk8Jdh49" class="contribute" target="_blank">Contribute Words</a>
-            </div>
-            <div class="credit">Made by: Nguyen Hoang Minh Khang</div>
-        </div>
-        
-        <!-- Quick Search Result Container -->
         <div id="definitionContainer" class="definition-container hidden"></div>
     </div>
     <script src="trie.js"></script>

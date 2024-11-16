@@ -97,8 +97,26 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsContainer = document.getElementById('settingsContainer');
+
+    settingsButton.addEventListener('click', () => {
+        if (settingsContainer.classList.contains('hidden')) {
+            settingsContainer.classList.remove('hidden');
+            settingsContainer.classList.add('active');
+        } else {
+            settingsContainer.classList.add('hidden');
+            settingsContainer.classList.remove('active');
+        }
+    });
+});
+
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
+    const selectedKeyIndex = document.getElementById('api-select').value; 
+    const customUid = document.getElementById('customUid').value;
+    const customTokenId = document.getElementById('customTokenId').value;
 
     if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
         definitionContainer.classList.remove('expand');
@@ -110,45 +128,48 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        // Check Free Dictionary API first
         const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
         const dictionaryData = await dictionaryResponse.json();
 
         if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
             console.log('Valid result from Free Dictionary API:', dictionaryData);
-            // Display definition from Free Dictionary API
             displayDefinitionContent(dictionaryData, input);
-            return; // Return early to prevent checking the phrases API
+            return; 
         }
 
-        // If no valid result from Free Dictionary API, check the phrases API
-        const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${input}`);
+        let phraseUrl = `/api/fetchPhrase?phrase=${input}&keyIndex=${selectedKeyIndex}`;
+
+        if (customUid && customTokenId) {
+            phraseUrl += `&customUid=${customUid}&customTokenId=${customTokenId}`;
+        }
+
+        const phraseResponse = await fetch(phraseUrl);
         const phraseData = await phraseResponse.json();
-        
+
         console.log('Full API response:', phraseData);
-    
+
         if (phraseData.result) {
             console.log('Valid result found:', phraseData.result);
             const resultArray = Array.isArray(phraseData.result) ? phraseData.result : [phraseData.result];
             let content = '<span id="closeIcon" class="close-icon">&times;</span>';
-            
+
             resultArray.forEach((result, index) => {
                 content += `<h2>Definition ${index + 1} of "${result.term}"</h2>`;
                 content += `<p>${result.explanation}</p>`;
-    
+
                 if (result.example) {
                     content += `<p><em>Example: ${result.example}</em></p>`;
                 }
-    
+
                 if (index < resultArray.length - 1) {
                     content += '<hr>';
                 }
             });
-    
+
             definitionContainer.innerHTML = content;
             definitionContainer.classList.remove('hidden');
             definitionContainer.classList.add('expand');
-    
+
             document.getElementById('closeIcon').addEventListener('click', function () {
                 definitionContainer.classList.remove('expand');
                 definitionContainer.classList.add('contract');

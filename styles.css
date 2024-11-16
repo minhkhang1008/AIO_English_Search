@@ -11,6 +11,8 @@ body {
 }
 
 
+
+
 .container {
     position: relative;
     text-align: center;
@@ -174,6 +176,111 @@ p {
     background-color: #ffeb3b;
     color: black;
     font-weight: bold;
+}
+
+.api-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    color: #fff;
+}
+
+.api-selector label {
+    font-size: 20px !important;
+    color: #FFFFFF;
+    margin-right: 10px !important; 
+}
+
+#api-select {
+    padding: 8px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    background-color: #6a11cb;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    margin-left: 5px; 
+}
+
+#api-select:hover {
+    border-color: #ffeb3b;
+    background-color: #2575fc;
+}
+
+#api-select:focus {
+    border-color: #ffeb3b;
+    box-shadow: 0 0 10px #ffeb3b;
+}
+
+.api-instruction-link a {
+    color: #FFD700; 
+    text-decoration: underline;
+    font-size: 14px;
+    font-family: sans-serif;
+    transition: color 0.3s;
+}
+
+.api-instruction-link a:hover {
+    color: #FFA500; 
+}
+
+.settings-button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #6a11cb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.settings-button:hover {
+    background-color: #2575fc;
+}
+
+.settings-container {
+    display: none;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.settings-container label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 14px;
+}
+
+.settings-container input {
+    width: calc(100% - 20px);
+    padding: 8px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: #6a11cb;
+    color: #fff;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+.settings-container input::placeholder {
+    color: #e0e0e0;
+}
+
+.settings-container.active {
+    display: block;
 }
 
 
