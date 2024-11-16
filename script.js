@@ -110,6 +110,18 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
+        // Check Free Dictionary API first
+        const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
+        const dictionaryData = await dictionaryResponse.json();
+
+        if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
+            console.log('Valid result from Free Dictionary API:', dictionaryData);
+            // Display definition from Free Dictionary API
+            displayDefinitionContent(dictionaryData, input);
+            return; // Return early to prevent checking the phrases API
+        }
+
+        // If no valid result from Free Dictionary API, check the phrases API
         const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${input}`);
         const phraseData = await phraseResponse.json();
         
@@ -117,14 +129,21 @@ async function fetchDefinition(input) {
     
         if (phraseData.result) {
             console.log('Valid result found:', phraseData.result);
-            const result = phraseData.result;
+            const resultArray = Array.isArray(phraseData.result) ? phraseData.result : [phraseData.result];
             let content = '<span id="closeIcon" class="close-icon">&times;</span>';
-            content += `<h2>Definition of "${result.term}"</h2>`;
-            content += `<p>${result.explanation}</p>`;
+            
+            resultArray.forEach((result, index) => {
+                content += `<h2>Definition ${index + 1} of "${result.term}"</h2>`;
+                content += `<p>${result.explanation}</p>`;
     
-            if (result.example) {
-                content += `<p><em>Example: ${result.example}</em></p>`;
-            }
+                if (result.example) {
+                    content += `<p><em>Example: ${result.example}</em></p>`;
+                }
+    
+                if (index < resultArray.length - 1) {
+                    content += '<hr>';
+                }
+            });
     
             definitionContainer.innerHTML = content;
             definitionContainer.classList.remove('hidden');
