@@ -102,9 +102,33 @@ async function fetchDefinition(input) {
     try {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
         const data = await response.json();
+
         if (Array.isArray(data) && data.length > 0) {
             let content = '<span id="closeIcon" class="close-icon">&times;</span>';
             content += `<h2>Definition of "${input}"</h2>`;
+
+            // Display all phonetic transcriptions and play buttons
+            if (data[0].phonetics.length > 0) {
+                data[0].phonetics.forEach((phonetic, index) => {
+                    if (phonetic.text) {
+                        content += `<p><strong>Phonetic:</strong> ${phonetic.text}</p>`;
+                    }
+                    if (phonetic.audio) {
+                        content += `
+                            <button onclick="playAudio('${phonetic.audio}')" class="audio-button">
+                                🔊 Play Pronunciation ${index + 1}
+                            </button>
+                        `;
+                    }
+                });
+            }
+
+            // Display origin if available
+            if (data[0].origin) {
+                content += `<p><strong>Origin:</strong> ${data[0].origin}</p>`;
+            }
+
+            // Display all meanings with examples and synonyms
             data[0].meanings.forEach(meaning => {
                 content += `<h3>${meaning.partOfSpeech}</h3>`;
                 meaning.definitions.forEach((def, index) => {
@@ -112,8 +136,15 @@ async function fetchDefinition(input) {
                     if (def.example) {
                         content += `<p><em>Example: ${def.example}</em></p>`;
                     }
+                    if (def.synonyms && def.synonyms.length > 0) {
+                        content += `<p><strong>Synonyms:</strong> ${def.synonyms.join(', ')}</p>`;
+                    }
+                    if (def.antonyms && def.antonyms.length > 0) {
+                        content += `<p><strong>Antonyms:</strong> ${def.antonyms.join(', ')}</p>`;
+                    }
                 });
             });
+
             definitionContainer.innerHTML = content;
 
             definitionContainer.classList.remove('hidden');
@@ -134,6 +165,20 @@ async function fetchDefinition(input) {
         alert('Failed to fetch definition.');
     }
 }
+
+function playAudio(audioUrl) {
+    if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        audio.play().catch(err => {
+            console.error('Audio playback error:', err);
+            alert('Failed to play audio.');
+        });
+    } else {
+        alert('Audio not available for this word.');
+    }
+}
+
+
 
 function highlightMatch(word, query) {
     let regex = new RegExp(`(${query})`, 'gi');

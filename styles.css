@@ -211,6 +211,24 @@ p {
     transition: opacity 0.5s ease, max-height 0.5s ease, transform 0.3s ease;
 }
 
+.audio-button {
+    padding: 6px 12px;
+    margin: 5px 0;
+    background-color: #2575fc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.audio-button:hover {
+    background-color: #6a11cb;
+}
+
+
 
 .close-icon {
     position: absolute;
