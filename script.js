@@ -201,7 +201,7 @@ function getPronunciationLabel(phonetic) {
     const match = audioUrl.match(/\/([^\/]+)-([a-z]{2})\.mp3$/);
     if (match) {
         const countryCode = match[2].toUpperCase(); 
-        label = `Play pronunciation ${countryCode}`; 
+        label = `${countryCode} pronunciation`; 
     }
 
     return label;
