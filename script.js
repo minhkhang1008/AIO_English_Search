@@ -97,7 +97,6 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 });
 
 
-
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
 
@@ -111,13 +110,12 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${phraseInput}`);
+        const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${input}`);
         const phraseData = await phraseResponse.json();
         
-        // Debugging: Log the full response
         console.log('Full API response:', phraseData);
     
-        if (phraseData.result) { // Updated condition
+        if (phraseData.result) {
             console.log('Valid result found:', phraseData.result);
             const result = phraseData.result;
             let content = '<span id="closeIcon" class="close-icon">&times;</span>';
