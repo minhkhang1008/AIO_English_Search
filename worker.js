@@ -1,8 +1,6 @@
-importScripts('trie.js'); // Import the Trie class
-
+importScripts('trie.js'); 
 let trie = new Trie();
 
-// Listen for messages from the main thread
 onmessage = function (e) {
     if (e.data.command === 'loadWords') {
         let wordList = e.data.words;
@@ -12,7 +10,7 @@ onmessage = function (e) {
         postMessage({ status: 'loaded' });
     } else if (e.data.command === 'search') {
         let prefix = e.data.prefix;
-        let suggestions = trie.search(prefix, 10); // Limit to 10 suggestions
+        let suggestions = trie.search(prefix, 20); 
         postMessage({ suggestions });
     }
 };
