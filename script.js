@@ -115,15 +115,17 @@ async function fetchDefinition(input) {
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
-            // Existing logic to display definitions
             displayDefinitionContent(data, input);
         } else if (input.split(/\s+/).length >= 2) {
-            // If multiple words, call the serverless function
             const phraseInput = input.replace(/\s+/g, '+');
             const phraseResponse = await fetch(`/api/fetchPhrase?phrase=${phraseInput}`);
             const phraseData = await phraseResponse.json();
+            
+            // Debugging: Log the full response
+            console.log('Full API response:', phraseData);
 
             if (phraseData.results && phraseData.results.result) {
+                console.log('Valid result found:', phraseData.results.result);
                 const result = phraseData.results.result;
                 let content = '<span id="closeIcon" class="close-icon">&times;</span>';
                 content += `<h2>Definition of "${result.term}"</h2>`;
@@ -146,6 +148,7 @@ async function fetchDefinition(input) {
                     }, 1000);
                 });
             } else {
+                console.warn('No valid data in the response:', phraseData);
                 alert('No definition found for this word.');
             }
         } else {

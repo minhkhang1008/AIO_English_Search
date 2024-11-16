@@ -2,6 +2,7 @@
 - Quick Search function
       + It uses Free Dictionary api to quickly gives you the definition, example,etc of the word or phrase you typed in
 - Add audio pronunciation and internation ipa (thanks to [Free Dictionary API](https://dictionaryapi.dev/))
+- Phrases.com api calling to search for idioms and phrases
 
 # Fix bug
 - Slowness of suggestion function is fixed, you will no more experience lagging in the website
