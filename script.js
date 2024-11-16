@@ -195,19 +195,13 @@ async function fetchDefinition(input) {
 
 
 function getPronunciationLabel(phonetic) {
-    let label = 'Play Pronunciation';
+    let label = 'PLAY PRONUNCIATION';
     const audioUrl = phonetic.audio;
 
-    if (audioUrl.includes('-us.')) {
-        label += ' US';
-    } else if (audioUrl.includes('-uk.')) {
-        label += ' UK';
-    } else if (phonetic.sourceUrl) {
-        if (phonetic.sourceUrl.toLowerCase().includes('us')) {
-            label += ' US';
-        } else if (phonetic.sourceUrl.toLowerCase().includes('uk')) {
-            label += ' UK';
-        }
+    const match = audioUrl.match(/\/([^\/]+)-([a-z]{2})\.mp3$/);
+    if (match) {
+        const countryCode = match[2].toUpperCase(); 
+        label = `Play pronunciation ${countryCode}`; 
     }
 
     return label;
