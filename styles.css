@@ -283,6 +283,21 @@ p {
     display: block;
 }
 
+.save-button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #6a11cb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background-color: #2575fc;
+}
+
 
 .definition-container {
     position: relative;

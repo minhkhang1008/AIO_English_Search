@@ -98,9 +98,13 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const saveButton = document.getElementById('saveCustomApiButton');
+    const customUidInput = document.getElementById('customUid');
+    const customTokenIdInput = document.getElementById('customTokenId');
     const settingsButton = document.getElementById('settingsButton');
     const settingsContainer = document.getElementById('settingsContainer');
 
+    // Toggle visibility when the button is clicked
     settingsButton.addEventListener('click', () => {
         if (settingsContainer.classList.contains('hidden')) {
             settingsContainer.classList.remove('hidden');
@@ -110,13 +114,32 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsContainer.classList.remove('active');
         }
     });
+
+    if (localStorage.getItem('customUid')) {
+        customUidInput.value = localStorage.getItem('customUid');
+    }
+    if (localStorage.getItem('customTokenId')) {
+        customTokenIdInput.value = localStorage.getItem('customTokenId');
+    }
+
+    saveButton.addEventListener('click', () => {
+        const customUid = customUidInput.value;
+        const customTokenId = customTokenIdInput.value;
+
+        if (customUid && customTokenId) {
+            localStorage.setItem('customUid', customUid);
+            localStorage.setItem('customTokenId', customTokenId);
+            alert('Custom API keys saved! The website will now use your input API keys.');
+        } else {
+            alert('Please fill in both the UID and TokenID before saving.');
+        }
+    });
 });
 
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
-    const selectedKeyIndex = document.getElementById('api-select').value; 
-    const customUid = document.getElementById('customUid').value;
-    const customTokenId = document.getElementById('customTokenId').value;
+    const customUid = localStorage.getItem('customUid');
+    const customTokenId = localStorage.getItem('customTokenId');
 
     if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
         definitionContainer.classList.remove('expand');
@@ -128,19 +151,13 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
-        const dictionaryData = await dictionaryResponse.json();
-
-        if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
-            console.log('Valid result from Free Dictionary API:', dictionaryData);
-            displayDefinitionContent(dictionaryData, input);
-            return; 
-        }
-
-        let phraseUrl = `/api/fetchPhrase?phrase=${input}&keyIndex=${selectedKeyIndex}`;
-
+        // Check if custom UID and TokenID are saved, use them instead of the preset
+        let phraseUrl;
         if (customUid && customTokenId) {
-            phraseUrl += `&customUid=${customUid}&customTokenId=${customTokenId}`;
+            phraseUrl = `/api/fetchPhrase?phrase=${input}&customUid=${customUid}&customTokenId=${customTokenId}`;
+        } else {
+            const selectedKeyIndex = document.getElementById('api-select').value; // Fallback to preset API key
+            phraseUrl = `/api/fetchPhrase?phrase=${input}&keyIndex=${selectedKeyIndex}`;
         }
 
         const phraseResponse = await fetch(phraseUrl);
