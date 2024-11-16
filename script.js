@@ -96,9 +96,21 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
     }
 });
 
+
+
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
-    definitionContainer.innerHTML = '';
+
+    if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
+        definitionContainer.classList.remove('expand');
+        definitionContainer.classList.add('contract');
+
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+    }
+
+    definitionContainer.classList.remove('contract');
+    definitionContainer.innerHTML = ''; 
+
     try {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
         const data = await response.json();
@@ -107,56 +119,71 @@ async function fetchDefinition(input) {
             let content = '<span id="closeIcon" class="close-icon">&times;</span>';
             content += `<h2>Definition of "${input}"</h2>`;
 
-            // Display all phonetic transcriptions and play buttons
-            if (data[0].phonetics.length > 0) {
-                data[0].phonetics.forEach((phonetic, index) => {
+            data.forEach((entry, entryIndex) => {
+                if (entry.word && entry.word.toLowerCase() !== input.toLowerCase()) {
+                    content += `<h3>Variant: ${entry.word}</h3>`;
+                }
+
+                entry.phonetics.forEach((phonetic) => {
                     if (phonetic.text) {
                         content += `<p><strong>Phonetic:</strong> ${phonetic.text}</p>`;
                     }
                     if (phonetic.audio) {
+                        let label = getPronunciationLabel(phonetic);
                         content += `
                             <button onclick="playAudio('${phonetic.audio}')" class="audio-button">
-                                🔊 Play Pronunciation ${index + 1}
+                                🔊 ${label}
                             </button>
                         `;
                     }
                 });
-            }
 
-            // Display origin if available
-            if (data[0].origin) {
-                content += `<p><strong>Origin:</strong> ${data[0].origin}</p>`;
-            }
+                if (entry.origin) {
+                    content += `<p><strong>Origin:</strong> ${entry.origin}</p>`;
+                }
 
-            // Display all meanings with examples and synonyms
-            data[0].meanings.forEach(meaning => {
-                content += `<h3>${meaning.partOfSpeech}</h3>`;
-                meaning.definitions.forEach((def, index) => {
-                    content += `<p>${index + 1}. ${def.definition}</p>`;
-                    if (def.example) {
-                        content += `<p><em>Example: ${def.example}</em></p>`;
+                entry.meanings.forEach(meaning => {
+                    content += `<h3>${meaning.partOfSpeech}</h3>`;
+
+                    if (meaning.synonyms && meaning.synonyms.length > 0) {
+                        content += `<p><strong>Synonyms:</strong> ${meaning.synonyms.join(', ')}</p>`;
                     }
-                    if (def.synonyms && def.synonyms.length > 0) {
-                        content += `<p><strong>Synonyms:</strong> ${def.synonyms.join(', ')}</p>`;
+                    if (meaning.antonyms && meaning.antonyms.length > 0) {
+                        content += `<p><strong>Antonyms:</strong> ${meaning.antonyms.join(', ')}</p>`;
                     }
-                    if (def.antonyms && def.antonyms.length > 0) {
-                        content += `<p><strong>Antonyms:</strong> ${def.antonyms.join(', ')}</p>`;
-                    }
+
+                    meaning.definitions.forEach((def, defIndex) => {
+                        content += `<p>${defIndex + 1}. ${def.definition}</p>`;
+                        if (def.example) {
+                            content += `<p><em>Example: ${def.example}</em></p>`;
+                        }
+                        if (def.synonyms && def.synonyms.length > 0) {
+                            content += `<p><strong>Synonyms:</strong> ${def.synonyms.join(', ')}</p>`;
+                        }
+                        if (def.antonyms && def.antonyms.length > 0) {
+                            content += `<p><strong>Antonyms:</strong> ${def.antonyms.join(', ')}</p>`;
+                        }
+                    });
                 });
+
+                if (data.length > 1 && entryIndex < data.length - 1) {
+                    content += '<hr>';
+                }
             });
 
             definitionContainer.innerHTML = content;
-
             definitionContainer.classList.remove('hidden');
-            void definitionContainer.offsetWidth;
             definitionContainer.classList.add('expand');
 
             document.getElementById('closeIcon').addEventListener('click', function () {
                 definitionContainer.classList.remove('expand');
+                definitionContainer.classList.add('contract');
                 setTimeout(() => {
                     definitionContainer.classList.add('hidden');
-                }, 500);
+                    definitionContainer.classList.remove('contract');
+                }, 1000); 
             });
+            
         } else {
             alert('No definition found for this word.');
         }
@@ -165,6 +192,27 @@ async function fetchDefinition(input) {
         alert('Failed to fetch definition.');
     }
 }
+
+
+function getPronunciationLabel(phonetic) {
+    let label = 'Play Pronunciation';
+    const audioUrl = phonetic.audio;
+
+    if (audioUrl.includes('-us.')) {
+        label += ' US';
+    } else if (audioUrl.includes('-uk.')) {
+        label += ' UK';
+    } else if (phonetic.sourceUrl) {
+        if (phonetic.sourceUrl.toLowerCase().includes('us')) {
+            label += ' US';
+        } else if (phonetic.sourceUrl.toLowerCase().includes('uk')) {
+            label += ' UK';
+        }
+    }
+
+    return label;
+}
+
 
 function playAudio(audioUrl) {
     if (audioUrl) {
@@ -177,7 +225,6 @@ function playAudio(audioUrl) {
         alert('Audio not available for this word.');
     }
 }
-
 
 
 function highlightMatch(word, query) {
@@ -280,6 +327,6 @@ function openUrl(url) {
     }
     setTimeout(() => {
         window.location.reload();
-    }, 1000); 
+    }, 500); 
 }
 

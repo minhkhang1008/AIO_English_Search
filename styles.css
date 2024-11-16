@@ -189,18 +189,25 @@ p {
     max-width: 100%;
     opacity: 0;
     visibility: hidden;
+    transform: scale(0.9);
+    transition: opacity 1s ease, transform 1s ease, max-height 1s ease-in-out;
     max-height: 0;
     overflow: hidden;
-    transform: scale(0.9);
-    transition: opacity 0.5s ease, max-height 0.5s ease, transform 0.3s ease;
 }
 
 .definition-container.expand {
     opacity: 1;
     visibility: visible;
-    max-height: 1000px;
     transform: scale(1);
-    transition: opacity 0.7s ease, max-height 0.7s ease, transform 0.5s ease;
+    max-height: 5000px; 
+    transition: opacity 1.2s ease, transform 1.2s ease, max-height 1.2s ease-in-out;
+}
+
+.definition-container.contract {
+    opacity: 0;
+    transform: scale(0.9);
+    max-height: 0;
+    transition: opacity 1s ease, transform 1s ease, max-height 1s ease-in-out;
 }
 
 .definition-container.hidden {
@@ -208,8 +215,9 @@ p {
     visibility: hidden;
     max-height: 0;
     transform: scale(0.9);
-    transition: opacity 0.5s ease, max-height 0.5s ease, transform 0.3s ease;
+    transition: opacity 1s ease, transform 1s ease, max-height 1s ease-in-out;
 }
+
 
 .audio-button {
     padding: 6px 12px;
