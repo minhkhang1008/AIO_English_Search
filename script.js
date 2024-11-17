@@ -141,6 +141,9 @@ async function fetchDefinition(input) {
     const customUid = localStorage.getItem('customUid');
     const customTokenId = localStorage.getItem('customTokenId');
 
+    // Count the number of words in the input
+    const wordCount = input.split(/\s+/).length;
+
     if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
         definitionContainer.classList.remove('expand');
         definitionContainer.classList.add('contract');
@@ -151,53 +154,75 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        // Check if custom UID and TokenID are saved, use them instead of the preset
-        let phraseUrl;
-        if (customUid && customTokenId) {
-            phraseUrl = `/api/fetchPhrase?phrase=${input}&customUid=${customUid}&customTokenId=${customTokenId}`;
-        } else {
-            const selectedKeyIndex = document.getElementById('api-select').value; // Fallback to preset API key
-            phraseUrl = `/api/fetchPhrase?phrase=${input}&keyIndex=${selectedKeyIndex}`;
-        }
+        // Logic for handling API calls based on word count
+        if (wordCount === 1) {
+            // Only call the Free Dictionary API for a single word
+            const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
+            const dictionaryData = await dictionaryResponse.json();
 
-        const phraseResponse = await fetch(phraseUrl);
-        const phraseData = await phraseResponse.json();
+            if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
+                console.log('Valid result from Free Dictionary API:', dictionaryData);
+                displayDefinitionContent(dictionaryData, input);
+                return; // Exit the function after finding a result
+            } else {
+                alert('No definition found for this word in the Free Dictionary.');
+            }
+        } else if (wordCount >= 2) {
+            const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
+            const dictionaryData = await dictionaryResponse.json();
 
-        console.log('Full API response:', phraseData);
-
-        if (phraseData.result) {
-            console.log('Valid result found:', phraseData.result);
-            const resultArray = Array.isArray(phraseData.result) ? phraseData.result : [phraseData.result];
-            let content = '<span id="closeIcon" class="close-icon">&times;</span>';
-
-            resultArray.forEach((result, index) => {
-                content += `<h2>Definition ${index + 1} of "${result.term}"</h2>`;
-                content += `<p>${result.explanation}</p>`;
-
-                if (result.example) {
-                    content += `<p><em>Example: ${result.example}</em></p>`;
+            if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
+                console.log('Valid result from Free Dictionary API:', dictionaryData);
+                displayDefinitionContent(dictionaryData, input);
+                return; 
+            } else {
+                let phraseUrl;
+                if (customUid && customTokenId) {
+                    phraseUrl = `/api/fetchPhrase?phrase=${input}&customUid=${customUid}&customTokenId=${customTokenId}`;
+                } else {
+                    const selectedKeyIndex = document.getElementById('api-select').value;
+                    phraseUrl = `/api/fetchPhrase?phrase=${input}&keyIndex=${selectedKeyIndex}`;
                 }
 
-                if (index < resultArray.length - 1) {
-                    content += '<hr>';
+                const phraseResponse = await fetch(phraseUrl);
+                const phraseData = await phraseResponse.json();
+
+                console.log('Full API response:', phraseData);
+
+                if (phraseData.result) {
+                    console.log('Valid result found from phrases.com:', phraseData.result);
+                    const resultArray = Array.isArray(phraseData.result) ? phraseData.result : [phraseData.result];
+                    let content = '<span id="closeIcon" class="close-icon">&times;</span>';
+
+                    resultArray.forEach((result, index) => {
+                        content += `<h2>Definition ${index + 1} of "${result.term}"</h2>`;
+                        content += `<p>${result.explanation}</p>`;
+
+                        if (result.example) {
+                            content += `<p><em>Example: ${result.example}</em></p>`;
+                        }
+
+                        if (index < resultArray.length - 1) {
+                            content += '<hr>';
+                        }
+                    });
+
+                    definitionContainer.innerHTML = content;
+                    definitionContainer.classList.remove('hidden');
+                    definitionContainer.classList.add('expand');
+
+                    document.getElementById('closeIcon').addEventListener('click', function () {
+                        definitionContainer.classList.remove('expand');
+                        definitionContainer.classList.add('contract');
+                        setTimeout(() => {
+                            definitionContainer.classList.add('hidden');
+                            definitionContainer.classList.remove('contract');
+                        }, 1000);
+                    });
+                } else {
+                    alert('No definition found for this phrase.');
                 }
-            });
-
-            definitionContainer.innerHTML = content;
-            definitionContainer.classList.remove('hidden');
-            definitionContainer.classList.add('expand');
-
-            document.getElementById('closeIcon').addEventListener('click', function () {
-                definitionContainer.classList.remove('expand');
-                definitionContainer.classList.add('contract');
-                setTimeout(() => {
-                    definitionContainer.classList.add('hidden');
-                    definitionContainer.classList.remove('contract');
-                }, 1000);
-            });
-        } else {
-            console.warn('No valid data in the response:', phraseData);
-            alert('No definition found for this word.');
+            }
         }
     } catch (error) {
         console.error('Error:', error);
