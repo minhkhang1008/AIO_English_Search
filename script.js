@@ -114,17 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function checkGrammar(text) {
-    const customUid = localStorage.getItem('customUid');
-    const customTokenId = localStorage.getItem('customTokenId');
-    const uidList = [process.env.UID1, process.env.UID2, process.env.UID3, process.env.UID4];
-    const tokenidList = [process.env.TOKENID1, process.env.TOKENID2, process.env.TOKENID3, process.env.TOKENID4];
-
-    const uid = customUid || uidList[0];
-    const tokenid = customTokenId || tokenidList[0];
-
     try {
+        const keyResponse = await fetch('/api/getRandomKeys');
+        const { uid, tokenid } = await keyResponse.json();
+
         const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
         const data = await response.json();
+
         console.log('Grammar Check Result:', data);
 
         if (data.error) {
