@@ -96,6 +96,58 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const checkGrammarButton = document.createElement('button');
+    checkGrammarButton.id = 'checkGrammarButton';
+    checkGrammarButton.className = 'check-grammar-button';
+    checkGrammarButton.textContent = 'Check Grammar';
+    document.querySelector('.container').insertBefore(checkGrammarButton, document.getElementById('settingsButton').nextSibling);
+
+    checkGrammarButton.addEventListener('click', () => {
+        const input = document.getElementById('searchBox').value.trim();
+        if (input) {
+            checkGrammar(input);
+        } else {
+            alert('Please enter a sentence to check for grammar.');
+        }
+    });
+});
+
+async function checkGrammar(text) {
+    const customUid = localStorage.getItem('customUid');
+    const customTokenId = localStorage.getItem('customTokenId');
+    const uidList = [process.env.UID1, process.env.UID2, process.env.UID3, process.env.UID4];
+    const tokenidList = [process.env.TOKENID1, process.env.TOKENID2, process.env.TOKENID3, process.env.TOKENID4];
+
+    const uid = customUid || uidList[0];
+    const tokenid = customTokenId || tokenidList[0];
+
+    try {
+        const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
+        const data = await response.json();
+        console.log('Grammar Check Result:', data);
+
+        if (data.error) {
+            alert(`Error: ${data.error}`);
+        } else {
+            displayGrammarCheckResult(data);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to check grammar.');
+    }
+}
+
+function displayGrammarCheckResult(data) {
+    const definitionContainer = document.getElementById('definitionContainer');
+    definitionContainer.innerHTML = '<h2>Grammar Check Result</h2>';
+    data.forEach((issue, index) => {
+        definitionContainer.innerHTML += `<p>${index + 1}. ${issue.error} - <strong>Suggestion:</strong> ${issue.suggestion}</p>`;
+    });
+    definitionContainer.classList.remove('hidden');
+    definitionContainer.classList.add('expand');
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('saveCustomApiButton');
