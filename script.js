@@ -137,13 +137,32 @@ async function checkGrammar(text) {
 function displayGrammarCheckResult(data) {
     const definitionContainer = document.getElementById('definitionContainer');
     definitionContainer.innerHTML = '<h2>Grammar Check Result</h2>';
-    data.forEach((issue, index) => {
-        definitionContainer.innerHTML += `<p>${index + 1}. ${issue.error} - <strong>Suggestion:</strong> ${issue.suggestion}</p>`;
-    });
+
+    if (data.matches && data.matches.length > 0) {
+        data.matches.forEach((match, index) => {
+            const message = match.message;
+            const context = match.context.text;
+            const offset = match.context.offset;
+            const length = match.context.length;
+            const replacementSuggestions = match.replacements.map(rep => rep.value).join(', ');
+
+            const highlightedText = `${context.substring(0, offset)}<span class="highlight">${context.substring(offset, offset + length)}</span>${context.substring(offset + length)}`;
+
+            definitionContainer.innerHTML += `
+                <div class="grammar-issue">
+                    <p>${index + 1}. ${message}</p>
+                    <p><strong>Context:</strong> ${highlightedText}</p>
+                    <p><strong>Suggested Replacements:</strong> ${replacementSuggestions || 'None'}</p>
+                </div>
+            `;
+        });
+    } else {
+        definitionContainer.innerHTML += '<p>No issues found.</p>';
+    }
+
     definitionContainer.classList.remove('hidden');
     definitionContainer.classList.add('expand');
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('saveCustomApiButton');

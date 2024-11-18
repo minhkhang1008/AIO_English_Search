@@ -246,6 +246,10 @@ p {
     background-color: #0A5839;
 }
 
+.grammar-issue {
+    margin-bottom: 15px;
+}
+
 .settings-button {
     margin: 10px 5px 10px 0;
     padding: 10px 20px;
