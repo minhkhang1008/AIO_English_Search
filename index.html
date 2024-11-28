@@ -60,10 +60,17 @@
             try {
                 const response = await fetch('/api/firebaseConfig');
                 const firebaseConfig = await response.json();
-
+    
+                // Ensure Firebase configuration is valid
+                if (!firebaseConfig.apiKey) {
+                    throw new Error('Firebase configuration is incomplete.');
+                }
+    
+                // Initialize Firebase
                 const app = firebase.initializeApp(firebaseConfig);
                 const auth = firebase.auth();
-
+    
+                // Handle Google Sign-In Button
                 const googleSignInButton = document.getElementById('googleSignInButton');
                 googleSignInButton.addEventListener('click', () => {
                     const provider = new firebase.auth.GoogleAuthProvider();
@@ -74,21 +81,22 @@
                             googleSignInButton.textContent = `Welcome, ${user.displayName}`;
                         })
                         .catch((error) => {
-                            console.error('Error during sign-in:', error);
+                            console.error('Sign-in error:', error);
                             alert('Failed to sign in. Please try again.');
                         });
                 });
-
+    
+                // Update UI based on auth state
                 auth.onAuthStateChanged((user) => {
                     if (user) {
                         googleSignInButton.textContent = `Welcome, ${user.displayName}`;
                     }
                 });
             } catch (error) {
-                console.error('Failed to initialize Firebase:', error);
+                console.error('Firebase initialization failed:', error);
             }
         }
-
+    
         document.addEventListener('DOMContentLoaded', initializeFirebase);
     </script>
     <script src="script.js" defer></script>

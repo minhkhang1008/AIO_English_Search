@@ -4,6 +4,9 @@ export default function handler(req, res) {
             console.error('Missing Firebase API key in environment variables.');
             return res.status(500).json({ error: 'Firebase configuration missing.' });
         }
+        if (!firebaseConfig.apiKey) {
+            throw new Error('Firebase configuration is incomplete. Check your environment variables.');
+        }
 
         res.status(200).json({
             apiKey: process.env.FIREBASE_API_KEY,
