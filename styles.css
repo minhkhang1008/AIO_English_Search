@@ -10,6 +10,22 @@ body {
     color: #fff;
 }
 
+.google-sign-in-button {
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #4285F4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.google-sign-in-button:hover {
+    background-color: #357AE8;
+}
 
 .container {
     position: relative;

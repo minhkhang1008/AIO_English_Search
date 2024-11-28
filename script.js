@@ -111,6 +111,27 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a sentence to check for grammar.');
         }
     });
+
+    const googleSignInButton = document.getElementById('googleSignInButton');
+    googleSignInButton.addEventListener('click', () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+                const user = result.user;
+                alert(`Welcome, ${user.displayName}`);
+                googleSignInButton.textContent = `Welcome, ${user.displayName}`;
+            })
+            .catch((error) => {
+                console.error('Error during sign-in:', error);
+                alert('Failed to sign in. Please try again.');
+            });
+    });
+
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            googleSignInButton.textContent = `Welcome, ${user.displayName}`;
+        }
+    });
 });
 
 async function checkGrammar(text) {
@@ -171,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settingsButton');
     const settingsContainer = document.getElementById('settingsContainer');
 
-    // Toggle visibility when the button is clicked
     settingsButton.addEventListener('click', () => {
         if (settingsContainer.classList.contains('hidden')) {
             settingsContainer.classList.remove('hidden');
@@ -208,7 +228,6 @@ async function fetchDefinition(input) {
     const customUid = localStorage.getItem('customUid');
     const customTokenId = localStorage.getItem('customTokenId');
 
-    // Count the number of words in the input
     const wordCount = input.split(/\s+/).length;
 
     if (!definitionContainer.classList.contains('hidden') && definitionContainer.classList.contains('expand')) {
@@ -221,16 +240,14 @@ async function fetchDefinition(input) {
     definitionContainer.innerHTML = '';
 
     try {
-        // Logic for handling API calls based on word count
         if (wordCount === 1) {
-            // Only call the Free Dictionary API for a single word
             const dictionaryResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
             const dictionaryData = await dictionaryResponse.json();
 
             if (Array.isArray(dictionaryData) && dictionaryData.length > 0) {
                 console.log('Valid result from Free Dictionary API:', dictionaryData);
                 displayDefinitionContent(dictionaryData, input);
-                return; // Exit the function after finding a result
+                return; 
             } else {
                 alert('No definition found for this word in the Free Dictionary.');
             }
