@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All in One English</title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>All in One English</h1>
         <p>Type a word or phrase and press Enter or click Quick Search</p>
-        
+
         <div class="input-container">
             <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
             <button class="button" data-text="Quick Search" id="quickSearchButton">
@@ -22,7 +24,6 @@
         <button id="settingsButton" class="settings-button">Settings</button>
 
         <div id="settingsContainer" class="settings-container hidden">
-
             <div class="api-selector">
                 <label for="api-select">Select preset API Key:</label>
                 <select id="api-select">
@@ -44,24 +45,51 @@
                 <input type="text" id="customTokenId" placeholder="TokenID" />
                 <button id="saveCustomApiButton" class="save-button">Save</button>
             </div>
-
-            <div id="creditsContainer" class="credits-container">
-                <div class="update-time">
-                    Update 18/11/2024<br>
-                    <a href="https://github.com/minhkhang1008/AIO_English_Search" class="source-link" target="_blank">Source code</a><br>
-                    <a href="https://forms.gle/K195XSHSTdk8Jdh49" class="contribute" target="_blank">Contribute Words</a>
-                </div>
-                <div class="credit">Made by: Nguyen Hoang Minh Khang</div>
-            </div>
         </div>
 
         <ul id="suggestionList" class="suggestion-list"></ul>
         <div id="buttonContainer" class="button-container"></div>
-
         <div id="definitionContainer" class="definition-container hidden"></div>
+
+        <button id="googleSignInButton" class="google-sign-in-button">Sign in with Google</button>
     </div>
-    <script src="trie.js"></script>
-    <script src="worker.js" type="text/javascript" defer></script>
-    <script src="script.js" defer></script> 
+
+    <script>
+        async function initializeFirebase() {
+            try {
+                const response = await fetch('/api/firebaseConfig');
+                const firebaseConfig = await response.json();
+
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth();
+
+                const googleSignInButton = document.getElementById('googleSignInButton');
+                googleSignInButton.addEventListener('click', () => {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    auth.signInWithPopup(provider)
+                        .then((result) => {
+                            const user = result.user;
+                            alert(`Welcome, ${user.displayName}`);
+                            googleSignInButton.textContent = `Welcome, ${user.displayName}`;
+                        })
+                        .catch((error) => {
+                            console.error('Error during sign-in:', error);
+                            alert('Failed to sign in. Please try again.');
+                        });
+                });
+
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        googleSignInButton.textContent = `Welcome, ${user.displayName}`;
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to initialize Firebase:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
+    </script>
+    <script src="script.js" defer></script>
 </body>
 </html>
