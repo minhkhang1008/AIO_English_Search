@@ -2,66 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All in One English</title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Include the Google Identity Services API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        async function initializeGoogleSignIn() {
+            try {
+                // Fetch the Client ID dynamically
+                const response = await fetch('/api/getGoogleClientId');
+                const config = await response.json();
+
+                if (!config.googleClientId) {
+                    throw new Error('Google Client ID is not defined.');
+                }
+
+                // Initialize Google Sign-In
+                google.accounts.id.initialize({
+                    client_id: config.googleClientId,
+                    callback: handleCredentialResponse
+                });
+
+                google.accounts.id.renderButton(
+                    document.getElementById('googleSignInButton'), // Render Google Sign-In button
+                    { theme: 'outline', size: 'large' } // Customize options
+                );
+
+                google.accounts.id.prompt(); // Optional: Display one-tap prompt
+            } catch (error) {
+                console.error('Error initializing Google Sign-In:', error);
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            const idToken = response.credential;
+
+            // Send the token to your server for verification
+            fetch('/tokensignin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idToken })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Sign-In Successful:', data);
+            })
+            .catch(error => {
+                console.error('Error during token verification:', error);
+            });
+        }
+
+        window.onload = initializeGoogleSignIn;
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>All in One English</h1>
+        <!-- Google Sign-In Button -->
+        <div id="googleSignInButton"></div>
+
         <p>Type a word or phrase and press Enter or click Quick Search</p>
-        
+
         <div class="input-container">
-            <input type="text" id="searchBox" placeholder="Type here" autocomplete="off">
-            <button class="button" data-text="Quick Search" id="quickSearchButton">
+            <input type="text" id="searchBox" placeholder="Type here" autocomplete="off" aria-label="Type a word or phrase">
+            <button class="button" data-text="Quick Search" id="quickSearchButton" aria-label="Quick Search">
                 <span class="actual-text">&nbsp;Quick Search&nbsp;</span>
                 <span aria-hidden="true" class="hover-text">&nbsp;Quick Search&nbsp;</span>
             </button>
         </div>
 
-        <button id="settingsButton" class="settings-button">Settings</button>
+        <button id="settingsButton" class="settings-button" aria-label="Settings">Settings</button>
 
-        <div id="settingsContainer" class="settings-container hidden">
+        <div id="settingsContainer" class="settings-container hidden"></div>
 
-            <div class="api-selector">
-                <label for="api-select">Select preset API Key:</label>
-                <select id="api-select">
-                    <option value="1">API Key 1</option>
-                    <option value="2">API Key 2</option>
-                    <option value="3">API Key 3</option>
-                    <option value="4">API Key 4</option>
-                </select>
-            </div>
-
-            <div class="api-instruction-link">
-                <a href="GetAPI.html" target="_blank">How to Get Your Own API Key</a>
-            </div>
-
-            <div class="custom-api-inputs">
-                <label for="customUid">Enter Your Own UID:</label>
-                <input type="text" id="customUid" placeholder="UID" />
-                <label for="customTokenId">Enter Your Own TokenID:</label>
-                <input type="text" id="customTokenId" placeholder="TokenID" />
-                <button id="saveCustomApiButton" class="save-button">Save</button>
-            </div>
-
-            <div id="creditsContainer" class="credits-container">
-                <div class="update-time">
-                    Update 1/12/2024<br>
-                    <a href="https://github.com/minhkhang1008/AIO_English_Search" class="source-link" target="_blank">Source code</a><br>
-                    <a href="https://forms.gle/K195XSHSTdk8Jdh49" class="contribute" target="_blank">Contribute Words</a>
-                </div>
-                <div class="credit">Made by: Nguyen Hoang Minh Khang</div>
-            </div>
-        </div>
-
-        <ul id="suggestionList" class="suggestion-list"></ul>
+        <ul id="suggestionList" class="suggestion-list" aria-label="Suggestions"></ul>
         <div id="buttonContainer" class="button-container"></div>
-
         <div id="definitionContainer" class="definition-container hidden"></div>
     </div>
-    <script src="trie.js"></script>
-    <script src="worker.js" type="text/javascript" defer></script>
-    <script src="script.js" defer></script> 
+
+    <!-- Include necessary scripts -->
+    <script src="trie.js" defer></script>
+    <script src="worker.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

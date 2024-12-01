@@ -6,7 +6,14 @@ worker.onmessage = function (e) {
         console.log('Trie loaded in Web Worker');
     } else if (e.data.suggestions) {
         updateSuggestionList(e.data.suggestions);
+    } else {
+        console.error('Unexpected message from worker:', e.data);
     }
+};
+
+worker.onerror = function (error) {
+    console.error('Worker encountered an error:', error.message);
+    alert('An error occurred while processing suggestions.');
 };
 
 fetch('words.txt')
@@ -39,6 +46,57 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
+
+async function initializeGoogleSignIn() {
+    try {
+        const response = await fetch('/api/getGoogleClientId');
+        const config = await response.json();
+
+        if (!config.googleClientId) {
+            throw new Error('Google Client ID is not defined.');
+        }
+
+        google.accounts.id.initialize({
+            client_id: config.googleClientId,
+            callback: handleCredentialResponse,
+        });
+
+        google.accounts.id.renderButton(
+            document.querySelector('.g-signin2'), 
+            { theme: 'outline', size: 'large' }
+        );
+
+        google.accounts.id.prompt(); 
+    } catch (error) {
+        console.error('Error initializing Google Sign-In:', error);
+        document.getElementById('googleSignInError').textContent =
+            'Failed to initialize Google Sign-In. Please try again later.';
+    }
+}
+
+function handleCredentialResponse(response) {
+    const idToken = response.credential;
+    sendTokenToServer(idToken);
+}
+
+function sendTokenToServer(idToken) {
+    fetch('/tokensignin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idToken })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Sign-In Successful:', data);
+    })
+    .catch(error => {
+        console.error('Error during token verification:', error);
+    });
+}
+
+window.onload = initializeGoogleSignIn;
 
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
