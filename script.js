@@ -111,27 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a sentence to check for grammar.');
         }
     });
-
-    const googleSignInButton = document.getElementById('googleSignInButton');
-    googleSignInButton.addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider)
-            .then((result) => {
-                const user = result.user;
-                alert(`Welcome, ${user.displayName}`);
-                googleSignInButton.textContent = `Welcome, ${user.displayName}`;
-            })
-            .catch((error) => {
-                console.error('Error during sign-in:', error);
-                alert('Failed to sign in. Please try again.');
-            });
-    });
-
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            googleSignInButton.textContent = `Welcome, ${user.displayName}`;
-        }
-    });
 });
 
 async function checkGrammar(text) {

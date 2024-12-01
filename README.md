@@ -16,3 +16,6 @@
 ## Notes
 - Please use [aio-english-search.vercel.app](https://aio-english-search.vercel.app) to use the preset phrases.com api since I put them as Environment Varible
 - If you prefer to use them locally, modify the fetchPhrase.js and getRandomKeys.js from process env to your UID and TokenID
+
+## Change log
+**1/12/2024**: Revert commit since Google sign-in doesn't work, still working on it
