@@ -58,22 +58,22 @@ async function initializeGoogleSignIn() {
 
         google.accounts.id.initialize({
             client_id: config.googleClientId,
-            callback: handleCredentialResponse,
+            callback: handleCredentialResponse
         });
 
         google.accounts.id.renderButton(
-            document.querySelector('.g-signin2'), 
+            document.getElementById('googleSignInButton'), 
             { theme: 'outline', size: 'large' }
         );
 
         google.accounts.id.prompt(); 
     } catch (error) {
         console.error('Error initializing Google Sign-In:', error);
-        document.getElementById('googleSignInError').textContent =
-            'Failed to initialize Google Sign-In. Please try again later.';
+        const errorElement = document.createElement('p');
+        errorElement.textContent = 'Failed to initialize Google Sign-In. Please refresh the page or try again later.';
+        document.getElementById('googleSignInButton').appendChild(errorElement);
     }
 }
-
 function handleCredentialResponse(response) {
     const idToken = response.credential;
     sendTokenToServer(idToken);
