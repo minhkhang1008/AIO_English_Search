@@ -58,22 +58,22 @@ async function initializeGoogleSignIn() {
 
         google.accounts.id.initialize({
             client_id: config.googleClientId,
-            callback: handleCredentialResponse
+            callback: handleCredentialResponse,
         });
 
         google.accounts.id.renderButton(
-            document.getElementById('googleSignInButton'), 
-            { theme: 'outline', size: 'large' }
+            document.getElementById('googleSignInButton'),
+            { theme: 'outline', size: 'large' } 
         );
 
-        google.accounts.id.prompt(); 
+        google.accounts.id.prompt();
     } catch (error) {
         console.error('Error initializing Google Sign-In:', error);
-        const errorElement = document.createElement('p');
-        errorElement.textContent = 'Failed to initialize Google Sign-In. Please refresh the page or try again later.';
-        document.getElementById('googleSignInButton').appendChild(errorElement);
     }
 }
+
+document.addEventListener('DOMContentLoaded', initializeGoogleSignIn);
+
 function handleCredentialResponse(response) {
     const idToken = response.credential;
     sendTokenToServer(idToken);
@@ -101,16 +101,20 @@ window.onload = initializeGoogleSignIn;
 function handleCredentialResponse(response) {
     const idToken = response.credential;
 
+    console.log('ID Token:', idToken); 
+
     fetch('/api/tokensignin', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ idToken }), 
     })
         .then((res) => res.json())
         .then((data) => {
             if (data.name) {
+                console.log('Sign-In Successful:', data);
+
                 const userGreeting = document.createElement('div');
                 userGreeting.id = 'userGreeting';
                 userGreeting.textContent = `Hello ${data.name}`;
