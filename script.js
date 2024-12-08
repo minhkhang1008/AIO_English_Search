@@ -98,6 +98,37 @@ function sendTokenToServer(idToken) {
 
 window.onload = initializeGoogleSignIn;
 
+function handleCredentialResponse(response) {
+    const idToken = response.credential;
+
+    fetch('/api/tokensignin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.name) {
+                const userGreeting = document.createElement('div');
+                userGreeting.id = 'userGreeting';
+                userGreeting.textContent = `Hello ${data.name}`;
+                document.querySelector('.container').prepend(userGreeting);
+
+                const signInButton = document.getElementById('googleSignInButton');
+                if (signInButton) {
+                    signInButton.remove();
+                }
+            } else {
+                console.error('Name not found in response:', data);
+            }
+        })
+        .catch((error) => {
+            console.error('Error during token verification:', error);
+        });
+}
+
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
     if (input) {
@@ -159,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
     checkGrammarButton.id = 'checkGrammarButton';
     checkGrammarButton.className = 'check-grammar-button';
     checkGrammarButton.textContent = 'Check Grammar';
-    document.querySelector('.container').insertBefore(checkGrammarButton, document.getElementById('settingsButton').nextSibling);
 
     checkGrammarButton.addEventListener('click', () => {
         const input = document.getElementById('searchBox').value.trim();
@@ -221,44 +251,6 @@ function displayGrammarCheckResult(data) {
     definitionContainer.classList.remove('hidden');
     definitionContainer.classList.add('expand');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const saveButton = document.getElementById('saveCustomApiButton');
-    const customUidInput = document.getElementById('customUid');
-    const customTokenIdInput = document.getElementById('customTokenId');
-    const settingsButton = document.getElementById('settingsButton');
-    const settingsContainer = document.getElementById('settingsContainer');
-
-    settingsButton.addEventListener('click', () => {
-        if (settingsContainer.classList.contains('hidden')) {
-            settingsContainer.classList.remove('hidden');
-            settingsContainer.classList.add('active');
-        } else {
-            settingsContainer.classList.add('hidden');
-            settingsContainer.classList.remove('active');
-        }
-    });
-
-    if (localStorage.getItem('customUid')) {
-        customUidInput.value = localStorage.getItem('customUid');
-    }
-    if (localStorage.getItem('customTokenId')) {
-        customTokenIdInput.value = localStorage.getItem('customTokenId');
-    }
-
-    saveButton.addEventListener('click', () => {
-        const customUid = customUidInput.value;
-        const customTokenId = customTokenIdInput.value;
-
-        if (customUid && customTokenId) {
-            localStorage.setItem('customUid', customUid);
-            localStorage.setItem('customTokenId', customTokenId);
-            alert('Custom API keys saved! The website will now use your input API keys.');
-        } else {
-            alert('Please fill in both the UID and TokenID before saving.');
-        }
-    });
-});
 
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');

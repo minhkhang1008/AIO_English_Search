@@ -266,55 +266,6 @@ p {
     margin-bottom: 15px;
 }
 
-.settings-button {
-    margin: 10px 5px 10px 0;
-    padding: 10px 20px;
-    background-color: #6a11cb;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.settings-button:hover {
-    background-color: #2575fc;
-}
-
-.settings-container {
-    display: none;
-    margin-top: 10px;
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #fff;
-}
-
-.settings-container label {
-    display: block;
-    margin: 10px 0 5px;
-    font-size: 14px;
-}
-
-.settings-container input {
-    width: calc(100% - 20px);
-    padding: 8px;
-    border: 2px solid #fff;
-    border-radius: 5px;
-    background-color: #6a11cb;
-    color: #fff;
-    outline: none;
-    margin-bottom: 10px;
-}
-
-.settings-container input::placeholder {
-    color: #e0e0e0;
-}
-
-.settings-container.active {
-    display: block;
-}
 
 .save-button {
     margin-top: 10px;
