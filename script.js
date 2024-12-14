@@ -189,6 +189,60 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
     }
 });
 
+async function checkGrammar(text) {
+    try {
+        // Step 1: Fetch random UID and TokenID
+        const keyResponse = await fetch('/api/getRandomKeys');
+        const { uid, tokenid } = await keyResponse.json();
+
+        // Step 2: Call the Grammar.com API
+        const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
+        const data = await response.json();
+
+        console.log('Grammar Check Result:', data);
+
+        // Step 3: Display results
+        if (data.error) {
+            alert(`Error: ${data.error}`);
+        } else {
+            displayGrammarCheckResult(data);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to check grammar. Please try again.');
+    }
+}
+
+function displayGrammarCheckResult(data) {
+    const definitionContainer = document.getElementById('definitionContainer');
+    definitionContainer.innerHTML = '<h2>Grammar Check Result</h2>';
+
+    if (data.matches && data.matches.length > 0) {
+        data.matches.forEach((match, index) => {
+            const message = match.message;
+            const context = match.context.text;
+            const offset = match.context.offset;
+            const length = match.context.length;
+            const replacementSuggestions = match.replacements.map(rep => rep.value).join(', ');
+
+            const highlightedText = `${context.substring(0, offset)}<span class="highlight">${context.substring(offset, offset + length)}</span>${context.substring(offset + length)}`;
+
+            definitionContainer.innerHTML += `
+                <div class="grammar-issue">
+                    <p>${index + 1}. ${message}</p>
+                    <p><strong>Context:</strong> ${highlightedText}</p>
+                    <p><strong>Suggested Replacements:</strong> ${replacementSuggestions || 'None'}</p>
+                </div>
+            `;
+        });
+    } else {
+        definitionContainer.innerHTML += '<p>No grammar issues detected.</p>';
+    }
+
+    definitionContainer.classList.remove('hidden');
+    definitionContainer.classList.add('expand');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const checkGrammarButton = document.createElement('button');
     checkGrammarButton.id = 'checkGrammarButton';
