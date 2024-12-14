@@ -7,6 +7,8 @@
 - Grammar.com api call to check for any Grammatically mistake in a sentence
       + It uses the same api key as Phrases.com
 - For best long-text looking, I made the input field to be able to extend itself. Now, you can paste any significantly long text but still maintaining the ability of editing it.
+- Suggestion list now showing words that INCLUDE the input, not just starting with it! (definitely useful for searching words from root word)
+
 
 # Fix bug
 - Slowness of suggestion function is fixed, you will no more experience lagging in the website
@@ -18,6 +20,3 @@
 - Please use [aio-english-search.vercel.app](https://aio-english-search.vercel.app) to use the preset phrases.com api since I put them as Environment Varible
 - If you prefer to use them locally, modify the fetchPhrase.js and getRandomKeys.js from process env to your UID and TokenID
 
-## Change log
-**1/12/2024**: Revert commit since Google sign-in doesn't work, still working on it
-**8/12/22024**: I successfully add Google sign in (at least the button and the client id), working on it

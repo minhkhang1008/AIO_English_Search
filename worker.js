@@ -9,8 +9,8 @@ onmessage = function (e) {
         }
         postMessage({ status: 'loaded' });
     } else if (e.data.command === 'search') {
-        let prefix = e.data.prefix;
-        let suggestions = trie.search(prefix, 20); 
+        let substring = e.data.prefix; 
+        let suggestions = trie.search(substring, 20); 
         postMessage({ suggestions });
     }
 };

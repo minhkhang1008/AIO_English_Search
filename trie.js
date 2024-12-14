@@ -22,16 +22,22 @@ class Trie {
         node.isEndOfWord = true;
     }
 
-    search(prefix, limit = 10) {
-        let node = this.root;
-        for (let char of prefix) {
-            char = char.toLowerCase();
-            if (!node.children[char]) {
-                return [];
-            }
-            node = node.children[char];
+    search(substring, limit = 10) {
+        let results = [];
+        this._collectWordsContaining(this.root, '', substring.toLowerCase(), results, limit);
+        return results;
+    }
+
+    _collectWordsContaining(node, currentWord, substring, results, limit) {
+        if (results.length >= limit) {
+            return;
         }
-        return this._collectAllWords(node, prefix, [], limit);
+        if (node.isEndOfWord && currentWord.includes(substring)) {
+            results.push(currentWord);
+        }
+        for (let char in node.children) {
+            this._collectWordsContaining(node.children[char], currentWord + char, substring, results, limit);
+        }
     }
 
     _collectAllWords(node, prefix, words, limit) {
@@ -49,4 +55,8 @@ class Trie {
         }
         return words;
     }
+}
+
+if (typeof module !== 'undefined') {
+    module.exports = { Trie, TrieNode }; 
 }
