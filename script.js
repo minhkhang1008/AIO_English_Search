@@ -244,11 +244,7 @@ function displayGrammarCheckResult(data) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const checkGrammarButton = document.createElement('button');
-    checkGrammarButton.id = 'checkGrammarButton';
-    checkGrammarButton.className = 'check-grammar-button';
-    checkGrammarButton.textContent = 'Check Grammar';
-
+    const checkGrammarButton = document.getElementById('checkGrammarButton');
     checkGrammarButton.addEventListener('click', () => {
         const input = document.getElementById('searchBox').value.trim();
         if (input) {
@@ -262,12 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
 async function checkGrammar(text) {
     try {
         const keyResponse = await fetch('/api/getRandomKeys');
+        if (!keyResponse.ok) throw new Error('Failed to fetch API keys');
         const { uid, tokenid } = await keyResponse.json();
 
         const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
+        if (!response.ok) throw new Error('Grammar API request failed');
         const data = await response.json();
-
-        console.log('Grammar Check Result:', data);
 
         if (data.error) {
             alert(`Error: ${data.error}`);
@@ -275,10 +271,11 @@ async function checkGrammar(text) {
             displayGrammarCheckResult(data);
         }
     } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to check grammar.');
+        console.error('Error:', error.message);
+        alert('An error occurred while checking grammar. Please try again.');
     }
 }
+
 
 function displayGrammarCheckResult(data) {
     const definitionContainer = document.getElementById('definitionContainer');
@@ -286,13 +283,9 @@ function displayGrammarCheckResult(data) {
 
     if (data.matches && data.matches.length > 0) {
         data.matches.forEach((match, index) => {
-            const message = match.message;
-            const context = match.context.text;
-            const offset = match.context.offset;
-            const length = match.context.length;
-            const replacementSuggestions = match.replacements.map(rep => rep.value).join(', ');
-
-            const highlightedText = `${context.substring(0, offset)}<span class="highlight">${context.substring(offset, offset + length)}</span>${context.substring(offset + length)}`;
+            const { message, context, replacements } = match;
+            const highlightedText = `${context.text.substring(0, context.offset)}<span class="highlight">${context.text.substring(context.offset, context.offset + context.length)}</span>${context.text.substring(context.offset + context.length)}`;
+            const replacementSuggestions = replacements.map(rep => rep.value).join(', ');
 
             definitionContainer.innerHTML += `
                 <div class="grammar-issue">
@@ -303,7 +296,7 @@ function displayGrammarCheckResult(data) {
             `;
         });
     } else {
-        definitionContainer.innerHTML += '<p>No issues found.</p>';
+        definitionContainer.innerHTML += '<p>No grammar issues detected.</p>';
     }
 
     definitionContainer.classList.remove('hidden');

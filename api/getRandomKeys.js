@@ -3,8 +3,5 @@ export default function handler(req, res) {
     const tokenidList = [process.env.TOKENID1, process.env.TOKENID2, process.env.TOKENID3, process.env.TOKENID4];
 
     const randomIndex = Math.floor(Math.random() * uidList.length);
-    const uid = uidList[randomIndex];
-    const tokenid = tokenidList[randomIndex];
-
-    res.status(200).json({ uid, tokenid });
+    res.status(200).json({ uid: uidList[randomIndex], tokenid: tokenidList[randomIndex] });
 }
