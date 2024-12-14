@@ -60,18 +60,28 @@ p {
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
+    width: 100%;
 }
 
 #searchBox {
-    width: 100%;
-    max-width: 400px;
-    padding: 14px;
+    box-sizing: border-box;   
+    width: 400px;
+    min-height: 0;           
+    padding: 18px 14px;       
     border: 2px solid #fff;
-    border-radius: 30px;
-    font-size: 18px;
+    border-radius: 18px;
+    font-size: 16px;         
+    line-height: 1.4;
     outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    resize: none;
+    overflow-y: hidden;       
+    transition: box-shadow 0.3s, border-color 0.3s;
     margin: 0 auto;
+}
+
+#searchBox.expanded {
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px #4CAF50;
 }
 
 #searchBox:focus {

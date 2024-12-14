@@ -191,17 +191,14 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 async function checkGrammar(text) {
     try {
-        // Step 1: Fetch random UID and TokenID
         const keyResponse = await fetch('/api/getRandomKeys');
         const { uid, tokenid } = await keyResponse.json();
 
-        // Step 2: Call the Grammar.com API
         const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
         const data = await response.json();
 
         console.log('Grammar Check Result:', data);
 
-        // Step 3: Display results
         if (data.error) {
             alert(`Error: ${data.error}`);
         } else {
@@ -253,6 +250,21 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a sentence to check for grammar.');
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBox = document.getElementById('searchBox');
+
+    function autoResize() {
+        searchBox.style.height = 'auto'; 
+        searchBox.style.height = searchBox.scrollHeight + 'px';
+    }
+
+    searchBox.addEventListener('input', () => {
+        autoResize();
+    });
+
+    autoResize();
 });
 
 async function checkGrammar(text) {
