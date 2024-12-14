@@ -6,6 +6,7 @@
       + 4 presets switchable phrases.com api (each having 100 daily Quota) 
 - Grammar.com api call to check for any Grammatically mistake in a sentence
       + It uses the same api key as Phrases.com
+- For best long-text looking, I made the input field to be able to extend itself. Now, you can paste any significantly long text but still maintaining the ability of editing it.
 
 # Fix bug
 - Slowness of suggestion function is fixed, you will no more experience lagging in the website
