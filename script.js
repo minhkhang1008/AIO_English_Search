@@ -59,6 +59,34 @@ function debounce(func, wait) {
     };
 }
 
+async function fetchTranslation() {
+    const inputText = document.getElementById('searchBox').value.trim(); 
+    const targetLanguage = 'vi';
+
+    if (!inputText) {
+        alert('Please enter some text to translate.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/translate?text=${encodeURIComponent(inputText)}&to=${targetLanguage}`);
+        const data = await response.json();
+
+        if (data.translated) {
+            console.log(`Translated Text: ${data.translated}`);
+            alert(`Translated: ${data.translated}`);
+        } else {
+            console.error('Translation error:', data.error);
+            alert('Translation failed: ' + data.error);
+        }
+    } catch (err) {
+        console.error('Request Error:', err);
+        alert('An error occurred while fetching the translation.');
+    }
+}
+
+document.getElementById('translateButton').addEventListener('click', fetchTranslation);
+
 async function initializeGoogleSignIn() {
     try {
         const response = await fetch('/api/getGoogleClientId');

@@ -8,6 +8,7 @@
 - Quick Search uses [Phrases.com api by STANDS4](https://www.phrases.com/phrases_api.php) to search for phrasal verbs, idioms 
 - Grammar check uses [Grammar.com api by STANDS4](https://www.grammar.com/api.php) to check for any grammatical mistakes
 - Suggestion lists use words in words.txt files (thanks to [nelsonic english-words repository](https://github.com/dwyl/english-words)) to show suggestions (words that include the input)
+- Translation function uses Google Translate Unofficial [matheuss google-translate-api](https://github.com/matheuss/google-translate-api)
 
 # Bug
 - Google has nothing to do now
