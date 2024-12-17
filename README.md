@@ -16,6 +16,13 @@
 # Future update
 - Personalized experience with Google Sign-in
 
+# Credit
+- [Free Dictionary api](https://dictionaryapi.dev/) for Quick Search function
+- [Phrases.com api by STANDS4](https://www.phrases.com/phrases_api.php) for Quick Search function
+- [Grammar.com api by STANDS4](https://www.grammar.com/api.php) for Grammar Check function
+- [matheuss google-translate-api](https://github.com/matheuss/google-translate-api) for Translation function
+- [UIVerse](https://uiverse.io/) for buttons
+
 ## Notes
 - Please use [aio-english-search.vercel.app](https://aio-english-search.vercel.app) to use the preset phrases.com api since I put them as Environment Varible
 - If you prefer to use them locally, modify the fetchPhrase.js and getRandomKeys.js from process env to your UID and TokenID
