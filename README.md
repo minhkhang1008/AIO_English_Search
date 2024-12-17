@@ -12,6 +12,7 @@
 
 # Bug
 - Google has nothing to do now
+- I messed up, all functions die
 
 # Future update
 - Personalized experience with Google Sign-in
