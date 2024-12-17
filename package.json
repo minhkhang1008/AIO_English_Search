@@ -1,0 +1,15 @@
+{
+  "name": "aio_english_search",
+  "version": "1.0.0",
+  "description": "Free website includes all functions you need for your English Studying",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "google-translate-api": "^0.1.1"
+  }
+}
