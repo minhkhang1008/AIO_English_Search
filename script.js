@@ -5,11 +5,23 @@ worker.onmessage = function (e) {
     if (e.data.status === 'loaded') {
         console.log('Trie loaded in Web Worker');
     } else if (e.data.suggestions) {
-        updateSuggestionList(e.data.suggestions);
+        appendToSuggestionList(e.data.suggestions); 
     } else {
         console.error('Unexpected message from worker:', e.data);
     }
 };
+
+function appendToSuggestionList(newSuggestions) {
+    let suggestionList = document.getElementById('suggestionList');
+    newSuggestions.forEach(word => {
+        let li = document.createElement('li');
+        li.innerHTML = highlightMatch(word, document.getElementById('searchBox').value.trim().toLowerCase());
+        li.addEventListener('click', function () {
+            handleSuggestionClick(word);
+        });
+        suggestionList.appendChild(li);
+    });
+}
 
 worker.onerror = function (error) {
     console.error('Worker encountered an error:', error.message);
@@ -136,6 +148,7 @@ function handleCredentialResponse(response) {
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
     if (input) {
+        document.getElementById('suggestionList').innerHTML = ''; 
         worker.postMessage({ command: 'search', prefix: input });
     } else {
         document.getElementById('suggestionList').innerHTML = '';
