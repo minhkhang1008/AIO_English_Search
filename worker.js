@@ -10,6 +10,7 @@ onmessage = function (e) {
         }
         postMessage({ status: 'loaded' });
     } else if (e.data.command === 'search') {
+<<<<<<< HEAD
         let substring = e.data.prefix;
         let batchSize = 10; 
         let fetchedResults = [];
@@ -31,5 +32,10 @@ onmessage = function (e) {
         }
 
         fetchMoreResults();
+=======
+        let prefix = e.data.prefix;
+        let suggestions = trie.search(prefix, 20); 
+        postMessage({ suggestions });
+>>>>>>> parent of 15718e6 (Update suggestion list function)
     }
 };

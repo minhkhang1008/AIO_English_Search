@@ -22,6 +22,7 @@ class Trie {
         node.isEndOfWord = true;
     }
 
+<<<<<<< HEAD
     search(substring, limit = 10) {
         let results = [];
         this._collectWordsContaining(this.root, '', substring.toLowerCase(), results, limit);
@@ -41,10 +42,24 @@ class Trie {
 
         for (let char in node.children) {
             this._collectWordsContaining(node.children[char], currentWord + char, substring, results, limit);
+=======
+    search(prefix, limit = 10) {
+        let node = this.root;
+        for (let char of prefix) {
+            char = char.toLowerCase();
+            if (!node.children[char]) {
+                return [];
+            }
+            node = node.children[char];
+>>>>>>> parent of 15718e6 (Update suggestion list function)
         }
+        return this._collectAllWords(node, prefix, [], limit);
     }
 }
+<<<<<<< HEAD
 
 if (typeof module !== 'undefined') {
     module.exports = { Trie, TrieNode };
 }
+=======
+>>>>>>> parent of 15718e6 (Update suggestion list function)
