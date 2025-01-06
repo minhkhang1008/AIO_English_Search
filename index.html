@@ -70,9 +70,11 @@
     <div class="container">
         <h1>All in One English</h1>
         <div id="googleSignInButton"></div>
+
         <p>Type a word or phrase and press Enter or click Quick Search</p>
-        
+
         <div class="input-container">
+<<<<<<< HEAD
             <textarea 
                 id="searchBox"
                 rows="1"
@@ -80,11 +82,15 @@
                 autocomplete="off"
                 aria-label="Type a word or phrase"
             ></textarea>
+=======
+            <input type="text" id="searchBox" placeholder="Type here" autocomplete="off" aria-label="Type a word or phrase">
+>>>>>>> parent of 189627c (Update input field)
             <button class="button" data-text="Quick Search" id="quickSearchButton" aria-label="Quick Search">
                 <span class="actual-text">&nbsp;Quick Search&nbsp;</span>
                 <span aria-hidden="true" class="hover-text">&nbsp;Quick Search&nbsp;</span>
             </button>
         </div>
+<<<<<<< HEAD
         
         <div class="button-container">
             <button class="button" id="checkGrammarButton">Check Grammar</button>
@@ -99,3 +105,20 @@
                 </svg>
             </button>
         </div>
+=======
+
+        <div class="button-container">
+            <button class="button" id="checkGrammarButton">Check Grammar</button>
+        </div>
+
+        <ul id="suggestionList" class="suggestion-list" aria-label="Suggestions"></ul>
+        <div id="buttonContainer" class="button-container"></div>
+        <div id="definitionContainer" class="definition-container hidden"></div>
+    </div>
+
+    <script src="trie.js" defer></script>
+    <script src="worker.js" defer></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
+>>>>>>> parent of 189627c (Update input field)
