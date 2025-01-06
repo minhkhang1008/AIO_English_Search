@@ -22,7 +22,6 @@ class Trie {
         node.isEndOfWord = true;
     }
 
-<<<<<<< HEAD
     search(substring, limit = 10) {
         let results = [];
         this._collectWordsContaining(this.root, '', substring.toLowerCase(), results, limit);
@@ -33,33 +32,31 @@ class Trie {
         if (results.length >= limit) {
             return;
         }
-
         if (node.isEndOfWord && currentWord.includes(substring)) {
-            if (currentWord.indexOf(substring) !== -1) {
-                results.push(currentWord);
-            }
+            results.push(currentWord);
         }
-
         for (let char in node.children) {
             this._collectWordsContaining(node.children[char], currentWord + char, substring, results, limit);
-=======
-    search(prefix, limit = 10) {
-        let node = this.root;
-        for (let char of prefix) {
-            char = char.toLowerCase();
-            if (!node.children[char]) {
-                return [];
-            }
-            node = node.children[char];
->>>>>>> parent of 15718e6 (Update suggestion list function)
         }
-        return this._collectAllWords(node, prefix, [], limit);
+    }
+
+    _collectAllWords(node, prefix, words, limit) {
+        if (words.length >= limit) {
+            return words;
+        }
+        if (node.isEndOfWord) {
+            words.push(prefix);
+        }
+        for (let char in node.children) {
+            if (words.length >= limit) {
+                break;
+            }
+            this._collectAllWords(node.children[char], prefix + char, words, limit);
+        }
+        return words;
     }
 }
-<<<<<<< HEAD
 
 if (typeof module !== 'undefined') {
-    module.exports = { Trie, TrieNode };
+    module.exports = { Trie, TrieNode }; 
 }
-=======
->>>>>>> parent of 15718e6 (Update suggestion list function)

@@ -5,23 +5,11 @@ worker.onmessage = function (e) {
     if (e.data.status === 'loaded') {
         console.log('Trie loaded in Web Worker');
     } else if (e.data.suggestions) {
-        appendToSuggestionList(e.data.suggestions); 
+        updateSuggestionList(e.data.suggestions);
     } else {
         console.error('Unexpected message from worker:', e.data);
     }
 };
-
-function appendToSuggestionList(newSuggestions) {
-    let suggestionList = document.getElementById('suggestionList');
-    newSuggestions.forEach(word => {
-        let li = document.createElement('li');
-        li.innerHTML = highlightMatch(word, document.getElementById('searchBox').value.trim().toLowerCase());
-        li.addEventListener('click', function () {
-            handleSuggestionClick(word);
-        });
-        suggestionList.appendChild(li);
-    });
-}
 
 worker.onerror = function (error) {
     console.error('Worker encountered an error:', error.message);
@@ -58,34 +46,6 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
-
-async function fetchTranslation() {
-    const inputText = document.getElementById('searchBox').value.trim(); 
-    const targetLanguage = 'vi';
-
-    if (!inputText) {
-        alert('Please enter some text to translate.');
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/translate?text=${encodeURIComponent(inputText)}&to=${targetLanguage}`);
-        const data = await response.json();
-
-        if (data.translated) {
-            console.log(`Translated Text: ${data.translated}`);
-            alert(`Translated: ${data.translated}`);
-        } else {
-            console.error('Translation error:', data.error);
-            alert('Translation failed: ' + data.error);
-        }
-    } catch (err) {
-        console.error('Request Error:', err);
-        alert('An error occurred while fetching the translation.');
-    }
-}
-
-document.getElementById('translateButton').addEventListener('click', fetchTranslation);
 
 async function initializeGoogleSignIn() {
     try {
@@ -176,7 +136,6 @@ function handleCredentialResponse(response) {
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
     if (input) {
-        document.getElementById('suggestionList').innerHTML = ''; 
         worker.postMessage({ command: 'search', prefix: input });
     } else {
         document.getElementById('suggestionList').innerHTML = '';
@@ -232,17 +191,14 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 async function checkGrammar(text) {
     try {
-        // Step 1: Fetch random UID and TokenID
         const keyResponse = await fetch('/api/getRandomKeys');
         const { uid, tokenid } = await keyResponse.json();
 
-        // Step 2: Call the Grammar.com API
         const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
         const data = await response.json();
 
         console.log('Grammar Check Result:', data);
 
-        // Step 3: Display results
         if (data.error) {
             alert(`Error: ${data.error}`);
         } else {
@@ -294,6 +250,21 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a sentence to check for grammar.');
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBox = document.getElementById('searchBox');
+
+    function autoResize() {
+        searchBox.style.height = 'auto'; 
+        searchBox.style.height = searchBox.scrollHeight + 'px';
+    }
+
+    searchBox.addEventListener('input', () => {
+        autoResize();
+    });
+
+    autoResize();
 });
 
 async function checkGrammar(text) {
