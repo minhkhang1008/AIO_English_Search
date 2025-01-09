@@ -189,6 +189,53 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
     }
 });
 
+async function translateText(text, sourceLang, targetLang) {
+    try {
+      const response = await fetch('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text,
+          source_lang: sourceLang,
+          target_lang: targetLang,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Translation request failed');
+      }
+  
+      const data = await response.json();
+      return data.data; 
+    } catch (error) {
+      console.error('Error during translation:', error);
+      alert('Failed to translate. Please try again.');
+      return null;
+    }
+  }
+
+document.getElementById('translateButton').addEventListener('click', async () => {
+    const input = document.getElementById('searchBox').value.trim();
+    if (input) {
+        const translatedText = await translateText(input, 'EN', 'VI'); 
+        if (translatedText) {
+            const definitionContainer = document.getElementById('definitionContainer');
+            definitionContainer.innerHTML = `
+                <h2>Translation</h2>
+                <p><strong>Original:</strong> ${input}</p>
+                <p><strong>Translated:</strong> ${translatedText}</p>
+            `;
+            definitionContainer.classList.remove('hidden');
+            definitionContainer.classList.add('expand');
+        }
+    } else {
+        alert('Please enter text to translate.');
+    }
+});
+
+
 async function checkGrammar(text) {
     try {
         const keyResponse = await fetch('/api/getRandomKeys');
