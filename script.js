@@ -76,7 +76,35 @@ document.addEventListener('DOMContentLoaded', initializeGoogleSignIn);
 
 function handleCredentialResponse(response) {
     const idToken = response.credential;
-    sendTokenToServer(idToken);
+
+    fetch('/api/tokensignin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        if (data.name) {
+            console.log('Sign-In Successful:', data);
+
+            const userGreeting = document.createElement('div');
+            userGreeting.id = 'userGreeting';
+            userGreeting.textContent = `Hello ${data.name}`;
+            document.querySelector('.container').prepend(userGreeting);
+
+            const signInButton = document.getElementById('googleSignInButton');
+            if (signInButton) {
+                signInButton.remove();
+            }
+        } else {
+            console.error('Name not found in response:', data);
+        }
+    })
+    .catch((error) => {
+        console.error('Error during token verification:', error);
+    });
 }
 
 function sendTokenToServer(idToken) {
@@ -97,41 +125,6 @@ function sendTokenToServer(idToken) {
 }
 
 window.onload = initializeGoogleSignIn;
-
-function handleCredentialResponse(response) {
-    const idToken = response.credential;
-
-    console.log('ID Token:', idToken); 
-
-    fetch('/api/tokensignin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ idToken }), 
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.name) {
-                console.log('Sign-In Successful:', data);
-
-                const userGreeting = document.createElement('div');
-                userGreeting.id = 'userGreeting';
-                userGreeting.textContent = `Hello ${data.name}`;
-                document.querySelector('.container').prepend(userGreeting);
-
-                const signInButton = document.getElementById('googleSignInButton');
-                if (signInButton) {
-                    signInButton.remove();
-                }
-            } else {
-                console.error('Name not found in response:', data);
-            }
-        })
-        .catch((error) => {
-            console.error('Error during token verification:', error);
-        });
-}
 
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
@@ -173,6 +166,7 @@ document.getElementById('searchBox').addEventListener('keydown', function (event
                 } else {
                     performAction(input);
                 }
+                document.getElementById('suggestionList').innerHTML = ''; 
             }
         }
     } else {
@@ -191,23 +185,12 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 async function translateText(text, sourceLang, targetLang) {
     try {
-        const response = await fetch('/api/translate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                text: text,
-                to: targetLang, 
-            }),
-        });
-
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`);
         if (!response.ok) {
             throw new Error('Translation request failed');
         }
-
         const data = await response.json();
-        return data.translated_text; 
+        return data.responseData.translatedText;
     } catch (error) {
         console.error('Error during translation:', error);
         alert('Failed to translate. Please try again.');
@@ -218,7 +201,11 @@ async function translateText(text, sourceLang, targetLang) {
 document.getElementById('translateButton').addEventListener('click', async () => {
     const input = document.getElementById('searchBox').value.trim();
     if (input) {
-        const translatedText = await translateText(input, 'EN', 'VI'); 
+        const languageCodeInput = document.getElementById('languageCode');
+        const targetLang = languageCodeInput.value; // Get the selected language code
+
+        const translatedText = await translateText(input, 'en', targetLang); // Use the selected language code
+        
         if (translatedText) {
             const definitionContainer = document.getElementById('definitionContainer');
             definitionContainer.innerHTML = `
@@ -229,11 +216,138 @@ document.getElementById('translateButton').addEventListener('click', async () =>
             definitionContainer.classList.remove('hidden');
             definitionContainer.classList.add('expand');
         }
+        document.getElementById('suggestionList').innerHTML = ''; 
     } else {
         alert('Please enter text to translate.');
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsContainer = document.getElementById('settingsContainer');
+    const languageSelect = document.getElementById('languageSelect');
+    const customLanguageInput = document.getElementById('customLanguageInput');
+
+    settingsButton.addEventListener('click', () => {
+        settingsContainer.classList.toggle('hidden');
+    });
+
+    languageSelect.addEventListener('change', (event) => {
+        const selectedLanguage = event.target.value;
+        if (selectedLanguage === 'custom') {
+            customLanguageInput.classList.remove('hidden');
+        } else {
+            customLanguageInput.classList.add('hidden');
+            alert(`Translation language set to: ${languageSelect.options[languageSelect.selectedIndex].text}`);
+        }
+    });
+
+    const customLanguageField = document.getElementById('customLanguageField');
+    customLanguageField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const customLanguage = customLanguageField.value.trim();
+            if (customLanguage) {
+                alert(`Translation language set to: ${customLanguage}`);
+                customLanguageInput.classList.add('hidden');
+                languageSelect.value = 'custom';
+            }
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsContainer = document.getElementById('settingsContainer');
+    const languageCodeInput = document.getElementById('languageCode');
+
+    // Toggle settings container visibility
+    settingsButton.addEventListener('click', () => {
+        settingsContainer.classList.toggle('hidden');
+    });
+
+    // Function to update the language code input field
+    const updateLanguageCode = (languageCode) => {
+        languageCodeInput.value = languageCode; // Update the input field
+        localStorage.setItem('lastLanguageCode', languageCode); // Save to localStorage
+    };
+
+    // Add event listeners for each country radio button
+    const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
+    countryRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const selectedCountry = radio.id;
+            const languageCode = document.querySelector(`.${selectedCountry} label`).textContent.match(/\((\w+)\)/)[1];
+            updateLanguageCode(languageCode); // Update the language code
+        });
+    });
+
+    // Retrieve the last saved language code from localStorage
+    const lastLanguageCode = localStorage.getItem('lastLanguageCode');
+
+    if (lastLanguageCode) {
+        // Find the radio button corresponding to the last saved language code
+        const lastSelectedRadio = Array.from(countryRadios).find(radio => {
+            const countryLabel = document.querySelector(`.${radio.id} label`);
+            return countryLabel.textContent.includes(`(${lastLanguageCode})`);
+        });
+
+        if (lastSelectedRadio) {
+            lastSelectedRadio.checked = true; // Set the corresponding radio button as checked
+            updateLanguageCode(lastLanguageCode); // Update the language code input field
+        }
+    } else {
+        // If no saved language code, default to Vietnam
+        const defaultCountry = document.getElementById('Vietnam');
+        defaultCountry.checked = true;
+        updateLanguageCode('vi'); // Set default language code for Vietnam
+    }
+
+    // Translate button event listener
+    document.getElementById('translateButton').addEventListener('click', async () => {
+        const input = document.getElementById('searchBox').value.trim();
+        if (input) {
+            const targetLang = languageCodeInput.value; // Get the selected language code
+
+            const translatedText = await translateText(input, 'en', targetLang); // Use the selected language code
+            
+            if (translatedText) {
+                const definitionContainer = document.getElementById('definitionContainer');
+                definitionContainer.innerHTML = `
+                    <h2>Translation</h2>
+                    <p><strong>Original:</strong> ${input}</p>
+                    <p><strong>Translated:</strong> ${translatedText}</p>
+                `;
+                definitionContainer.classList.remove('hidden');
+                definitionContainer.classList.add('expand');
+            }
+            document.getElementById('suggestionList').innerHTML = ''; 
+        } else {
+            alert('Please enter text to translate.');
+        }
+    });
+
+    // Keydown event listener for jumping to countries by letter
+    document.addEventListener('keydown', (event) => {
+        // Check if the dropdown is open
+        const dropdownCheckbox = document.querySelector('.dropdown-checkbox');
+        if (!dropdownCheckbox || !dropdownCheckbox.checked) return; // Only work if dropdown is open
+
+        // Check if a letter key was pressed (A-Z, case-insensitive)
+        const key = event.key.toUpperCase();
+        if (!/^[A-Z]$/.test(key)) return; // Ignore non-letter keys
+
+        // Find the first country starting with the pressed letter
+        const countryItems = document.querySelectorAll('.select-wrapper ul li');
+        for (const item of countryItems) {
+            const countryName = item.textContent.trim().toUpperCase();
+            if (countryName.startsWith(key)) {
+                // Scroll to the matching country
+                item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                break; // Stop after finding the first match
+            }
+        }
+    });
+});
 
 async function checkGrammar(text) {
     try {
@@ -292,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = document.getElementById('searchBox').value.trim();
         if (input) {
             checkGrammar(input);
+            document.getElementById('suggestionList').innerHTML = ''; 
         } else {
             alert('Please enter a sentence to check for grammar.');
         }
@@ -333,7 +448,6 @@ async function checkGrammar(text) {
         alert('An error occurred while checking grammar. Please try again.');
     }
 }
-
 
 function displayGrammarCheckResult(data) {
     const definitionContainer = document.getElementById('definitionContainer');
@@ -523,7 +637,6 @@ function displayDefinitionContent(data, input) {
     });
 }
 
-
 function getPronunciationLabel(phonetic) {
     let label = 'PLAY PRONUNCIATION';
     const audioUrl = phonetic.audio;
@@ -537,7 +650,6 @@ function getPronunciationLabel(phonetic) {
     return label;
 }
 
-
 function playAudio(audioUrl) {
     if (audioUrl) {
         const audio = new Audio(audioUrl);
@@ -549,7 +661,6 @@ function playAudio(audioUrl) {
         alert('Audio not available for this word.');
     }
 }
-
 
 function highlightMatch(word, query) {
     let regex = new RegExp(`(${query})`, 'gi');
@@ -653,4 +764,3 @@ function openUrl(url) {
         window.location.reload();
     }, 500); 
 }
-
