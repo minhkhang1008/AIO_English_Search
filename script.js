@@ -191,30 +191,29 @@ document.getElementById('quickSearchButton').addEventListener('click', function 
 
 async function translateText(text, sourceLang, targetLang) {
     try {
-      const response = await fetch('/api/translate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          source_lang: sourceLang,
-          target_lang: targetLang,
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Translation request failed');
-      }
-  
-      const data = await response.json();
-      return data.data; 
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: text,
+                to: targetLang, 
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Translation request failed');
+        }
+
+        const data = await response.json();
+        return data.translated_text; 
     } catch (error) {
-      console.error('Error during translation:', error);
-      alert('Failed to translate. Please try again.');
-      return null;
+        console.error('Error during translation:', error);
+        alert('Failed to translate. Please try again.');
+        return null;
     }
-  }
+}
 
 document.getElementById('translateButton').addEventListener('click', async () => {
     const input = document.getElementById('searchBox').value.trim();
