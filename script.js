@@ -254,61 +254,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
 document.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settingsButton');
     const settingsContainer = document.getElementById('settingsContainer');
     const languageCodeInput = document.getElementById('languageCode');
 
-    // Toggle settings container visibility
+    // Declare `countryRadios` at the top
+    const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
+
     settingsButton.addEventListener('click', () => {
         settingsContainer.classList.toggle('hidden');
     });
 
-    // Function to update the language code input field
     const updateLanguageCode = (languageCode) => {
-        languageCodeInput.value = languageCode; // Update the input field
-        localStorage.setItem('lastLanguageCode', languageCode); // Save to localStorage
+        languageCodeInput.value = languageCode; 
+        localStorage.setItem('lastLanguageCode', languageCode); 
     };
 
-    // Add event listeners for each country radio button
-    const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
+    function updateDropdown(languageCode) {
+        const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
+        let foundMatch = false;
+    
+        countryRadios.forEach(radio => {
+            const countryLabel = document.querySelector(`.${radio.id} label`);
+            if (countryLabel.textContent.includes(`(${languageCode})`)) {
+                radio.checked = true;
+                foundMatch = true;
+            }
+        });
+    
+        if (!foundMatch) {
+            const dropdownContainer = document.querySelector('.dropdown-container');
+            dropdownContainer.innerHTML = `
+                <span>🏳️</span>
+                <span>Own language (${languageCode})</span>
+            `;
+        }
+    }
+
+    languageCodeInput.addEventListener('input', (event) => {
+        const newLanguageCode = event.target.value.trim();
+        if (newLanguageCode) {
+            updateDropdown(newLanguageCode);
+        } else {
+            const defaultCountry = document.getElementById('Vietnamese');
+            defaultCountry.checked = true;
+            languageCodeInput.value = 'vi';
+        }
+    });
+    
+    languageCodeInput.addEventListener('blur', (event) => {
+        const newLanguageCode = event.target.value.trim();
+        if (!newLanguageCode) {
+            const defaultCountry = document.getElementById('Vietnamese');
+            defaultCountry.checked = true;
+            languageCodeInput.value = 'vi';
+        }
+    });
+
     countryRadios.forEach(radio => {
         radio.addEventListener('change', () => {
             const selectedCountry = radio.id;
             const languageCode = document.querySelector(`.${selectedCountry} label`).textContent.match(/\((\w+)\)/)[1];
-            updateLanguageCode(languageCode); // Update the language code
+            languageCodeInput.value = languageCode;
         });
     });
 
-    // Retrieve the last saved language code from localStorage
     const lastLanguageCode = localStorage.getItem('lastLanguageCode');
 
     if (lastLanguageCode) {
-        // Find the radio button corresponding to the last saved language code
         const lastSelectedRadio = Array.from(countryRadios).find(radio => {
             const countryLabel = document.querySelector(`.${radio.id} label`);
             return countryLabel.textContent.includes(`(${lastLanguageCode})`);
         });
 
         if (lastSelectedRadio) {
-            lastSelectedRadio.checked = true; // Set the corresponding radio button as checked
-            updateLanguageCode(lastLanguageCode); // Update the language code input field
+            lastSelectedRadio.checked = true; 
+            updateLanguageCode(lastLanguageCode); 
         }
     } else {
         // If no saved language code, default to Vietnam
-        const defaultCountry = document.getElementById('Vietnam');
+        const defaultCountry = document.getElementById('Vietnamese');
         defaultCountry.checked = true;
-        updateLanguageCode('vi'); // Set default language code for Vietnam
+        updateLanguageCode('vi'); 
     }
 
-    // Translate button event listener
     document.getElementById('translateButton').addEventListener('click', async () => {
         const input = document.getElementById('searchBox').value.trim();
         if (input) {
-            const targetLang = languageCodeInput.value; // Get the selected language code
+            const targetLang = languageCodeInput.value; 
 
-            const translatedText = await translateText(input, 'en', targetLang); // Use the selected language code
+            const translatedText = await translateText(input, 'en', targetLang);
             
             if (translatedText) {
                 const definitionContainer = document.getElementById('definitionContainer');
@@ -326,24 +362,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Keydown event listener for jumping to countries by letter
     document.addEventListener('keydown', (event) => {
         // Check if the dropdown is open
         const dropdownCheckbox = document.querySelector('.dropdown-checkbox');
-        if (!dropdownCheckbox || !dropdownCheckbox.checked) return; // Only work if dropdown is open
+        if (!dropdownCheckbox || !dropdownCheckbox.checked) return; 
 
-        // Check if a letter key was pressed (A-Z, case-insensitive)
         const key = event.key.toUpperCase();
-        if (!/^[A-Z]$/.test(key)) return; // Ignore non-letter keys
+        if (!/^[A-Z]$/.test(key)) return; 
 
-        // Find the first country starting with the pressed letter
         const countryItems = document.querySelectorAll('.select-wrapper ul li');
         for (const item of countryItems) {
             const countryName = item.textContent.trim().toUpperCase();
             if (countryName.startsWith(key)) {
-                // Scroll to the matching country
                 item.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                break; // Stop after finding the first match
+                break; 
             }
         }
     });

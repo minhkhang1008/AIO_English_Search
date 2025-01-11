@@ -784,7 +784,6 @@ p {
     outline: none;
     border: none;
     background: none;
-    pointer-events: none; /* Make the input field read-only */
   }
   
   .invalid-msg {

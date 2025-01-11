@@ -7,6 +7,8 @@
 - For best long-text looking, I made the input field to be able to extend itself. Now, you can paste any significantly long text but still maintaining the ability of editing it.
 - Suggestion list now showing words that INCLUDE the input, not just starting with it! (definitely useful for searching words from root word)
 - Use https://mymemory.translated.net/ api for translation function 
+      + Currently, the "Settings" button is only used to select the translation language [English --> <Your desired language>]
+      + Only some languages are put there, you can type your own language code if needed [ISO 639-1 standard](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) {please note that Memory Translate may not able to translate to all languages}
 
 # Special Thanks
 - [Free Dictionary API](https://dictionaryapi.dev/) - Quick Search Function
