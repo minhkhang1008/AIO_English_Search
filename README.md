@@ -7,8 +7,8 @@
 - For best long-text looking, I made the input field to be able to extend itself. Now, you can paste any significantly long text but still maintaining the ability of editing it.
 - Suggestion list now showing words that INCLUDE the input, not just starting with it! (definitely useful for searching words from root word)
 - Use https://mymemory.translated.net/ api for translation function 
-      + Currently, the "Settings" button is only used to select the translation language [English --> <Your desired language>]
-      + Only some languages are put there, you can type your own language code if needed [ISO 639-1 standard](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) {please note that Memory Translate may not able to translate to all languages}
+      + Quite a lot of languages are added, choose yours from the list
+      + Notes: Only support Simplified Chinese; use Tanalog language (different from Filipino Standard Tanalog)
 
 # Special Thanks
 - [Free Dictionary API](https://dictionaryapi.dev/) - Quick Search Function
@@ -16,11 +16,5 @@
 - [Grammar.com](https://grammar.com) by STANDS4 - Grammar Check function
 - [Mymemory](https://mymemory.translated.net/) by translated LABS - Translate function
 - [UIVerse](https://uiverse.io) - Animation buttons
-
-# Fix bug
-- Slowness of suggestion function is fixed, you will no more experience lagging in the website
-- Now showing all result from the Quick Search function
-- Now calls F.D api first, then calls phrases.com api if it fails to get the result
-
 
 

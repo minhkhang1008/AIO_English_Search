@@ -830,9 +830,27 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Amharic:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Amharic:checked ~ .select-wrapper li.Amharic {
+    content: "🇪🇹";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Arabic:checked ~ .dropdown-container::before,
   .ui-wrapper input#Arabic:checked ~ .select-wrapper li.Arabic {
     content: "🇸🇦";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Armenian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Armenian:checked ~ .select-wrapper li.Armenian {
+    content: "🇦🇲";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Azerbaijani:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Azerbaijani:checked ~ .select-wrapper li.Azerbaijani {
+    content: "🇦🇿";
     background-color: lightgray;
   }
   
@@ -848,15 +866,63 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Bengali:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Bengali:checked ~ .select-wrapper li.Bengali {
+    content: "🇧🇩";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Bosnian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Bosnian:checked ~ .select-wrapper li.Bosnian {
     content: "🇧🇦";
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Bulgarian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Bulgarian:checked ~ .select-wrapper li.Bulgarian {
+    content: "🇧🇬";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Catalan:checked ~ .dropdown-container::before,
   .ui-wrapper input#Catalan:checked ~ .select-wrapper li.Catalan {
     content: "🇪🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Cebuano:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Cebuano:checked ~ .select-wrapper li.Cebuano {
+    content: "🇵🇭";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Chinese:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Chinese:checked ~ .select-wrapper li.Chinese {
+    content: "🇨🇳 🇹🇼";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Corsican:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Corsican:checked ~ .select-wrapper li.Corsican {
+    content: "🇫🇷";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Croatian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Croatian:checked ~ .select-wrapper li.Croatian {
+    content: "🇭🇷";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Czech:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Czech:checked ~ .select-wrapper li.Czech {
+    content: "🇨🇿";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Danish:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Danish:checked ~ .select-wrapper li.Danish {
+    content: "🇩🇰";
     background-color: lightgray;
   }
   
@@ -872,6 +938,18 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Esperanto:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Esperanto:checked ~ .select-wrapper li.Esperanto {
+    content: "🌍";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Estonian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Estonian:checked ~ .select-wrapper li.Estonian {
+    content: "🇪🇪";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Finnish:checked ~ .dropdown-container::before,
   .ui-wrapper input#Finnish:checked ~ .select-wrapper li.Finnish {
     content: "🇫🇮";
@@ -881,6 +959,24 @@ p {
   .ui-wrapper input#French:checked ~ .dropdown-container::before,
   .ui-wrapper input#French:checked ~ .select-wrapper li.French {
     content: "🇫🇷";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Frisian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Frisian:checked ~ .select-wrapper li.Frisian {
+    content: "🇳🇱";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Galician:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Galician:checked ~ .select-wrapper li.Galician {
+    content: "🇪🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Georgian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Georgian:checked ~ .select-wrapper li.Georgian {
+    content: "🇬🇪";
     background-color: lightgray;
   }
   
@@ -896,6 +992,30 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Gujarati:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Gujarati:checked ~ .select-wrapper li.Gujarati {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Haitian Creole:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Haitian Creole:checked ~ .select-wrapper li.Haitian Creole {
+    content: "🇭🇹";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Hausa:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Hausa:checked ~ .select-wrapper li.Hausa {
+    content: "🇳🇬";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Hawaiian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Hawaiian:checked ~ .select-wrapper li.Hawaiian {
+    content: "🇺🇸";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Hebrew:checked ~ .dropdown-container::before,
   .ui-wrapper input#Hebrew:checked ~ .select-wrapper li.Hebrew {
     content: "🇮🇱";
@@ -908,15 +1028,39 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Hmong:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Hmong:checked ~ .select-wrapper li.Hmong {
+    content: "🇨🇳";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Hungarian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Hungarian:checked ~ .select-wrapper li.Hungarian {
     content: "🇭🇺";
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Icelandic:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Icelandic:checked ~ .select-wrapper li.Icelandic {
+    content: "🇮🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Igbo:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Igbo:checked ~ .select-wrapper li.Igbo {
+    content: "🇳🇬";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Indonesian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Indonesian:checked ~ .select-wrapper li.Indonesian {
     content: "🇮🇩";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Irish:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Irish:checked ~ .select-wrapper li.Irish {
+    content: "🇮🇪";
     background-color: lightgray;
   }
   
@@ -932,9 +1076,63 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Javanese:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Javanese:checked ~ .select-wrapper li.Javanese {
+    content: "🇮🇩";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Kannada:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Kannada:checked ~ .select-wrapper li.Kannada {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Kazakh:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Kazakh:checked ~ .select-wrapper li.Kazakh {
+    content: "🇰🇿";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Khmer:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Khmer:checked ~ .select-wrapper li.Khmer {
+    content: "🇰🇭";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Kinyarwanda:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Kinyarwanda:checked ~ .select-wrapper li.Kinyarwanda {
+    content: "🇷🇼";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Korean:checked ~ .dropdown-container::before,
   .ui-wrapper input#Korean:checked ~ .select-wrapper li.Korean {
     content: "🇰🇷";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Kurdish:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Kurdish:checked ~ .select-wrapper li.Kurdish {
+    content: "🇮🇶";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Kyrgyz:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Kyrgyz:checked ~ .select-wrapper li.Kyrgyz {
+    content: "🇰🇬";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Lao:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Lao:checked ~ .select-wrapper li.Lao {
+    content: "🇱🇦";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Latin:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Latin:checked ~ .select-wrapper li.Latin {
+    content: "🇻🇦";
     background-color: lightgray;
   }
   
@@ -950,15 +1148,93 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Luxembourgish:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Luxembourgish:checked ~ .select-wrapper li.Luxembourgish {
+    content: "🇱🇺";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Macedonian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Macedonian:checked ~ .select-wrapper li.Macedonian {
     content: "🇲🇰";
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Malagasy:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Malagasy:checked ~ .select-wrapper li.Malagasy {
+    content: "🇲🇬";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Malay:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Malay:checked ~ .select-wrapper li.Malay {
+    content: "🇲🇾";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Malayalam:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Malayalam:checked ~ .select-wrapper li.Malayalam {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Maltese:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Maltese:checked ~ .select-wrapper li.Maltese {
+    content: "🇲🇹";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Maori:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Maori:checked ~ .select-wrapper li.Maori {
+    content: "🇳🇿";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Marathi:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Marathi:checked ~ .select-wrapper li.Marathi {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Mongolian:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Mongolian:checked ~ .select-wrapper li.Mongolian {
+    content: "🇲🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Burmese:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Burmese:checked ~ .select-wrapper li.Burmese {
+    content: "🇲🇲";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Nepali:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Nepali:checked ~ .select-wrapper li.Nepali {
+    content: "🇳🇵";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Norwegian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Norwegian:checked ~ .select-wrapper li.Norwegian {
     content: "🇳🇴";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Nyanja-Chichewa:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Nyanja-Chichewa:checked ~ .select-wrapper li.Nyanja-Chichewa {
+    content: "🇲🇼";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Odia-Oriya:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Odia-Oriya:checked ~ .select-wrapper li.Odia-Oriya {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Pashto:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Pashto:checked ~ .select-wrapper li.Pashto {
+    content: "🇦🇫";
     background-color: lightgray;
   }
   
@@ -980,6 +1256,12 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Punjabi:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Punjabi:checked ~ .select-wrapper li.Punjabi {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Romanian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Romanian:checked ~ .select-wrapper li.Romanian {
     content: "🇷🇴";
@@ -992,9 +1274,45 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Samoan:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Samoan:checked ~ .select-wrapper li.Samoan {
+    content: "🇼🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Scots-Gaelic:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Scots-Gaelic:checked ~ .select-wrapper li.Scots-Gaelic {
+    content: "🇬🇧";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Serbian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Serbian:checked ~ .select-wrapper li.Serbian {
     content: "🇷🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Sesotho:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Sesotho:checked ~ .select-wrapper li.Sesotho {
+    content: "🇱🇸";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Shona:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Shona:checked ~ .select-wrapper li.Shona {
+    content: "🇿🇼";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Sindhi:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Sindhi:checked ~ .select-wrapper li.Sindhi {
+    content: "🇵🇰";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Sinhala:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Sinhala:checked ~ .select-wrapper li.Sinhala {
+    content: "🇱🇰";
     background-color: lightgray;
   }
   
@@ -1010,15 +1328,63 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Somali:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Somali:checked ~ .select-wrapper li.Somali {
+    content: "🇸🇴";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Spanish:checked ~ .dropdown-container::before,
   .ui-wrapper input#Spanish:checked ~ .select-wrapper li.Spanish {
     content: "🇪🇸";
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Sundanese:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Sundanese:checked ~ .select-wrapper li.Sundanese {
+    content: "🇮🇩";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Swahili:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Swahili:checked ~ .select-wrapper li.Swahili {
+    content: "🇹🇿";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Swedish:checked ~ .dropdown-container::before,
   .ui-wrapper input#Swedish:checked ~ .select-wrapper li.Swedish {
     content: "🇸🇪";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Tagalog-Filipino:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Tagalog-Filipino:checked ~ .select-wrapper li.Tagalog-Filipino {
+    content: "🇵🇭";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Tajik:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Tajik:checked ~ .select-wrapper li.Tajik {
+    content: "🇹🇯";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Tamil:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Tamil:checked ~ .select-wrapper li.Tamil {
+    content: "🇮🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Tatar:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Tatar:checked ~ .select-wrapper li.Tatar {
+    content: "🇷🇺";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Telugu:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Telugu:checked ~ .select-wrapper li.Telugu {
+    content: "🇮🇳";
     background-color: lightgray;
   }
   
@@ -1034,15 +1400,63 @@ p {
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Turkmen:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Turkmen:checked ~ .select-wrapper li.Turkmen {
+    content: "🇹🇲";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Ukrainian:checked ~ .dropdown-container::before,
   .ui-wrapper input#Ukrainian:checked ~ .select-wrapper li.Ukrainian {
     content: "🇺🇦";
     background-color: lightgray;
   }
   
+  .ui-wrapper input#Urdu:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Urdu:checked ~ .select-wrapper li.Urdu {
+    content: "🇵🇰";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Uyghur:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Uyghur:checked ~ .select-wrapper li.Uyghur {
+    content: "🇨🇳";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Uzbek:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Uzbek:checked ~ .select-wrapper li.Uzbek {
+    content: "🇺🇿";
+    background-color: lightgray;
+  }
+  
   .ui-wrapper input#Welsh:checked ~ .dropdown-container::before,
   .ui-wrapper input#Welsh:checked ~ .select-wrapper li.Welsh {
     content: "🇬🇧";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Xhosa:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Xhosa:checked ~ .select-wrapper li.Xhosa {
+    content: "🇿🇦";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Yiddish:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Yiddish:checked ~ .select-wrapper li.Yiddish {
+    content: "🇮🇱";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Yoruba:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Yoruba:checked ~ .select-wrapper li.Yoruba {
+    content: "🇳🇬";
+    background-color: lightgray;
+  }
+  
+  .ui-wrapper input#Zulu:checked ~ .dropdown-container::before,
+  .ui-wrapper input#Zulu:checked ~ .select-wrapper li.Zulu {
+    content: "🇿🇦";
     background-color: lightgray;
   }
 .custom-language-container {

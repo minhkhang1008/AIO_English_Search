@@ -271,46 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('lastLanguageCode', languageCode); 
     };
 
-    function updateDropdown(languageCode) {
-        const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
-        let foundMatch = false;
-    
-        countryRadios.forEach(radio => {
-            const countryLabel = document.querySelector(`.${radio.id} label`);
-            if (countryLabel.textContent.includes(`(${languageCode})`)) {
-                radio.checked = true;
-                foundMatch = true;
-            }
-        });
-    
-        if (!foundMatch) {
-            const dropdownContainer = document.querySelector('.dropdown-container');
-            dropdownContainer.innerHTML = `
-                <span>🏳️</span>
-                <span>Own language (${languageCode})</span>
-            `;
-        }
-    }
-
-    languageCodeInput.addEventListener('input', (event) => {
-        const newLanguageCode = event.target.value.trim();
-        if (newLanguageCode) {
-            updateDropdown(newLanguageCode);
-        } else {
-            const defaultCountry = document.getElementById('Vietnamese');
-            defaultCountry.checked = true;
-            languageCodeInput.value = 'vi';
-        }
-    });
-    
-    languageCodeInput.addEventListener('blur', (event) => {
-        const newLanguageCode = event.target.value.trim();
-        if (!newLanguageCode) {
-            const defaultCountry = document.getElementById('Vietnamese');
-            defaultCountry.checked = true;
-            languageCodeInput.value = 'vi';
-        }
-    });
 
     countryRadios.forEach(radio => {
         radio.addEventListener('change', () => {
