@@ -1,55 +1,5 @@
 let worker = new Worker('worker.js');
 let currentSuggestionIndex = -1;
-let auth0;
-
-const initializeAuth0 = async () => {
-  const response = await fetch("/api/auth0");
-  const { domain, clientId } = await response.json();
-
-  auth0 = new Auth0Client({
-    domain,
-    client_id: clientId,
-    redirect_uri: window.location.origin,
-  });
-
-  await updateUI();
-};
-
-initializeAuth0();
-
-document.getElementById("login").addEventListener("click", async () => {
-  await auth0.loginWithRedirect();
-});
-
-document.getElementById("logout").addEventListener("click", () => {
-  auth0.logout({
-    returnTo: window.location.origin,
-  });
-});
-
-const updateUI = async () => {
-    const isAuthenticated = await auth0.isAuthenticated();
-
-    if (isAuthenticated) {
-      const user = await auth0.getUser();
-      document.getElementById("profile").innerHTML = `
-        <h2>Welcome, ${user.name}!</h2>
-        <p>Email: ${user.email}</p>
-      `;
-      document.getElementById("login").classList.add("hidden");
-      document.getElementById("logout").classList.remove("hidden");
-    } else {
-      document.getElementById("profile").innerHTML = "<p>Please log in.</p>";
-      document.getElementById("login").classList.remove("hidden");
-      document.getElementById("logout").classList.add("hidden");
-    }
-  };
-  
-
-window.addEventListener("load", async () => {
-  await auth0.handleRedirectCallback();
-  await updateUI();
-});
 
 worker.onmessage = function (e) {
     if (e.data.status === 'loaded') {
@@ -96,7 +46,6 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
-
 
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
