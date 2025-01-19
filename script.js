@@ -1,5 +1,55 @@
 let worker = new Worker('worker.js');
 let currentSuggestionIndex = -1;
+let auth0;
+
+const initializeAuth0 = async () => {
+  const response = await fetch("/api/auth0");
+  const { domain, clientId } = await response.json();
+
+  auth0 = new Auth0Client({
+    domain,
+    client_id: clientId,
+    redirect_uri: window.location.origin,
+  });
+
+  await updateUI();
+};
+
+initializeAuth0();
+
+document.getElementById("login").addEventListener("click", async () => {
+  await auth0.loginWithRedirect();
+});
+
+document.getElementById("logout").addEventListener("click", () => {
+  auth0.logout({
+    returnTo: window.location.origin,
+  });
+});
+
+const updateUI = async () => {
+    const isAuthenticated = await auth0.isAuthenticated();
+
+    if (isAuthenticated) {
+      const user = await auth0.getUser();
+      document.getElementById("profile").innerHTML = `
+        <h2>Welcome, ${user.name}!</h2>
+        <p>Email: ${user.email}</p>
+      `;
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("logout").classList.remove("hidden");
+    } else {
+      document.getElementById("profile").innerHTML = "<p>Please log in.</p>";
+      document.getElementById("login").classList.remove("hidden");
+      document.getElementById("logout").classList.add("hidden");
+    }
+  };
+  
+
+window.addEventListener("load", async () => {
+  await auth0.handleRedirectCallback();
+  await updateUI();
+});
 
 worker.onmessage = function (e) {
     if (e.data.status === 'loaded') {
@@ -47,84 +97,6 @@ function debounce(func, wait) {
     };
 }
 
-async function initializeGoogleSignIn() {
-    try {
-        const response = await fetch('/api/getGoogleClientId');
-        const config = await response.json();
-
-        if (!config.googleClientId) {
-            throw new Error('Google Client ID is not defined.');
-        }
-
-        google.accounts.id.initialize({
-            client_id: config.googleClientId,
-            callback: handleCredentialResponse,
-        });
-
-        google.accounts.id.renderButton(
-            document.getElementById('googleSignInButton'),
-            { theme: 'outline', size: 'large' } 
-        );
-
-        google.accounts.id.prompt();
-    } catch (error) {
-        console.error('Error initializing Google Sign-In:', error);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initializeGoogleSignIn);
-
-function handleCredentialResponse(response) {
-    const idToken = response.credential;
-
-    fetch('/api/tokensignin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ idToken }),
-    })
-    .then((res) => res.json())
-    .then((data) => {
-        if (data.name) {
-            console.log('Sign-In Successful:', data);
-
-            const userGreeting = document.createElement('div');
-            userGreeting.id = 'userGreeting';
-            userGreeting.textContent = `Hello ${data.name}`;
-            document.querySelector('.container').prepend(userGreeting);
-
-            const signInButton = document.getElementById('googleSignInButton');
-            if (signInButton) {
-                signInButton.remove();
-            }
-        } else {
-            console.error('Name not found in response:', data);
-        }
-    })
-    .catch((error) => {
-        console.error('Error during token verification:', error);
-    });
-}
-
-function sendTokenToServer(idToken) {
-    fetch('/tokensignin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idToken })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Sign-In Successful:', data);
-    })
-    .catch(error => {
-        console.error('Error during token verification:', error);
-    });
-}
-
-window.onload = initializeGoogleSignIn;
 
 document.getElementById('searchBox').addEventListener('input', debounce(function (event) {
     let input = event.target.value.trim().toLowerCase();
