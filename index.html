@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All in One English</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsContainer = document.getElementById('settingsContainer');
+            const languageSelect = document.getElementById('languageSelect');
+            const customLanguageInput = document.getElementById('customLanguageInput');
+
+            // Toggle settings container visibility
+            settingsButton.addEventListener('click', () => {
+                console.log('Settings button clicked'); // Debugging
+                settingsContainer.classList.toggle('hidden');
+            });
+
+            languageSelect.addEventListener('change', (event) => {
+                const selectedLanguage = event.target.value;
+                if (selectedLanguage === 'custom') {
+                    customLanguageInput.classList.remove('hidden');
+                } else {
+                    customLanguageInput.classList.add('hidden');
+                    alert(`Translation language set to: ${languageSelect.options[languageSelect.selectedIndex].text}`);
+                }
+            });
+
+            const customLanguageField = document.getElementById('customLanguageField');
+            customLanguageField.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    const customLanguage = customLanguageField.value.trim();
+                    if (customLanguage) {
+                        alert(`Translation language set to: ${customLanguage}`);
+                        customLanguageInput.classList.add('hidden');
+                        languageSelect.value = 'custom';
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>All in One English</h1>
+        <p>Type a word or phrase and press Enter or click Quick Search</p>
+
+        <!-- Settings Button -->
+        <button class="setting" id="settingsButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 20 20" height="20" fill="none" class="svg-icon">
+                <g stroke-width="1.5" stroke-linecap="round" stroke="#5d41de">
+                    <circle r="2.5" cy="10" cx="10"></circle>
+                    <path fill-rule="evenodd" d="m8.39079 2.80235c.53842-1.51424 2.67991-1.51424 3.21831-.00001.3392.95358 1.4284 1.40477 2.3425.97027 1.4514-.68995 2.9657.82427 2.2758 2.27575-.4345.91407.0166 2.00334.9702 2.34248 1.5143.53842 1.5143 2.67996 0 3.21836-.9536.3391-1.4047 1.4284-.9702 2.3425.6899 1.4514-.8244 2.9656-2.2758 2.2757-.9141-.4345-2.0033.0167-2.3425.9703-.5384 1.5142-2.67989 1.5142-3.21831 0-.33914-.9536-1.4284-1.4048-2.34247-.9703-1.45148.6899-2.96571-.8243-2.27575-2.2757.43449-.9141-.01669-2.0034-.97028-2.3425-1.51422-.5384-1.51422-2.67994.00001-3.21836.95358-.33914 1.40476-1.42841.97027-2.34248-.68996-1.45148.82427-2.9657 2.27575-2.27575.91407.4345 2.00333-.01669 2.34247-.97026z" clip-rule="evenodd"></path>
+                </g>
+            </svg>
+            <span class="lable">Settings</span>
+        </button>
+
+        <!-- Settings Container -->
+        <div id="settingsContainer" class="hidden">
+            <div class="ui-wrapper">
+                <input checked="" id="Vietnamese" name="flag" type="radio">
+                <input id="Afrikaans" name="flag" type="radio">
+                <input id="Albanian" name="flag" type="radio">
+                <input id="Amharic" name="flag" type="radio">
+                <input id="Arabic" name="flag" type="radio">
+                <input id="Armenian" name="flag" type="radio">
+                <input id="Azerbaijani" name="flag" type="radio">
+                <input id="Basque" name="flag" type="radio">
+                <input id="Belarusian" name="flag" type="radio">
+                <input id="Bengali" name="flag" type="radio">
+                <input id="Bosnian" name="flag" type="radio">
+                <input id="Bulgarian" name="flag" type="radio">
+                <input id="Burmese" name="flag" type="radio">
+                <input id="Catalan" name="flag" type="radio">
+                <input id="Cebuano" name="flag" type="radio">
+                <input id="Chinese" name="flag" type="radio">
+                <input id="Corsican" name="flag" type="radio">
+                <input id="Croatian" name="flag" type="radio">
+                <input id="Czech" name="flag" type="radio">
+                <input id="Danish" name="flag" type="radio">
+                <input id="Dutch" name="flag" type="radio">
+                <input id="English" name="flag" type="radio">
+                <input id="Esperanto" name="flag" type="radio">
+                <input id="Estonian" name="flag" type="radio">
+                <input id="Finnish" name="flag" type="radio">
+                <input id="French" name="flag" type="radio">
+                <input id="Frisian" name="flag" type="radio">
+                <input id="Galician" name="flag" type="radio">
+                <input id="Georgian" name="flag" type="radio">
+                <input id="German" name="flag" type="radio">
+                <input id="Greek" name="flag" type="radio">
+                <input id="Gujarati" name="flag" type="radio">
+                <input id="Haitian Creole" name="flag" type="radio">
+                <input id="Hausa" name="flag" type="radio">
+                <input id="Hawaiian" name="flag" type="radio">
+                <input id="Hebrew" name="flag" type="radio">
+                <input id="Hindi" name="flag" type="radio">
+                <input id="Hmong" name="flag" type="radio">
+                <input id="Hungarian" name="flag" type="radio">
+                <input id="Icelandic" name="flag" type="radio">
+                <input id="Igbo" name="flag" type="radio">
+                <input id="Indonesian" name="flag" type="radio">
+                <input id="Irish" name="flag" type="radio">
+                <input id="Italian" name="flag" type="radio">
+                <input id="Japanese" name="flag" type="radio">
+                <input id="Javanese" name="flag" type="radio">
+                <input id="Kannada" name="flag" type="radio">
+                <input id="Kazakh" name="flag" type="radio">
+                <input id="Khmer" name="flag" type="radio">
+                <input id="Kinyarwanda" name="flag" type="radio">
+                <input id="Korean" name="flag" type="radio">
+                <input id="Kurdish" name="flag" type="radio">
+                <input id="Kyrgyz" name="flag" type="radio">
+                <input id="Lao" name="flag" type="radio">
+                <input id="Latin" name="flag" type="radio">
+                <input id="Latvian" name="flag" type="radio">
+                <input id="Lithuanian" name="flag" type="radio">
+                <input id="Luxembourgish" name="flag" type="radio">
+                <input id="Macedonian" name="flag" type="radio">
+                <input id="Malagasy" name="flag" type="radio">
+                <input id="Malay" name="flag" type="radio">
+                <input id="Malayalam" name="flag" type="radio">
+                <input id="Maltese" name="flag" type="radio">
+                <input id="Maori" name="flag" type="radio">
+                <input id="Marathi" name="flag" type="radio">
+                <input id="Mongolian" name="flag" type="radio">
+                <input id="Nepali" name="flag" type="radio">
+                <input id="Norwegian" name="flag" type="radio">
+                <input id="Nyanja-Chichewa" name="flag" type="radio">
+                <input id="Odia-Oriya" name="flag" type="radio">
+                <input id="Pashto" name="flag" type="radio">
+                <input id="Persian" name="flag" type="radio">
+                <input id="Polish" name="flag" type="radio">
+                <input id="Portuguese" name="flag" type="radio">
+                <input id="Punjabi" name="flag" type="radio">
+                <input id="Romanian" name="flag" type="radio">
+                <input id="Russian" name="flag" type="radio">
+                <input id="Samoan" name="flag" type="radio">
+                <input id="Scots-Gaelic" name="flag" type="radio">
+                <input id="Serbian" name="flag" type="radio">
+                <input id="Sesotho" name="flag" type="radio">
+                <input id="Shona" name="flag" type="radio">
+                <input id="Sindhi" name="flag" type="radio">
+                <input id="Sinhala" name="flag" type="radio">
+                <input id="Slovak" name="flag" type="radio">
+                <input id="Slovenian" name="flag" type="radio">
+                <input id="Somali" name="flag" type="radio">
+                <input id="Spanish" name="flag" type="radio">
+                <input id="Sundanese" name="flag" type="radio">
+                <input id="Swahili" name="flag" type="radio">
+                <input id="Swedish" name="flag" type="radio">
+                <input id="Tagalog-Filipino" name="flag" type="radio">
+                <input id="Tajik" name="flag" type="radio">
+                <input id="Tamil" name="flag" type="radio">
+                <input id="Tatar" name="flag" type="radio">
+                <input id="Telugu" name="flag" type="radio">
+                <input id="Thai" name="flag" type="radio">
+                <input id="Turkish" name="flag" type="radio">
+                <input id="Turkmen" name="flag" type="radio">
+                <input id="Ukrainian" name="flag" type="radio">
+                <input id="Urdu" name="flag" type="radio">
+                <input id="Uyghur" name="flag" type="radio">
+                <input id="Uzbek" name="flag" type="radio">
+                <input id="Vietnamese" name="flag" type="radio">
+                <input id="Welsh" name="flag" type="radio">
+                <input id="Xhosa" name="flag" type="radio">
+                <input id="Yiddish" name="flag" type="radio">
+                <input id="Yoruba" name="flag" type="radio">
+                <input id="Zulu" name="flag" type="radio">
+                <input class="dropdown-checkbox" name="dropdown" id="dropdown" type="checkbox">
+                <label class="dropdown-container" for="dropdown"></label>
+                <div class="input-wrapper">
+                    <legend>
+                      <label for="languageCode">
+                        Language Code
+                      </label>
+                    </legend>
+                    <div class="textfield">
+                        <input id="languageCode" readonly="text" value="vi"> 
+                    </div>
+                </div>
+                <div class="select-wrapper">
+                    <ul>
+                        <li class="Vietnamese"><label for="Vietnamese"><span>🇻🇳</span>Vietnamese (vi)</label></li>
+                        <li class="Afrikaans"><label for="Afrikaans"><span>🇿🇦</span>Afrikaans (af)</label></li>
+                        <li class="Albanian"><label for="Albanian"><span>🇦🇱</span>Albanian (sq)</label></li>
+                        <li class="Amharic"><label for="Amharic"><span>🇪🇹</span>Amharic (am)</label></li>
+                        <li class="Arabic"><label for="Arabic"><span>🇸🇦</span>Arabic (ar)</label></li>
+                        <li class="Armenian"><label for="Armenian"><span>🇦🇲</span>Armenian (hy)</label></li>
+                        <li class="Azerbaijani"><label for="Azerbaijani"><span>🇦🇿</span>Azerbaijani (az)</label></li>
+                        <li class="Basque"><label for="Basque"><span>🇪🇸</span>Basque (eu)</label></li>
+                        <li class="Belarusian"><label for="Belarusian"><span>🇧🇾</span>Belarusian (be)</label></li>
+                        <li class="Bengali"><label for="Bengali"><span>🇧🇩</span>Bengali (bn)</label></li>
+                        <li class="Bosnian"><label for="Bosnian"><span>🇧🇦</span>Bosnian (bs)</label></li>
+                        <li class="Bulgarian"><label for="Bulgarian"><span>🇧🇬</span>Bulgarian (bg)</label></li>
+                        <li class="Burmese"><label for="Burmese"><span>🇲🇲</span>Burmese (my)</label></li>
+                        <li class="Catalan"><label for="Catalan"><span>🇪🇸</span>Catalan (ca)</label></li>
+                        <li class="Cebuano"><label for="Cebuano"><span>🇵🇭</span>Cebuano (ceb)</label></li>
+                        <li class="Chinese"><label for="Chinese"><span>🇨🇳</span>Chinese (zh)</label></li>
+                        <li class="Corsican"><label for="Corsican"><span>🇫🇷</span>Corsican (co)</label></li>
+                        <li class="Croatian"><label for="Croatian"><span>🇭🇷</span>Croatian (hr)</label></li>
+                        <li class="Czech"><label for="Czech"><span>🇨🇿</span>Czech (cs)</label></li>
+                        <li class="Danish"><label for="Danish"><span>🇩🇰</span>Danish (da)</label></li>
+                        <li class="Dutch"><label for="Dutch"><span>🇳🇱</span>Dutch (nl)</label></li>
+                        <li class="English"><label for="English"><span>🇬🇧</span>English (en)</label></li>
+                        <li class="Esperanto"><label for="Esperanto"><span>🌍</span>Esperanto (eo)</label></li>
+                        <li class="Estonian"><label for="Estonian"><span>🇪🇪</span>Estonian (et)</label></li>
+                        <li class="Finnish"><label for="Finnish"><span>🇫🇮</span>Finnish (fi)</label></li>
+                        <li class="French"><label for="French"><span>🇫🇷</span>French (fr)</label></li>
+                        <li class="Frisian"><label for="Frisian"><span>🇳🇱</span>Frisian (fy)</label></li>
+                        <li class="Galician"><label for="Galician"><span>🇪🇸</span>Galician (gl)</label></li>
+                        <li class="Georgian"><label for="Georgian"><span>🇬🇪</span>Georgian (ka)</label></li>
+                        <li class="German"><label for="German"><span>🇩🇪</span>German (de)</label></li>
+                        <li class="Greek"><label for="Greek"><span>🇬🇷</span>Greek (el)</label></li>
+                        <li class="Gujarati"><label for="Gujarati"><span>🇮🇳</span>Gujarati (gu)</label></li>
+                        <li class="Haitian Creole"><label for="Haitian Creole"><span>🇭🇹</span>Haitian Creole (ht)</label></li>
+                        <li class="Hausa"><label for="Hausa"><span>🇳🇬</span>Hausa (ha)</label></li>
+                        <li class="Hawaiian"><label for="Hawaiian"><span>🇺🇸</span>Hawaiian (haw)</label></li>
+                        <li class="Hebrew"><label for="Hebrew"><span>🇮🇱</span>Hebrew (he)</label></li>
+                        <li class="Hindi"><label for="Hindi"><span>🇮🇳</span>Hindi (hi)</label></li>
+                        <li class="Hmong"><label for="Hmong"><span>🇨🇳</span>Hmong (hmn)</label></li>
+                        <li class="Hungarian"><label for="Hungarian"><span>🇭🇺</span>Hungarian (hu)</label></li>
+                        <li class="Icelandic"><label for="Icelandic"><span>🇮🇸</span>Icelandic (is)</label></li>
+                        <li class="Igbo"><label for="Igbo"><span>🇳🇬</span>Igbo (ig)</label></li>
+                        <li class="Indonesian"><label for="Indonesian"><span>🇮🇩</span>Indonesian (id)</label></li>
+                        <li class="Irish"><label for="Irish"><span>🇮🇪</span>Irish (ga)</label></li>
+                        <li class="Italian"><label for="Italian"><span>🇮🇹</span>Italian (it)</label></li>
+                        <li class="Japanese"><label for="Japanese"><span>🇯🇵</span>Japanese (ja)</label></li>
+                        <li class="Javanese"><label for="Javanese"><span>🇮🇩</span>Javanese (jv)</label></li>
+                        <li class="Kannada"><label for="Kannada"><span>🇮🇳</span>Kannada (kn)</label></li>
+                        <li class="Kazakh"><label for="Kazakh"><span>🇰🇿</span>Kazakh (kk)</label></li>
+                        <li class="Khmer"><label for="Khmer"><span>🇰🇭</span>Khmer (km)</label></li>
+                        <li class="Kinyarwanda"><label for="Kinyarwanda"><span>🇷🇼</span>Kinyarwanda (rw)</label></li>
+                        <li class="Korean"><label for="Korean"><span>🇰🇷</span>Korean (ko)</label></li>
+                        <li class="Kurdish"><label for="Kurdish"><span>🇮🇶</span>Kurdish (ku)</label></li>
+                        <li class="Kyrgyz"><label for="Kyrgyz"><span>🇰🇬</span>Kyrgyz (ky)</label></li>
+                        <li class="Lao"><label for="Lao"><span>🇱🇦</span>Lao (lo)</label></li>
+                        <li class="Latin"><label for="Latin"><span>🇻🇦</span>Latin (la)</label></li>
+                        <li class="Latvian"><label for="Latvian"><span>🇱🇻</span>Latvian (lv)</label></li>
+                        <li class="Lithuanian"><label for="Lithuanian"><span>🇱🇹</span>Lithuanian (lt)</label></li>
+                        <li class="Luxembourgish"><label for="Luxembourgish"><span>🇱🇺</span>Luxembourgish (lb)</label></li>
+                        <li class="Macedonian"><label for="Macedonian"><span>🇲🇰</span>Macedonian (mk)</label></li>
+                        <li class="Malagasy"><label for="Malagasy"><span>🇲🇬</span>Malagasy (mg)</label></li>
+                        <li class="Malay"><label for="Malay"><span>🇲🇾</span>Malay (ms)</label></li>
+                        <li class="Malayalam"><label for="Malayalam"><span>🇮🇳</span>Malayalam (ml)</label></li>
+                        <li class="Maltese"><label for="Maltese"><span>🇲🇹</span>Maltese (mt)</label></li>
+                        <li class="Maori"><label for="Maori"><span>🇳🇿</span>Maori (mi)</label></li>
+                        <li class="Marathi"><label for="Marathi"><span>🇮🇳</span>Marathi (mr)</label></li>
+                        <li class="Mongolian"><label for="Mongolian"><span>🇲🇳</span>Mongolian (mn)</label></li>
+                        <li class="Nepali"><label for="Nepali"><span>🇳🇵</span>Nepali (ne)</label></li>
+                        <li class="Norwegian"><label for="Norwegian"><span>🇳🇴</span>Norwegian (no)</label></li>
+                        <li class="Nyanja-Chichewa"><label for="Nyanja-Chichewa"><span>🇲🇼</span>Nyanja [Chichewa] (ny)</label></li>
+                        <li class="Odia-Oriya"><label for="Odia-Oriya"><span>🇮🇳</span>Odia [Oriya] (or)</label></li>
+                        <li class="Pashto"><label for="Pashto"><span>🇦🇫</span>Pashto (ps)</label></li>
+                        <li class="Persian"><label for="Persian"><span>🇮🇷</span>Persian (fa)</label></li>
+                        <li class="Polish"><label for="Polish"><span>🇵🇱</span>Polish (pl)</label></li>
+                        <li class="Portuguese"><label for="Portuguese"><span>🇵🇹</span>Portuguese (pt)</label></li>
+                        <li class="Punjabi"><label for="Punjabi"><span>🇮🇳</span>Punjabi (pa)</label></li>
+                        <li class="Romanian"><label for="Romanian"><span>🇷🇴</span>Romanian (ro)</label></li>
+                        <li class="Russian"><label for="Russian"><span>🇷🇺</span>Russian (ru)</label></li>
+                        <li class="Samoan"><label for="Samoan"><span>🇼🇸</span>Samoan (sm)</label></li>
+                        <li class="Scots-Gaelic"><label for="Scots-Gaelic"><span>🇬🇧</span>Scots Gaelic (gd)</label></li>
+                        <li class="Serbian"><label for="Serbian"><span>🇷🇸</span>Serbian (sr)</label></li>
+                        <li class="Sesotho"><label for="Sesotho"><span>🇱🇸</span>Sesotho (st)</label></li>
+                        <li class="Shona"><label for="Shona"><span>🇿🇼</span>Shona (sn)</label></li>
+                        <li class="Sindhi"><label for="Sindhi"><span>🇵🇰</span>Sindhi (sd)</label></li>
+                        <li class="Sinhala"><label for="Sinhala"><span>🇱🇰</span>Sinhala (si)</label></li>
+                        <li class="Slovak"><label for="Slovak"><span>🇸🇰</span>Slovak (sk)</label></li>
+                        <li class="Slovenian"><label for="Slovenian"><span>🇸🇮</span>Slovenian (sl)</label></li>
+                        <li class="Somali"><label for="Somali"><span>🇸🇴</span>Somali (so)</label></li>
+                        <li class="Spanish"><label for="Spanish"><span>🇪🇸</span>Spanish (es)</label></li>
+                        <li class="Sundanese"><label for="Sundanese"><span>🇮🇩</span>Sundanese (su)</label></li>
+                        <li class="Swahili"><label for="Swahili"><span>🇹🇿</span>Swahili (sw)</label></li>
+                        <li class="Swedish"><label for="Swedish"><span>🇸🇪</span>Swedish (sv)</label></li>
+                        <li class="Tagalog-Filipino"><label for="Tagalog-Filipino"><span>🇵🇭</span>Tagalog [Filipino] (tl)</label></li>
+                        <li class="Tajik"><label for="Tajik"><span>🇹🇯</span>Tajik (tg)</label></li>
+                        <li class="Tamil"><label for="Tamil"><span>🇮🇳</span>Tamil (ta)</label></li>
+                        <li class="Tatar"><label for="Tatar"><span>🇷🇺</span>Tatar (tt)</label></li>
+                        <li class="Telugu"><label for="Telugu"><span>🇮🇳</span>Telugu (te)</label></li>
+                        <li class="Thai"><label for="Thai"><span>🇹🇭</span>Thai (th)</label></li>
+                        <li class="Turkish"><label for="Turkish"><span>🇹🇷</span>Turkish (tr)</label></li>
+                        <li class="Turkmen"><label for="Turkmen"><span>🇹🇲</span>Turkmen (tk)</label></li>
+                        <li class="Ukrainian"><label for="Ukrainian"><span>🇺🇦</span>Ukrainian (uk)</label></li>
+                        <li class="Urdu"><label for="Urdu"><span>🇵🇰</span>Urdu (ur)</label></li>
+                        <li class="Uyghur"><label for="Uyghur"><span>🇨🇳</span>Uyghur (ug)</label></li>
+                        <li class="Uzbek"><label for="Uzbek"><span>🇺🇿</span>Uzbek (uz)</label></li>
+                        <li class="Vietnamese"><label for="Vietnamese"><span>🇻🇳</span>Vietnamese (vi)</label></li>
+                        <li class="Welsh"><label for="Welsh"><span>🇬🇧</span>Welsh (cy)</label></li>
+                        <li class="Xhosa"><label for="Xhosa"><span>🇿🇦</span>Xhosa (xh)</label></li>
+                        <li class="Yiddish"><label for="Yiddish"><span>🇮🇱</span>Yiddish (yi)</label></li>
+                        <li class="Yoruba"><label for="Yoruba"><span>🇳🇬</span>Yoruba (yo)</label></li>
+                        <li class="Zulu"><label for="Zulu"><span>🇿🇦</span>Zulu (zu)</label></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <textarea 
+                id="searchBox"
+                rows="1"
+                placeholder="Type here"
+                autocomplete="off"
+                aria-label="Type a word or phrase"
+            ></textarea>
+            
+            <button class="button" data-text="Quick Search" id="quickSearchButton" aria-label="Quick Search">
+                <span class="actual-text">&nbsp;Quick Search&nbsp;</span>
+                <span aria-hidden="true" class="hover-text">&nbsp;Quick Search&nbsp;</span>
+            </button>
+        </div>
+    
+        <div class="button-container">
+            <button class="button" id="checkGrammarButton">Check Grammar</button>
+            <button class="btn" id="translateButton">Translate</button>
+        </div>
+    
+        <ul id="suggestionList" class="suggestion-list" aria-label="Suggestions"></ul>
+        <div id="buttonContainer" class="button-container"></div>
+        <div id="definitionContainer" class="definition-container hidden"></div>
+    </div>
+
+    <!-- Favorite Words Sidebar -->
+    <div id="favoritesSidebar" class="favorites-sidebar collapsed">
+      <div class="sidebar-header">
+        <span>★ Favorite Words</span>
+        <button id="addWordBtn" class="add-word-btn">+ Add Word</button>
+        <button id="closeFavoritesSidebar" class="close-sidebar-btn">&times;</button>
+      </div>
+      <div class="sidebar-controls">
+        <select id="favoritesSort">
+          <option value="az">A-Z</option>
+          <option value="za">Z-A</option>
+          <option value="recent">Recent</option>
+        </select>
+        <select id="favoritesFilter">
+          <option value="">All</option>
+          <option value="noun">Noun</option>
+          <option value="verb">Verb</option>
+          <option value="adjective">Adjective</option>
+          <option value="adverb">Adverb</option>
+          <option value="idiom">Idiom</option>
+          <option value="phrase">Phrase</option>
+        </select>
+      </div>
+      <div id="favoritesList" class="favorites-list"></div>
+      <div class="sidebar-footer">
+        <button id="exportFavoritesBtn"><span>📤</span> Export</button>
+        <button id="importFavoritesBtn"><span>📥</span> Import</button>
+        <button id="randomFavoriteBtn"><span>🎲</span> Random</button>
+      </div>
+      <input type="file" id="importFavoritesFile" style="display:none" accept=".json"/>
+      <div id="addWordModalContainer"></div>
+    </div>
+    <!-- Toggle Button -->
+    <button id="toggleFavoritesSidebar" class="toggle-favorites-btn" title="Show Favorites">★</button>
+
+    <script src="trie.js" defer></script>
+    <script src="worker.js" defer></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
