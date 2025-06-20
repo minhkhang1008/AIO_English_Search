@@ -147,58 +147,31 @@ document.getElementById('translateButton').addEventListener('click', async () =>
 document.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settingsButton');
     const settingsContainer = document.getElementById('settingsContainer');
-    const languageSelect = document.getElementById('languageSelect');
-    const customLanguageInput = document.getElementById('customLanguageInput');
 
     settingsButton.addEventListener('click', () => {
         settingsContainer.classList.toggle('hidden');
     });
 
-    languageSelect.addEventListener('change', (event) => {
-        const selectedLanguage = event.target.value;
-        if (selectedLanguage === 'custom') {
-            customLanguageInput.classList.remove('hidden');
-        } else {
-            customLanguageInput.classList.add('hidden');
-            alert(`Translation language set to: ${languageSelect.options[languageSelect.selectedIndex].text}`);
-        }
-    });
-
-    const customLanguageField = document.getElementById('customLanguageField');
-    customLanguageField.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            const customLanguage = customLanguageField.value.trim();
-            if (customLanguage) {
-                alert(`Translation language set to: ${customLanguage}`);
-                customLanguageInput.classList.add('hidden');
-                languageSelect.value = 'custom';
-            }
-        }
-    });
-});
-document.addEventListener('DOMContentLoaded', () => {
-    const settingsButton = document.getElementById('settingsButton');
-    const settingsContainer = document.getElementById('settingsContainer');
     const languageCodeInput = document.getElementById('languageCode');
 
-    // Declare `countryRadios` at the top
     const countryRadios = document.querySelectorAll('.ui-wrapper input[name="flag"]');
-
-    settingsButton.addEventListener('click', () => {
-        settingsContainer.classList.toggle('hidden');
-    });
 
     const updateLanguageCode = (languageCode) => {
         languageCodeInput.value = languageCode; 
         localStorage.setItem('lastLanguageCode', languageCode); 
     };
 
-
     countryRadios.forEach(radio => {
         radio.addEventListener('change', () => {
             const selectedCountry = radio.id;
-            const languageCode = document.querySelector(`.${selectedCountry} label`).textContent.match(/\((\w+)\)/)[1];
-            languageCodeInput.value = languageCode;
+            const label = document.querySelector(`label[for="${selectedCountry}"]`);
+            if (label) {
+                const match = label.textContent.match(/\((\w+)\)/);
+                if (match) {
+                    const languageCode = match[1];
+                    updateLanguageCode(languageCode);
+                }
+            }
         });
     });
 
@@ -206,8 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (lastLanguageCode) {
         const lastSelectedRadio = Array.from(countryRadios).find(radio => {
-            const countryLabel = document.querySelector(`.${radio.id} label`);
-            return countryLabel.textContent.includes(`(${lastLanguageCode})`);
+            const countryLabel = document.querySelector(`label[for="${radio.id}"]`);
+            return countryLabel && countryLabel.textContent.includes(`(${lastLanguageCode})`);
         });
 
         if (lastSelectedRadio) {
@@ -215,37 +188,14 @@ document.addEventListener('DOMContentLoaded', () => {
             updateLanguageCode(lastLanguageCode); 
         }
     } else {
-        // If no saved language code, default to Vietnam
         const defaultCountry = document.getElementById('Vietnamese');
-        defaultCountry.checked = true;
-        updateLanguageCode('vi'); 
+        if (defaultCountry) {
+            defaultCountry.checked = true;
+            updateLanguageCode('vi');
+        }
     }
 
-    document.getElementById('translateButton').addEventListener('click', async () => {
-        const input = document.getElementById('searchBox').value.trim();
-        if (input) {
-            const targetLang = languageCodeInput.value; 
-
-            const translatedText = await translateText(input, 'en', targetLang);
-            
-            if (translatedText) {
-                const definitionContainer = document.getElementById('definitionContainer');
-                definitionContainer.innerHTML = `
-                    <h2>Translation</h2>
-                    <p><strong>Original:</strong> ${input}</p>
-                    <p><strong>Translated:</strong> ${translatedText}</p>
-                `;
-                definitionContainer.classList.remove('hidden');
-                definitionContainer.classList.add('expand');
-            }
-            document.getElementById('suggestionList').innerHTML = ''; 
-        } else {
-            alert('Please enter text to translate.');
-        }
-    });
-
     document.addEventListener('keydown', (event) => {
-        // Check if the dropdown is open
         const dropdownCheckbox = document.querySelector('.dropdown-checkbox');
         if (!dropdownCheckbox || !dropdownCheckbox.checked) return; 
 
@@ -261,85 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-});
-
-async function checkGrammar(text) {
-    try {
-        const keyResponse = await fetch('/api/getRandomKeys');
-        const { uid, tokenid } = await keyResponse.json();
-
-        const response = await fetch(`https://www.stands4.com/services/v2/grammar.php?uid=${uid}&tokenid=${tokenid}&text=${encodeURIComponent(text)}&format=json`);
-        const data = await response.json();
-
-        console.log('Grammar Check Result:', data);
-
-        if (data.error) {
-            alert(`Error: ${data.error}`);
-        } else {
-            displayGrammarCheckResult(data);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to check grammar. Please try again.');
-    }
-}
-
-function displayGrammarCheckResult(data) {
-    const definitionContainer = document.getElementById('definitionContainer');
-    definitionContainer.innerHTML = '<h2>Grammar Check Result</h2>';
-
-    if (data.matches && data.matches.length > 0) {
-        data.matches.forEach((match, index) => {
-            const message = match.message;
-            const context = match.context.text;
-            const offset = match.context.offset;
-            const length = match.context.length;
-            const replacementSuggestions = match.replacements.map(rep => rep.value).join(', ');
-
-            const highlightedText = `${context.substring(0, offset)}<span class="highlight">${context.substring(offset, offset + length)}</span>${context.substring(offset + length)}`;
-
-            definitionContainer.innerHTML += `
-                <div class="grammar-issue">
-                    <p>${index + 1}. ${message}</p>
-                    <p><strong>Context:</strong> ${highlightedText}</p>
-                    <p><strong>Suggested Replacements:</strong> ${replacementSuggestions || 'None'}</p>
-                </div>
-            `;
-        });
-    } else {
-        definitionContainer.innerHTML += '<p>No grammar issues detected.</p>';
-    }
-
-    definitionContainer.classList.remove('hidden');
-    definitionContainer.classList.add('expand');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const checkGrammarButton = document.getElementById('checkGrammarButton');
-    checkGrammarButton.addEventListener('click', () => {
-        const input = document.getElementById('searchBox').value.trim();
-        if (input) {
-            checkGrammar(input);
-            document.getElementById('suggestionList').innerHTML = ''; 
-        } else {
-            alert('Please enter a sentence to check for grammar.');
-        }
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const searchBox = document.getElementById('searchBox');
-
-    function autoResize() {
-        searchBox.style.height = 'auto'; 
-        searchBox.style.height = searchBox.scrollHeight + 'px';
-    }
-
-    searchBox.addEventListener('input', () => {
-        autoResize();
-    });
-
-    autoResize();
 });
 
 async function checkGrammar(text) {
@@ -388,6 +259,27 @@ function displayGrammarCheckResult(data) {
     definitionContainer.classList.remove('hidden');
     definitionContainer.classList.add('expand');
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const checkGrammarButton = document.getElementById('checkGrammarButton');
+    checkGrammarButton.addEventListener('click', () => {
+        const input = document.getElementById('searchBox').value.trim();
+        if (input) {
+            checkGrammar(input);
+            document.getElementById('suggestionList').innerHTML = ''; 
+        } else {
+            alert('Please enter a sentence to check for grammar.');
+        }
+    });
+
+    const searchBox = document.getElementById('searchBox');
+    function autoResize() {
+        searchBox.style.height = 'auto'; 
+        searchBox.style.height = searchBox.scrollHeight + 'px';
+    }
+    searchBox.addEventListener('input', autoResize);
+    autoResize();
+});
 
 async function fetchDefinition(input) {
     const definitionContainer = document.getElementById('definitionContainer');
@@ -796,7 +688,7 @@ function renderFavoritesSidebar() {
       <div class="fav-section-label">Default:</div>
       <div class="fav-meaning-row" style="display:flex;align-items:center;gap:0.5em;">
         <span class="fav-meaning" style="${showDefault ? '' : 'display:none;'}">${fav.defaultMeaning}</span>
-        <button class="fav-hide-default-btn${showDefault ? '' : ' active'}" title="Show/Hide Default">${showDefault ? '👁️' : '🙈'}</button>
+        <button class="fav-hide-default-btn${showDefault ? '' : ' active'}" title="Show/Hide Default">👁️</button>
       </div>
       <div class="fav-own-row">
         <span class="fav-section-label">Own meaning:</span>
@@ -1008,3 +900,110 @@ window.displayDefinitionContent = function(...args) {
   origDisplayDefinitionContent.apply(this, args);
   setTimeout(addFavoriteIconsToDefinitions, 100);
 };
+
+// --- GOOGLE SIGN-IN ---
+
+async function handleGoogleSignIn(response) {
+    const idToken = response.credential;
+    try {
+        const res = await fetch('/api/tokensignin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idToken }),
+        });
+
+        if (!res.ok) {
+            throw new Error(`Server error: ${res.statusText}`);
+        }
+
+        const user = await res.json();
+        localStorage.setItem('user', JSON.stringify(user));
+        updateLoginUI(user);
+
+    } catch (error) {
+        console.error('Error verifying token with backend:', error);
+        alert('Sign-in failed. Could not verify with server.');
+    }
+}
+
+function handleSignOut() {
+    google.accounts.id.disableAutoSelect();
+    localStorage.removeItem('user');
+    updateLoginUI(null);
+    alert('You have been signed out.');
+}
+
+function updateLoginUI(user) {
+    const signInBtn = document.getElementById('customGoogleSignInBtn');
+    const userProfile = document.getElementById('userProfile');
+    const signOutBtn = document.getElementById('signOutBtn');
+
+    if (user) {
+        // User is signed in
+        signInBtn.classList.add('hidden');
+        userProfile.classList.remove('hidden');
+
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userPicture').src = user.picture;
+
+        signOutBtn.onclick = handleSignOut;
+
+    } else {
+        // User is signed out
+        signInBtn.classList.remove('hidden');
+        userProfile.classList.add('hidden');
+    }
+}
+
+async function initializeGoogleSignIn() {
+    try {
+        // Wait for the Google Sign-In library to be ready
+        await new Promise((resolve, reject) => {
+            const interval = setInterval(() => {
+                if (window.google && window.google.accounts) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 100);
+            setTimeout(() => { // Timeout to prevent infinite loop
+                clearInterval(interval);
+                reject(new Error('Google Sign-In library failed to load.'))
+            }, 10000);
+        });
+
+        // Fetch client ID from your backend
+        const res = await fetch('/api/getGoogleClientId');
+        if (!res.ok) {
+            throw new Error('Could not fetch Google Client ID.');
+        }
+        const { googleClientId } = await res.json();
+
+        // Initialize Google Sign-In
+        google.accounts.id.initialize({
+            client_id: googleClientId,
+            callback: handleGoogleSignIn
+        });
+
+        // Render the sign-in button
+        const signInBtn = document.getElementById('customGoogleSignInBtn');
+        signInBtn.addEventListener('click', () => {
+             google.accounts.id.prompt();
+        });
+
+        // Check for a stored user session on page load
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            updateLoginUI(JSON.parse(storedUser));
+        } else {
+            updateLoginUI(null);
+        }
+
+    } catch (error) {
+        console.error("Google Sign-In Initialization Error:", error);
+        alert("Could not initialize Google Sign-In. Please try again later.");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeGoogleSignIn);
