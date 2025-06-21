@@ -568,7 +568,7 @@ p {
     transform: translateY(0);
 }
 
-/* From Uiverse.io by Galahhad */
+
 .ui-wrapper {
     --width: 250px;
     --height: 50px;
@@ -773,7 +773,7 @@ p {
     display: none;
   }
   
-  /* actions */
+ 
   .ui-wrapper:focus-within {
     border-color: var(--border-focus-color);
     -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-focus-color);
@@ -1681,7 +1681,7 @@ p {
   cursor: pointer;
   vertical-align: middle;
   text-shadow: 0 0 2px #000, 0 0 1px #000, 1px 1px 0 #000, -1px -1px 0 #000;
-  /* black border for contrast */
+ 
 }
 .favorite-item .fav-actions .fav-action-btn {
   width: 28px; height: 28px;
@@ -1852,4 +1852,61 @@ p {
 }
 @media (max-width: 600px) {
   .favorites-sidebar { width: 100vw; }
+}
+
+
+.button.google {
+  max-width: 320px;
+  display: flex;
+  padding: 0.5rem 1.4rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(50, 50, 80, 0.25);
+  gap: 0.75rem;
+  color: #ffffff;
+  background-color: rgb(50, 50, 80);
+  cursor: pointer;
+  transition: all 0.6s ease;
+  text-decoration: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1500;
+}
+
+.button.google svg {
+  height: 24px;
+  width: 24px;
+  fill: #fff;
+  margin-right: 0.5rem;
+}
+
+.button.google:hover {
+  transform: scale(1.02);
+  background-color: rgb(90, 90, 120);
+  box-shadow: 0 2px 4px rgba(90, 90, 120, 0.1);
+}
+
+.button.google:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 40, 0.3);
+}
+
+.button.google:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .button.google {
+    max-width: 100%;
+    right: 10px;
+    top: 10px;
+  }
 }

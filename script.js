@@ -1,6 +1,64 @@
 let worker = new Worker('worker.js');
 let currentSuggestionIndex = -1;
 
+const GOOGLE_CLIENT_ID = '628893449247-lqos18hss794hks767eht0abnpceavc8.apps.googleusercontent.com';
+let googleAuth = null;          
+window.currentUserId = localStorage.getItem('currentUserId') || 'guest';
+
+function initGoogleAuth() {
+  if (!window.gapi) return; 
+
+  gapi.load('auth2', () => {
+    googleAuth = gapi.auth2.init({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'profile email'
+    });
+
+    googleAuth.then(updateGoogleSigninStatus);
+  });
+}
+
+function updateGoogleSigninStatus() {
+  const btn = document.getElementById('googleSignInButton');
+  if (!btn || !googleAuth) return;
+
+  if (googleAuth.isSignedIn.get()) {
+    const profile = googleAuth.currentUser.get().getBasicProfile();
+    window.currentUserId = profile.getId();
+    localStorage.setItem('currentUserId', window.currentUserId);
+    btn.textContent = `Sign out (${profile.getGivenName()})`;
+  } else {
+    window.currentUserId = 'guest';
+    localStorage.setItem('currentUserId', window.currentUserId);
+    btn.innerHTML = `<svg view="0 0 256 262" preserveAspectRatio="xMidYMid" xmlns="http://www.w3.org/2000/svg"><path d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" fill="#4285F4"></path><path d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1" fill="#34A853"></path><path d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782" fill="#FBBC05"></path><path d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251" fill="#EB4335"></path></svg> Continue with Google`;
+  }
+  renderFavoritesSidebar();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const googleBtn = document.getElementById('googleSignInButton');
+  if (googleBtn) {
+    googleBtn.addEventListener('click', () => {
+      if (!googleAuth) return; // Not ready yet
+      if (googleAuth.isSignedIn.get()) {
+        googleAuth.signOut().then(updateGoogleSigninStatus);
+      } else {
+        googleAuth.signIn().then(updateGoogleSigninStatus);
+      }
+    });
+  }
+
+  // Wait until gapi script is ready
+  const gapiPoll = setInterval(() => {
+    if (window.gapi) {
+      clearInterval(gapiPoll);
+      initGoogleAuth();
+    }
+  }, 100);
+});
+
+// ---------------- END GOOGLE SIGN-IN SETUP ----------------
+
 worker.onmessage = function (e) {
     if (e.data.status === 'loaded') {
         console.log('Trie loaded in Web Worker');
@@ -573,14 +631,18 @@ function openUrl(url) {
 
 // --- FAVORITE WORDS SYSTEM ---
 
-const FAVORITES_KEY = 'favoriteWords';
+function getFavoritesKey() {
+  return 'favoriteWords_' + (window.currentUserId || 'guest');
+}
 
 function getFavorites() {
-  return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+  return JSON.parse(localStorage.getItem(getFavoritesKey()) || '[]');
 }
+
 function saveFavorites(favs) {
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+  localStorage.setItem(getFavoritesKey(), JSON.stringify(favs));
 }
+
 function makeFavoriteId(word, partOfSpeech, defaultMeaning) {
   return btoa(unescape(encodeURIComponent(word + '|' + partOfSpeech + '|' + defaultMeaning))).replace(/=+$/, '');
 }
