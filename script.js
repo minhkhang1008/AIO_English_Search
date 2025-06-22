@@ -8,24 +8,31 @@ window.currentUserId = localStorage.getItem('currentUserId') || 'guest';
 function handleCredentialResponse(response) {
   try {
     const data = jwt_decode(response.credential);
+    console.log('[GIS] Credential received', data);
     const givenName = data.given_name || '';
     window.currentUserId = data.sub; // The unique Google user ID ("sub")
     localStorage.setItem('currentUserId', window.currentUserId);
     updateSigninStatus(true, givenName);
   } catch (err) {
-    console.error('Failed to decode Google credential:', err);
+    console.error('[GIS] Failed to decode Google credential:', err);
   }
 }
 
 // Handles explicit sign-out
 function handleSignOut() {
   // Disable auto-select and reset any cached credentials
+  console.log('[GIS] Signing out user', window.currentUserId);
   if (typeof google === 'object' && google.accounts && google.accounts.id) {
     google.accounts.id.disableAutoSelect();
+    // Cancel any pending One Tap flows so the next prompt will work
+    if (google.accounts.id.cancel) {
+      google.accounts.id.cancel();
+    }
   }
   window.currentUserId = 'guest';
   localStorage.setItem('currentUserId', window.currentUserId);
   updateSigninStatus(false);
+  console.log('[GIS] Sign-out complete, user id reset to guest');
 }
 
 // Shows/hides custom sign-in / sign-out buttons based on auth state
@@ -88,11 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Custom button triggers the Google sign-in prompt
   if (signInButton) {
     signInButton.addEventListener('click', () => {
+      console.log('[GIS] Sign-in button clicked, requesting One Tap prompt…');
       google.accounts.id.prompt((notification) => {
+        console.log('[GIS] Prompt callback', notification);
         if (notification.isSkippedMoment()) {
-          console.log('Google One Tap prompt was skipped.');
+          console.log('[GIS] One Tap prompt was skipped (likely due to prior user action).');
         } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
-          console.log('User dismissed the One Tap prompt.');
+          console.log('[GIS] User dismissed the One Tap prompt.');
         }
       });
     });
