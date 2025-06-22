@@ -24,10 +24,16 @@ function handleSignOut() {
   console.log('[GIS] Signing out user', window.currentUserId);
   if (typeof google === 'object' && google.accounts && google.accounts.id) {
     google.accounts.id.disableAutoSelect();
-    // Cancel any pending One Tap flows so the next prompt will work
-    if (google.accounts.id.cancel) {
-      google.accounts.id.cancel();
-    }
+    // Re-initialize GIS so that a fresh One Tap can be shown later
+    setTimeout(() => {
+      console.log('[GIS] Re-initializing after sign-out');
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+        auto_select: false,
+        use_fedcm_for_prompt: true
+      });
+    }, 100);
   }
   window.currentUserId = 'guest';
   localStorage.setItem('currentUserId', window.currentUserId);
