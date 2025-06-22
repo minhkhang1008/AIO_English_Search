@@ -2,59 +2,106 @@ let worker = new Worker('worker.js');
 let currentSuggestionIndex = -1;
 
 const GOOGLE_CLIENT_ID = '628893449247-lqos18hss794hks767eht0abnpceavc8.apps.googleusercontent.com';
-let googleAuth = null;          
+
 window.currentUserId = localStorage.getItem('currentUserId') || 'guest';
 
-function initGoogleAuth() {
-  if (!window.gapi) return; 
-
-  gapi.load('auth2', () => {
-    googleAuth = gapi.auth2.init({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: 'profile email'
-    });
-
-    googleAuth.then(updateGoogleSigninStatus);
-  });
+function handleCredentialResponse(response) {
+  try {
+    const data = jwt_decode(response.credential);
+    const givenName = data.given_name || '';
+    window.currentUserId = data.sub; // The unique Google user ID ("sub")
+    localStorage.setItem('currentUserId', window.currentUserId);
+    updateSigninStatus(true, givenName);
+  } catch (err) {
+    console.error('Failed to decode Google credential:', err);
+  }
 }
 
-function updateGoogleSigninStatus() {
-  const btn = document.getElementById('googleSignInButton');
-  if (!btn || !googleAuth) return;
-
-  if (googleAuth.isSignedIn.get()) {
-    const profile = googleAuth.currentUser.get().getBasicProfile();
-    window.currentUserId = profile.getId();
-    localStorage.setItem('currentUserId', window.currentUserId);
-    btn.textContent = `Sign out (${profile.getGivenName()})`;
-  } else {
-    window.currentUserId = 'guest';
-    localStorage.setItem('currentUserId', window.currentUserId);
-    btn.innerHTML = `<svg view="0 0 256 262" preserveAspectRatio="xMidYMid" xmlns="http://www.w3.org/2000/svg"><path d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" fill="#4285F4"></path><path d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1" fill="#34A853"></path><path d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782" fill="#FBBC05"></path><path d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251" fill="#EB4335"></path></svg> Continue with Google`;
+// Handles explicit sign-out
+function handleSignOut() {
+  // Disable auto-select and reset any cached credentials
+  if (typeof google === 'object' && google.accounts && google.accounts.id) {
+    google.accounts.id.disableAutoSelect();
   }
-  renderFavoritesSidebar();
+  window.currentUserId = 'guest';
+  localStorage.setItem('currentUserId', window.currentUserId);
+  updateSigninStatus(false);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const googleBtn = document.getElementById('googleSignInButton');
-  if (googleBtn) {
-    googleBtn.addEventListener('click', () => {
-      if (!googleAuth) return; // Not ready yet
-      if (googleAuth.isSignedIn.get()) {
-        googleAuth.signOut().then(updateGoogleSigninStatus);
-      } else {
-        googleAuth.signIn().then(updateGoogleSigninStatus);
-      }
-    });
-  }
+// Shows/hides custom sign-in / sign-out buttons based on auth state
+function updateSigninStatus(isSignedIn, givenName = '') {
+  const signInButton = document.getElementById('googleSignInButton');
+  const signOutButton = document.getElementById('googleSignOutButton');
 
-  // Wait until gapi script is ready
-  const gapiPoll = setInterval(() => {
-    if (window.gapi) {
-      clearInterval(gapiPoll);
-      initGoogleAuth();
+  if (!signInButton || !signOutButton) return;
+
+  if (isSignedIn) {
+    signInButton.style.display = 'none';
+    signOutButton.style.display = 'block';
+    const signOutTextSpan = signOutButton.querySelector('span');
+    if (signOutTextSpan) {
+        signOutTextSpan.textContent = givenName ? `Sign out (${givenName})` : 'Sign Out';
+    } else {
+        signOutButton.textContent = givenName ? `Sign out (${givenName})` : 'Sign Out';
     }
-  }, 100);
+  } else {
+    signInButton.style.display = 'block';
+    signOutButton.style.display = 'none';
+  }
+
+  // Refresh any user-specific UI
+  if (typeof renderFavoritesSidebar === 'function') {
+    renderFavoritesSidebar();
+  }
+}
+
+// Initialise GIS when the library is available
+const initGis = () => {
+  if (typeof google === 'object' && google.accounts && google.accounts.id) {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse,
+      auto_select: false
+    });
+    return true;
+  }
+  return false;
+};
+
+// Try immediately, otherwise poll every 200 ms until loaded (max 5 s)
+if (!initGis()) {
+  let attempts = 0;
+  const gisPoll = setInterval(() => {
+    attempts += 1;
+    if (initGis() || attempts > 25) { // ~5s timeout
+      clearInterval(gisPoll);
+    }
+  }, 200);
+}
+
+// Replace the old DOMContentLoaded listener that relied on gapi
+document.addEventListener('DOMContentLoaded', () => {
+  const signInButton = document.getElementById('googleSignInButton');
+  const signOutButton = document.getElementById('googleSignOutButton');
+
+  // Custom button triggers the Google sign-in prompt
+  if (signInButton) {
+    signInButton.addEventListener('click', () => {
+      google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log('Google prompt was not displayed.');
+        }
+      });
+    });
+  }
+
+  // Sign-out button
+  if (signOutButton) {
+    signOutButton.addEventListener('click', handleSignOut);
+  }
+
+  // Set initial UI state based on any persisted user ID
+  updateSigninStatus(window.currentUserId !== 'guest');
 });
 
 // ---------------- END GOOGLE SIGN-IN SETUP ----------------
