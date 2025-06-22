@@ -10,9 +10,11 @@ function handleCredentialResponse(response) {
     const data = jwt_decode(response.credential);
     console.log('[GIS] Credential received', data);
     const givenName = data.given_name || '';
+    const fullName = data.name || givenName;
+    const picture = data.picture || '';
     window.currentUserId = data.sub; // The unique Google user ID ("sub")
     localStorage.setItem('currentUserId', window.currentUserId);
-    updateSigninStatus(true, givenName);
+    updateSigninStatus(true, fullName, picture);
   } catch (err) {
     console.error('[GIS] Failed to decode Google credential:', err);
   }
@@ -42,7 +44,7 @@ function handleSignOut() {
 }
 
 // Shows/hides custom sign-in / sign-out buttons based on auth state
-function updateSigninStatus(isSignedIn, givenName = '') {
+function updateSigninStatus(isSignedIn, userName = '', userPic = '') {
   const signInButton = document.getElementById('googleSignInButton');
   const signOutButton = document.getElementById('googleSignOutButton');
 
@@ -51,15 +53,23 @@ function updateSigninStatus(isSignedIn, givenName = '') {
   if (isSignedIn) {
     signInButton.style.display = 'none';
     signOutButton.style.display = 'block';
-    const signOutTextSpan = signOutButton.querySelector('span');
-    if (signOutTextSpan) {
-        signOutTextSpan.textContent = givenName ? `Sign out (${givenName})` : 'Sign Out';
-    } else {
-        signOutButton.textContent = givenName ? `Sign out (${givenName})` : 'Sign Out';
-    }
+
+    const actionSpan = signOutButton.querySelector('.signout-action');
+    const nameSpan = signOutButton.querySelector('#signOutUserName');
+    const picImg   = signOutButton.querySelector('#signOutProfilePic');
+
+    if (actionSpan) actionSpan.textContent = 'Sign Out';
+    if (nameSpan)   nameSpan.textContent   = userName || '';
+    if (picImg && userPic)   picImg.src   = userPic;
   } else {
     signInButton.style.display = 'block';
     signOutButton.style.display = 'none';
+
+    // Clear any residual user info
+    const nameSpan = signOutButton.querySelector('#signOutUserName');
+    const picImg   = signOutButton.querySelector('#signOutProfilePic');
+    if (nameSpan) nameSpan.textContent = '';
+    if (picImg)  picImg.src = '';
   }
 
   // Refresh any user-specific UI
