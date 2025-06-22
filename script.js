@@ -61,7 +61,8 @@ const initGis = () => {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: handleCredentialResponse,
-      auto_select: false
+      auto_select: false,
+      use_fedcm_for_prompt: true
     });
     return true;
   }
@@ -88,8 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (signInButton) {
     signInButton.addEventListener('click', () => {
       google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('Google prompt was not displayed.');
+        if (notification.isSkippedMoment()) {
+          console.log('Google One Tap prompt was skipped.');
+        } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
+          console.log('User dismissed the One Tap prompt.');
         }
       });
     });
