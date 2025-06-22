@@ -14,6 +14,9 @@ function handleCredentialResponse(response) {
     const picture = data.picture || '';
     window.currentUserId = data.sub; // The unique Google user ID ("sub")
     localStorage.setItem('currentUserId', window.currentUserId);
+    // Persist extra user info so it survives page reloads
+    localStorage.setItem('userFullName', fullName);
+    localStorage.setItem('userPicture', picture);
     updateSigninStatus(true, fullName, picture);
   } catch (err) {
     console.error('[GIS] Failed to decode Google credential:', err);
@@ -39,6 +42,9 @@ function handleSignOut() {
   }
   window.currentUserId = 'guest';
   localStorage.setItem('currentUserId', window.currentUserId);
+  // Clear any persisted user info
+  localStorage.removeItem('userFullName');
+  localStorage.removeItem('userPicture');
   updateSigninStatus(false);
   console.log('[GIS] Sign-out complete, user id reset to guest');
 }
@@ -128,8 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
     signOutButton.addEventListener('click', handleSignOut);
   }
 
-  // Set initial UI state based on any persisted user ID
-  updateSigninStatus(window.currentUserId !== 'guest');
+  // Set initial UI state based on any persisted user ID and stored profile info
+  const storedName = localStorage.getItem('userFullName') || '';
+  const storedPic  = localStorage.getItem('userPicture') || '';
+  const isSignedIn = window.currentUserId !== 'guest';
+  updateSigninStatus(isSignedIn, storedName, storedPic);
 });
 
 // ---------------- END GOOGLE SIGN-IN SETUP ----------------
