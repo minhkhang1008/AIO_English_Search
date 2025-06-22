@@ -124,6 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('[GIS] One Tap prompt was skipped (likely due to prior user action).');
         } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
           console.log('[GIS] User dismissed the One Tap prompt.');
+        } else if (notification.isNotDisplayed && notification.isNotDisplayed()) {
+          // The prompt could not be displayed – commonly caused by browser settings that block third-party sign-in/cookies.
+          const reason = typeof notification.getNotDisplayedReason === 'function'
+            ? notification.getNotDisplayedReason()
+            : 'unknown';
+          console.warn('[GIS] One Tap prompt was NOT displayed. Reason:', reason);
+
+          if (['suppressed_by_settings', 'third_party_cookies_blocked', 'unknown_reason', 'blocked_by_extensions'].includes(reason)) {
+            alert('Google Sign-In could not be shown. Please enable "Third-party sign-in/cookies" for this site in your browser settings, then try again.');
+          }
         }
       });
     });
