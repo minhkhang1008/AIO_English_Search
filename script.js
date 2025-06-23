@@ -5,7 +5,7 @@ let currentUser = null;
 let userFavorites = []; 
 
 // Google Sign-In
-async function handleCredentialResponse(response) {
+async function handleAuthCodeResponse(response) {
   const idToken = response.credential;
   try {
     const res = await fetch('/api/auth/google-signin', {
@@ -30,14 +30,13 @@ async function handleCredentialResponse(response) {
 }
 
 async function handleSignOut() {
-  if (typeof google === 'object' && google.accounts && google.accounts.id) {
-    google.accounts.id.disableAutoSelect();
-  }// Notify backend of sign-out
-  
+  try {
+    await fetch('/api/auth/signout');
+  } catch {}
   currentUser = null;
   userFavorites = [];
   updateSigninStatus(false);
-  renderFavoritesSidebar(); // Re-render empty sidebar
+  renderFavoritesSidebar(); 
 }
 
 function updateSigninStatus(isSignedIn) {
@@ -55,11 +54,13 @@ function updateSigninStatus(isSignedIn) {
   }
 }
 
-function initGis() {
+function initOAuth() {
   if (typeof google === 'object' && google.accounts && google.accounts.id) {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      callback: handleCredentialResponse,
+      callback: handleAuthCodeResponse,
+      ux_mode: 'popup',
+      auto_select: false,
       use_fedcm_for_prompt: true,
     });
     return true;
@@ -67,11 +68,11 @@ function initGis() {
   return false;
 }
 
-if (!initGis()) {
+if (!initOAuth()) {
   let attempts = 0;
   const gisPoll = setInterval(() => {
     attempts += 1;
-    if (initGis() || attempts > 25) {
+    if (initOAuth() || attempts > 25) {
       clearInterval(gisPoll);
     }
   }, 200);
@@ -630,7 +631,7 @@ function showAddWordModal() {
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Google Sign-In
-  initGis();
+  initOAuth();
 
   // Attach listener to custom sign-in button
   const signInButton = document.getElementById('googleSignInButton');
@@ -648,8 +649,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const storedName = localStorage.getItem('userFullName') || '';
   const storedPic = localStorage.getItem('userPicture') || '';
-  const isSignedIn = window.currentUserId !== 'guest';
-  updateSigninStatus(isSignedIn, storedName, storedPic);
+  const isSignedIn = !!currentUser;
+  updateSigninStatus(isSignedIn);
 
   const settingsButton = document.getElementById('settingsButton');
   const settingsContainer = document.getElementById('settingsContainer');
