@@ -1,0 +1,14 @@
+{
+    "name": "aio-english-backend",
+    "version": "1.0.0",
+    "description": "Backend services for All in One English app.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "firebase-admin": "^13.4.0",
+        "google-auth-library": "^9.0.0",
+        "jsonwebtoken": "^9.0.0"
+    }
+}
