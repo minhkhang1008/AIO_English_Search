@@ -1,78 +1,89 @@
 let worker = new Worker('worker.js');
 let currentSuggestionIndex = -1;
 const GOOGLE_CLIENT_ID = '628893449247-lqos18hss794hks767eht0abnpceavc8.apps.googleusercontent.com';
-let currentUser = null; 
-let userFavorites = []; 
+window.currentUserId = localStorage.getItem('currentUserId') || 'guest';
 
 // Google Sign-In
-async function handleAuthCodeResponse(response) {
-  const idToken = response.credential;
+function handleCredentialResponse(response) {
   try {
-    const res = await fetch('/api/auth/google-signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: idToken }),
-    });
-
-    if (!res.ok) throw new Error(`Backend error: ${res.statusText}`);
-
-    const userData = await res.json();
-    currentUser = { id: userData.id, fullName: userData.fullName, picture: userData.picture };
-    userFavorites = userData.favorites || [];
-
-    updateSigninStatus(true);
-    renderFavoritesSidebar();
-
+    const data = jwt_decode(response.credential);
+    const givenName = data.given_name || '';
+    const fullName = data.name || givenName;
+    const picture = data.picture || '';
+    window.currentUserId = data.sub;
+    localStorage.setItem('currentUserId', window.currentUserId);
+    localStorage.setItem('userFullName', fullName);
+    localStorage.setItem('userPicture', picture);
+    updateSigninStatus(true, fullName, picture);
   } catch (err) {
-    console.error('[App] Sign-in flow failed:', err);
-    alert('Sign-in failed. Please try again later.');
+    console.error('[GIS] Failed to decode Google credential:', err);
   }
 }
 
-async function handleSignOut() {
-  try {
-    await fetch('/api/auth/signout');
-  } catch {}
-  currentUser = null;
-  userFavorites = [];
+function handleSignOut() {
+  if (typeof google === 'object' && google.accounts && google.accounts.id) {
+    google.accounts.id.disableAutoSelect();
+    setTimeout(() => {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+        auto_select: false,
+        use_fedcm_for_prompt: true
+      });
+    }, 100);
+  }
+  window.currentUserId = 'guest';
+  localStorage.setItem('currentUserId', window.currentUserId);
+  localStorage.removeItem('userFullName');
+  localStorage.removeItem('userPicture');
   updateSigninStatus(false);
-  renderFavoritesSidebar(); 
 }
 
-function updateSigninStatus(isSignedIn) {
+function updateSigninStatus(isSignedIn, userName = '', userPic = '') {
   const signInButton = document.getElementById('googleSignInButton');
   const signOutButton = document.getElementById('googleSignOutButton');
+  if (!signInButton || !signOutButton) return;
 
-  if (isSignedIn && currentUser) {
+  if (isSignedIn) {
     signInButton.style.display = 'none';
-    signOutButton.style.display = 'flex'; // Use flex to align items properly
-    signOutButton.querySelector('#signOutUserName').textContent = currentUser.fullName;
-    signOutButton.querySelector('#signOutProfilePic').src = currentUser.picture;
+    signOutButton.style.display = 'block';
+    const actionSpan = signOutButton.querySelector('.signout-action');
+    const nameSpan = signOutButton.querySelector('#signOutUserName');
+    const picImg = signOutButton.querySelector('#signOutProfilePic');
+    if (actionSpan) actionSpan.textContent = 'Sign Out';
+    if (nameSpan) nameSpan.textContent = userName || '';
+    if (picImg && userPic) picImg.src = userPic;
   } else {
-    signInButton.style.display = 'flex';
+    signInButton.style.display = 'block';
     signOutButton.style.display = 'none';
+    const nameSpan = signOutButton.querySelector('#signOutUserName');
+    const picImg = signOutButton.querySelector('#signOutProfilePic');
+    if (nameSpan) nameSpan.textContent = '';
+    if (picImg) picImg.src = '';
+  }
+  if (typeof renderFavoritesSidebar === 'function') {
+    renderFavoritesSidebar();
   }
 }
 
-function initOAuth() {
+function initGis() {
   if (typeof google === 'object' && google.accounts && google.accounts.id) {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      callback: handleAuthCodeResponse,
-      ux_mode: 'popup',
+      callback: handleCredentialResponse,
       auto_select: false,
-      use_fedcm_for_prompt: true,
+      use_fedcm_for_prompt: true
     });
     return true;
   }
   return false;
 }
 
-if (!initOAuth()) {
+if (!initGis()) {
   let attempts = 0;
   const gisPoll = setInterval(() => {
     attempts += 1;
-    if (initOAuth() || attempts > 25) {
+    if (initGis() || attempts > 25) {
       clearInterval(gisPoll);
     }
   }, 200);
@@ -528,54 +539,167 @@ function addFavoriteIconsToDefinitions() {
 }
 
 function isFavorite(favId) {
-  return userFavorites.some(f => f.id === favId);
+  return getFavorites().some(f => f.id === favId);
 }
 
 function toggleFavorite({ word, partOfSpeech, defaultMeaning }) {
-  if (!currentUser) {
-    alert('Please sign in to save favorites.');
-    return;
-  }
-  
-  const id = btoa(unescape(encodeURIComponent(word + '|' + partOfSpeech + '|' + defaultMeaning)));
-  const index = userFavorites.findIndex(f => f.id === id);
-
-  if (index > -1) {
-    userFavorites.splice(index, 1); // Remove from list
+  let favs = getFavorites();
+  const id = makeFavoriteId(word, partOfSpeech, defaultMeaning);
+  const idx = favs.findIndex(f => f.id === id);
+  if (idx > -1) {
+    favs.splice(idx, 1);
   } else {
-    userFavorites.push({ // Add to list
+    favs.push({
       id, word, partOfSpeech, defaultMeaning,
       userMeaning: '', notes: '', highlight: '', addedAt: Date.now(),
+      hideDefault: false
     });
   }
-  
-  renderFavoritesSidebar(); // Update UI immediately
-  saveFavoritesToBackend(); // Save changes to backend
+  saveFavorites(favs);
 }
 
 function renderFavoritesSidebar() {
   const sidebar = document.getElementById('favoritesSidebar');
   const list = document.getElementById('favoritesList');
-  if (!currentUser) {
-    list.innerHTML = '<div class="sidebar-message">Sign in to see your favorite words.</div>';
-    return;
-  }
-  if (userFavorites.length === 0) {
-    list.innerHTML = '<div class="sidebar-message">Your favorite words will appear here.</div>';
+  let favs = getFavorites();
+
+  const filter = document.getElementById('favoritesFilter').value;
+  if (filter) favs = favs.filter(f => (f.partOfSpeech || '').toLowerCase().includes(filter));
+
+  const sort = document.getElementById('favoritesSort').value;
+  if (sort === 'az') favs.sort((a, b) => a.word.localeCompare(b.word));
+  else if (sort === 'za') favs.sort((a, b) => b.word.localeCompare(a.word));
+  else if (sort === 'recent') favs.sort((a, b) => b.addedAt - a.addedAt);
+
+  let chosenLang = 'translation';
+  try {
+    const selectedRadio = document.querySelector('.ui-wrapper input[name="flag"]:checked');
+    if (selectedRadio) {
+      const labelEl = document.querySelector(`label[for="${selectedRadio.id}"]`);
+      if (labelEl) {
+        const match = labelEl.textContent.trim().match(/^(.+?)\s*\(/);
+        chosenLang = (match ? match[1] : selectedRadio.id).trim();
+      } else {
+        chosenLang = selectedRadio.id;
+      }
+    } else {
+      const langInput = document.getElementById('languageCode');
+      if (langInput && langInput.value) {
+        chosenLang = langInput.value.trim();
+      }
+    }
+  } catch {}
+
+  const chosenLangLabel = chosenLang.toLowerCase() === 'translation' ? 'translation' : `${chosenLang} translation`;
+
+  list.innerHTML = '';
+  if (!favs.length) {
+    list.innerHTML = '<div style="color:#888;text-align:center;margin-top:2em;">No favorites yet.</div>';
     return;
   }
   
-  // Sort and filter logic can be applied to `userFavorites` here before mapping
-  // ...
-
-  list.innerHTML = userFavorites.map(fav => `
-    <div class="favorite-item ${fav.highlight ? 'highlight-' + fav.highlight : ''}">
-      ${fav.word} (${fav.partOfSpeech}) - ${fav.defaultMeaning}
-    </div>
-  `).join('');
-
-  // Re-attach event listeners for the newly created favorite items
-  // ...
+  favs.forEach(fav => {
+    const item = document.createElement('div');
+    item.className = 'favorite-item' + (fav.highlight ? ' highlight-' + fav.highlight : '');
+    let showDefault = !fav.hideDefault;
+    
+    item.innerHTML = `
+      <div><span class="fav-word"><b>${fav.word}</b></span> <span class="fav-pos">${fav.partOfSpeech || ''}</span></div>
+      <div class="fav-section-label">Default:</div>
+      <div class="fav-meaning-row" style="display:flex;align-items:center;gap:0.5em;">
+        <span class="fav-meaning" style="${showDefault ? '' : 'display:none;'}">${fav.defaultMeaning}</span>
+        <button class="fav-hide-default-btn${showDefault ? '' : ' active'}" title="Show/Hide Default">👁️</button>
+      </div>
+      <div class="fav-own-row">
+        <span class="fav-section-label">Own meaning:</span>
+        <span class="fav-own-value" style="${fav.userMeaning ? '' : 'display:none;'}">${fav.userMeaning || ''}</span>
+        <button class="fav-edit-btn own" style="${fav.userMeaning ? '' : ''}">${fav.userMeaning ? 'Edit' : 'Add'}</button>
+      </div>
+      <textarea class="fav-edit-input own" style="display:none;" placeholder="Type your meaning and press Enter...">${fav.userMeaning || ''}</textarea>
+      <div class="fav-notes-row">
+        <span class="fav-section-label">Notes:</span>
+        <span class="fav-notes-value" style="${fav.notes ? '' : 'display:none;'}">${fav.notes || ''}</span>
+        <button class="fav-edit-btn notes" style="${fav.notes ? '' : ''}">${fav.notes ? 'Edit' : 'Add'}</button>
+      </div>
+      <textarea class="fav-edit-input notes" style="display:none;" placeholder="Type your notes and press Enter...">${fav.notes || ''}</textarea>
+      <button class="show-translation-btn">Show ${chosenLangLabel}</button>
+      <div class="fav-actions">
+        <button class="fav-action-btn highlight-yellow" title="Highlight Yellow">●</button>
+        <button class="fav-action-btn highlight-green" title="Highlight Green">●</button>
+        <button class="fav-action-btn highlight-blue" title="Highlight Blue">●</button>
+        <button class="fav-action-btn delete" title="Delete">🗑️</button>
+      </div>
+    `;
+    
+    const hideBtn = item.querySelector('.fav-hide-default-btn');
+    const defaultSpan = item.querySelector('.fav-meaning');
+    hideBtn.onclick = () => {
+      fav.hideDefault = !fav.hideDefault;
+      saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f));
+      renderFavoritesSidebar();
+    };
+    
+    const ownEditBtn = item.querySelector('.fav-edit-btn.own');
+    const ownValue = item.querySelector('.fav-own-value');
+    const ownInput = item.querySelector('.fav-edit-input.own');
+    ownEditBtn.onclick = () => {
+      ownEditBtn.style.display = 'none';
+      ownValue.style.display = 'none';
+      ownInput.style.display = '';
+      ownInput.focus();
+    };
+    ownInput.onkeydown = e => {
+      if (e.key === 'Enter') {
+        fav.userMeaning = ownInput.value.trim();
+        saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f));
+        renderFavoritesSidebar();
+      }
+    };
+    ownInput.onblur = () => {
+      fav.userMeaning = ownInput.value.trim();
+      saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f));
+      renderFavoritesSidebar();
+    };
+    
+    const notesEditBtn = item.querySelector('.fav-edit-btn.notes');
+    const notesValue = item.querySelector('.fav-notes-value');
+    const notesInput = item.querySelector('.fav-edit-input.notes');
+    notesEditBtn.onclick = () => {
+      notesEditBtn.style.display = 'none';
+      notesValue.style.display = 'none';
+      notesInput.style.display = '';
+      notesInput.focus();
+    };
+    notesInput.onkeydown = e => {
+      if (e.key === 'Enter') {
+        fav.notes = notesInput.value.trim();
+        saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f));
+        renderFavoritesSidebar();
+      }
+    };
+    notesInput.onblur = () => {
+      fav.notes = notesInput.value.trim();
+      saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f));
+      renderFavoritesSidebar();
+    };
+    
+    const [yellow, green, blue, del] = item.querySelectorAll('.fav-action-btn');
+    yellow.onclick = () => { fav.highlight = fav.highlight === 'yellow' ? '' : 'yellow'; saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f)); renderFavoritesSidebar(); };
+    green.onclick = () => { fav.highlight = fav.highlight === 'green' ? '' : 'green'; saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f)); renderFavoritesSidebar(); };
+    blue.onclick = () => { fav.highlight = fav.highlight === 'blue' ? '' : 'blue'; saveFavorites(getFavorites().map(f => f.id === fav.id ? fav : f)); renderFavoritesSidebar(); };
+    del.onclick = () => { saveFavorites(getFavorites().filter(f => f.id !== fav.id)); renderFavoritesSidebar(); };
+    
+    const showTransBtn = item.querySelector('.show-translation-btn');
+    showTransBtn.onclick = async () => {
+      const langCode = document.getElementById('languageCode')?.value || 'vi';
+      const translated = await translateText(fav.word, 'en', langCode);
+      if (translated) {
+        showTransBtn.textContent = `→ ${translated}`;
+        setTimeout(() => { showTransBtn.textContent = `Show ${chosenLangLabel}`; }, 4000);
+      }
+    };
+    list.appendChild(item);
+  });
 }
 
 function showAddWordModal() {
@@ -630,27 +754,38 @@ function showAddWordModal() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Google Sign-In
-  initOAuth();
-
-  // Attach listener to custom sign-in button
   const signInButton = document.getElementById('googleSignInButton');
+  const signOutButton = document.getElementById('googleSignOutButton');
+
   if (signInButton) {
     signInButton.addEventListener('click', () => {
-      google.accounts.id.prompt();
+      google.accounts.id.prompt((notification) => {
+        if (notification.isSkippedMoment()) {
+          console.log('[GIS] One Tap prompt was skipped (likely due to prior user action).');
+        } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
+          console.log('[GIS] User dismissed the One Tap prompt.');
+        } else if (notification.isNotDisplayed && notification.isNotDisplayed()) {
+          const reason = typeof notification.getNotDisplayedReason === 'function'
+            ? notification.getNotDisplayedReason()
+            : 'unknown';
+          console.warn('[GIS] One Tap prompt was NOT displayed. Reason:', reason);
+
+          if (['suppressed_by_settings', 'third_party_cookies_blocked', 'unknown_reason', 'blocked_by_extensions'].includes(reason)) {
+            alert('Google Sign-In could not be shown. Please enable "Third-party sign-in/cookies" for this site in your browser settings, then try again.');
+          }
+        }
+      });
     });
   }
 
-  // Attach listener to sign-out button
-  const signOutButton = document.getElementById('googleSignOutButton');
   if (signOutButton) {
     signOutButton.addEventListener('click', handleSignOut);
   }
 
   const storedName = localStorage.getItem('userFullName') || '';
   const storedPic = localStorage.getItem('userPicture') || '';
-  const isSignedIn = !!currentUser;
-  updateSigninStatus(isSignedIn);
+  const isSignedIn = window.currentUserId !== 'guest';
+  updateSigninStatus(isSignedIn, storedName, storedPic);
 
   const settingsButton = document.getElementById('settingsButton');
   const settingsContainer = document.getElementById('settingsContainer');
@@ -894,22 +1029,3 @@ const addWordBtn = document.getElementById('addWordBtn');
 addWordBtn.onclick = () => {
   showAddWordModal();
 };
-
-// Saves the entire list of favorites to the backend.
-async function saveFavoritesToBackend() {
-  if (!currentUser) return; // Cannot save if not logged in
-  try {
-    // In a real app, you would send an auth token here
-    await fetch('/api/favorites', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${currentUser.sessionToken}` // Example for real auth
-      },
-      body: JSON.stringify(userFavorites),
-    });
-  } catch (error) {
-    console.error('Failed to save favorites:', error);
-    alert('Could not save your favorites. Please check your connection.');
-  }
-}
